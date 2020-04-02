@@ -7,7 +7,7 @@ navbar:
       menu:
         - text: "Week 0 - Getting set up"
           href: week0.html
-        - text: "Week 1 - Introduction to R"
+        - text: "Week 1 - Introduction to R and RStudio"
           href: week1.html
         - text: "Week 2 - Working with data"
           href: week2.html

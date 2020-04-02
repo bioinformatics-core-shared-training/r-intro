@@ -1,5 +1,5 @@
 ---
-title: "Week 1 - Introduction to R"
+title: "Week 1 - Introduction to R and RStudio"
 ---
 
-Week 1 materials
+Materials coming soon.

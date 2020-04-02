@@ -19,3 +19,33 @@ cancer biology datasets.
 In this training course, we aim to provide a friendly introduction to R pitched
 at a beginners level but also for those who have been on R training courses
 previously and would like a refresher or to consolidate their skills.
+
+Schedule:
+
+0. [Getting set up](week0.html) - installing R and RStudio
+
+1. [Introduction to R](week1.html) - Interacting with R using RStudio and introducing objects, data types, functions and reading in tabular data
+
+2. [Working with data](week2.html) - Creating R projects in RStudio, working with tabular data and other types of objects in R
+
+3. Visualizing tabular data with ggplot2
+
+4. The concept of “tidy” data, manipulating and transforming data
+
+5. Elegant scripting using piping, advanced grouping and summarization operations
+
+6. Advanced topics including customization of plots, looping, conditional branching logic and writing functions
+
+7. **Capstone project** – putting it all together in a typical data analysis including:
+
+    * reading in a data set
+
+    * handling missing values
+
+    * selecting and filtering subsets of interest
+
+    * creating plots
+
+    * generating summary statistics
+
+    * saving data transformed into a tidy format as a csv file for later analysis
