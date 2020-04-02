@@ -1,4 +1,5 @@
 name: "r-lockdown"
+output_dir: "."
 navbar:
   title: "R training during the lockdown"
   left:
