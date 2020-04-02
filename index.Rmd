@@ -20,7 +20,7 @@ In this training course, we aim to provide a friendly introduction to R pitched
 at a beginners level but also for those who have been on R training courses
 previously and would like a refresher or to consolidate their skills.
 
-Schedule:
+### Course schedule
 
 0. [Getting set up](week0.html) - installing R and RStudio
 
