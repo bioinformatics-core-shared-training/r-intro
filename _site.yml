@@ -5,10 +5,12 @@ navbar:
     - text: "Lessons"
       href: index.html
       menu:
-        - text: "Week 1"
+        - text: "Week 1 - Intro to R"
           href: week1.html
-        - text: "Week 2"
+        - text: "Week 2 - Working with data"
           href: week2.html
 output_dir: "."
 output:
-  html_document
+  html_document:
+    theme: default
+

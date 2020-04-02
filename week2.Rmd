@@ -1,5 +1,5 @@
 ---
-title: "Week 2 - More stuff"
+title: "Week 2 - Getting started with data"
 ---
 
 Week 2 materials
