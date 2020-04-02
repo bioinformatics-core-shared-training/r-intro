@@ -5,6 +5,8 @@ navbar:
     - text: "Lessons"
       href: index.html
       menu:
+        - text: "Week 0 - Getting set up"
+          href: week0.html
         - text: "Week 1 - Intro to R"
           href: week1.html
         - text: "Week 2 - Working with data"
