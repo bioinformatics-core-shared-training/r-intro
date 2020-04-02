@@ -1,0 +1,6 @@
+---
+title: "Week 1 - Variables, etc."
+output: github_document
+---
+
+Week 1 materials
