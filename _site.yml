@@ -2,12 +2,12 @@ name: "r-lockdown"
 navbar:
   title: "R training during the lockdown"
   left:
-    - text: "Lessons"
+    - text: "Contents"
       href: index.html
       menu:
         - text: "Week 0 - Getting set up"
           href: week0.html
-        - text: "Week 1 - Intro to R"
+        - text: "Week 1 - Introduction to R"
           href: week1.html
         - text: "Week 2 - Working with data"
           href: week2.html
