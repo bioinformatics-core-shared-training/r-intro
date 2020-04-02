@@ -1,13 +1,14 @@
 name: "r-lockdown"
-output_dir: "."
 navbar:
   title: "R training during the lockdown"
   left:
-    - text: "Home"
+    - text: "Lessons"
       href: index.html
       menu:
-        - text: "Lessons"
         - text: "Week 1"
           href: week1.html
         - text: "Week 2"
           href: week2.html
+output_dir: "."
+output:
+  html_document

@@ -1,6 +1,5 @@
 ---
 title: "R training during the lockdown"
-output: github_document
 ---
 
 <br/>
