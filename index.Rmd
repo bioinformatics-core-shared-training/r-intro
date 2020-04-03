@@ -1,7 +1,5 @@
 ---
-title: |
-    ![](images/CRUK_CI_logo.jpg#right){width=2.5in}
-    Introduction to R
+title: Introduction to R
 ---
 
 April - June 2020

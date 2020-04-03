@@ -1,6 +1,6 @@
 name: "r-intro"
 navbar:
-  title: "Introduction to R"
+  title: "<img style=\"width: 120px; float: left; margin-right: 20px;\" src=\"images/CRUK_CI_logo.png\"/>Introduction to R&nbsp;&nbsp;&nbsp;"
   left:
     - text: "Contents"
       href: index.html
@@ -9,7 +9,7 @@ navbar:
           href: week0.html
         - text: "Week 1 - Introduction to R and RStudio"
           href: week1.html
-        - text: "Week 2 - Working with data"
+        - text: "Week 2 - Working with data in R"
           href: week2.html
 output_dir: "."
 output:

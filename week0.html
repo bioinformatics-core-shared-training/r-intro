@@ -11,7 +11,7 @@
 
 
 
-<title></title>
+<title>Getting set up — Installing R and RStudio</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -279,7 +279,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Introduction to R</a>
+      <a class="navbar-brand" href="index.html"><img style="width: 120px; float: left; margin-right: 20px;" src="images/CRUK_CI_logo.png"/>Introduction to R&nbsp;&nbsp;&nbsp;</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -297,7 +297,7 @@ $(document).ready(function () {
       <a href="week1.html">Week 1 - Introduction to R and RStudio</a>
     </li>
     <li>
-      <a href="week2.html">Week 2 - Working with data</a>
+      <a href="week2.html">Week 2 - Working with data in R</a>
     </li>
   </ul>
 </li>
@@ -313,24 +313,37 @@ $(document).ready(function () {
 
 
 
+<h1 class="title toc-ignore">Getting set up — Installing R and RStudio</h1>
 
 </div>
 
 
-<p>Before starting this course you will need to ensure that your computer is setup with the appropriate software (detailed below).<br />
-In addition, online learning requires extra screen ‘real estate’ and you may find it useful (but not essential) to have a dual screen setup or two devices e.g. laptop &amp; phone.<br />
-If you have any difficulty installing any of this software then please contact one of the trainers for help.</p>
-<div id="setup-instructions-adapted-from-data-carpentry-course-materials-httpsdatacarpentry.org-." class="section level3">
-<h3>Setup instructions (Adapted from Data Carpentry course materials <a href="https://datacarpentry.org" class="uri">https://datacarpentry.org</a> ).</h3>
-<p><strong>R</strong> and <strong>RStudio</strong> are separate downloads and installations. R is the underlying statistical computing environment, but using R alone is no fun. RStudio is a graphical integrated development environment (IDE) that makes using R much easier and more interactive. You need to install R before you install RStudio. After installing both programs, you will need to install the <strong><code>tidyverse</code></strong> package from within RStudio. Follow the instructions below for your operating system, and then follow the instructions to install <strong><code>tidyverse</code></strong>.</p>
+<div style="line-height: 50%;">
+<br/>
+</div>
+<p>Before starting this course you will need to ensure that your computer is setup with the appropriate software (detailed below).</p>
+<p>In addition, online learning requires extra screen ‘real estate’ and you may find it useful (but not essential) to have a dual screen setup or two devices e.g. laptop and tablet/phone.</p>
+<p>If you have any difficulty installing any of this software then please contact one of the trainers for help.</p>
+<div style="line-height: 100%;">
+<br/>
+</div>
+<div id="installation-instructions" class="section level3">
+<h3>Installation instructions</h3>
+<p><strong>R</strong> and <strong>RStudio</strong> are separate downloads and installations.</p>
+<p><strong>R</strong> is the underlying statistical computing environment. The base R system and a very large collection of packages that give you access to a huge range of statistical and analytical functionality are available from <a href="https://cran.r-project.org">CRAN</a>, the Comprehensive R Archive Network.</p>
+<p>However, using R alone is no fun. <strong>RStudio</strong> is a graphical integrated development environment (IDE) that makes using R much easier and more interactive. You need to install R before you install RStudio.</p>
+<p>On this course we will be making use of a brilliant collection of packages designed for data science called the <strong><code>tidyverse</code></strong> that make it much easier and more fun to work with your data. After installing R and RStudio, follow the instructions at the bottom of this page to install the <code>tidyverse</code>.</p>
+<div style="line-height: 75%;">
+<br/>
+</div>
 <div id="windows" class="section level4">
 <h4>Windows</h4>
 <div id="if-you-already-have-r-and-rstudio-installed" class="section level5">
 <h5>If you already have R and RStudio installed</h5>
 <ul>
 <li>Open RStudio, and click on “Help” &gt; “Check for updates”. If a new version is available, quit RStudio, and download the latest version for RStudio.</li>
-<li>To check which version of R you are using, start RStudio and the first thing that appears in the console indicates the version of R you are running. Alternatively, you can type <code>sessionInfo()</code>, which will also display which version of R you are running. Go on the <a href="https://cran.r-project.org/bin/windows/base/">CRAN website</a> and check whether a more recent version is available. If so, please download and install it. You can <a href="https://cran.r-project.org/bin/windows/base/rw-FAQ.html#How-do-I-UNinstall-R_003f">check here</a> for more information on how to remove old versions from your system if you wish to do so.</li>
 </ul>
+<p>To check which version of R you are using, start RStudio and the first thing that appears in the console indicates the version of R you are running. Alternatively, you can type <code>sessionInfo()</code>, which will also display which version of R you are running. Go on the <a href="https://cran.r-project.org/bin/windows/base/">CRAN website</a> and check whether a more recent version is available. If so, please download and install it. You can <a href="https://cran.r-project.org/bin/windows/base/rw-FAQ.html#How-do-I-UNinstall-R_003f">check here</a> for more information on how to remove old versions from your system if you wish to do so.</p>
 </div>
 <div id="if-you-dont-have-r-and-rstudio-installed" class="section level5">
 <h5>If you don’t have R and RStudio installed</h5>
@@ -338,10 +351,13 @@ If you have any difficulty installing any of this software then please contact o
 <li>Download R from the <a href="https://cran.r-project.org/bin/windows/base/release.htm">CRAN website</a>.</li>
 <li>Run the <code>.exe</code> file that was just downloaded</li>
 <li>Go to the <a href="https://www.rstudio.com/products/rstudio/download/#download">RStudio download page</a></li>
-<li>Under <em>Installers</em> select <strong>RStudio x.yy.zzz - Windows Vista/7/8/10</strong> (where x, y, and z represent version numbers)</li>
+<li>Under <em>Installers</em> select <strong>RStudio x.yy.zzz - Windows 10/8/7</strong> (where x, y, and z represent version numbers)</li>
 <li>Double click the file to install it</li>
 <li>Once it’s installed, open RStudio to make sure it works and you don’t get any error messages.</li>
 </ul>
+<div style="line-height: 75%;">
+<br/>
+</div>
 </div>
 </div>
 <div id="macos" class="section level4">
@@ -350,8 +366,8 @@ If you have any difficulty installing any of this software then please contact o
 <h5>If you already have R and RStudio installed</h5>
 <ul>
 <li>Open RStudio, and click on “Help” &gt; “Check for updates”. If a new version is available, quit RStudio, and download the latest version for RStudio.</li>
-<li>To check the version of R you are using, start RStudio and the first thing that appears on the terminal indicates the version of R you are running. Alternatively, you can type <code>sessionInfo()</code>, which will also display which version of R you are running. Go on the <a href="https://cran.r-project.org/bin/macosx/">CRAN website</a> and check whether a more recent version is available. If so, please download and install it.</li>
 </ul>
+<p>To check the version of R you are using, start RStudio and the first thing that appears on the terminal indicates the version of R you are running. Alternatively, you can type <code>sessionInfo()</code>, which will also display which version of R you are running. Go on the <a href="https://cran.r-project.org/bin/macosx/">CRAN website</a> and check whether a more recent version is available. If so, please download and install it.</p>
 </div>
 <div id="if-you-dont-have-r-and-rstudio-installed-1" class="section level5">
 <h5>If you don’t have R and RStudio installed</h5>
@@ -365,6 +381,9 @@ If you have any difficulty installing any of this software then please contact o
 <li>Double click the file to install RStudio</li>
 <li>Once it’s installed, open RStudio to make sure it works and you don’t get any error messages.</li>
 </ul>
+<div style="line-height: 75%;">
+<br/>
+</div>
 </div>
 </div>
 <div id="linux" class="section level4">
@@ -375,14 +394,21 @@ If you have any difficulty installing any of this software then please contact o
 <li>Under <em>Installers</em> select the version that matches your distribution, and install it with your preferred method (e.g., with Debian/Ubuntu <code>sudo dpkg -i   rstudio-x.yy.zzz-amd64.deb</code> at the terminal).</li>
 <li>Once it’s installed, open RStudio to make sure it works and you don’t get any error messages.</li>
 </ul>
+<div style="line-height: 100%;">
+<br/>
+</div>
 </div>
 <div id="for-everyone" class="section level4">
 <h4>For everyone</h4>
-<p><strong>After installing R and RStudio, you need to install the <code>tidyverse</code> packages.</strong></p>
+<p>After installing R and RStudio, please install the <code>tidyverse</code> packages.</p>
 <ul>
-<li><p>After starting RStudio, at the console type: <code>install.packages(&quot;tidyverse&quot;)</code></p></li>
+<li><p>After starting RStudio, at the console (look for the tab called ‘Console’) type: <code>install.packages(&quot;tidyverse&quot;)</code></p></li>
 <li><p>You can also do this by going to Tools -&gt; Install Packages and typing the names of the packages separated by a comma.</p></li>
 </ul>
+<div style="line-height: 100%;">
+<br/>
+</div>
+<p><strong>Credit</strong>: these instructions were adapted from <a href="https://datacarpentry.org">Data Carpentry</a> course materials.</p>
 </div>
 </div>
 
