@@ -1,14 +1,18 @@
 ---
-title: "Introduction to R"
+title: |
+    ![](images/CRUK_CI_logo.jpg#right){width=2.5in}
+    Introduction to R
 ---
 
-<br/>
 April - June 2020
 
-Bioinformatics Core, Cancer Research UK Cambridge Institute
+**Instructors** from the Bioinformatics Core:
 
-**Instructors:** Chandra Chilamakuri, Matt Eldridge, Mark Fernandes, Kamal Kishore and Ashley Sawle
-<br/>
+* Chandra Chilamakuri
+* Matt Eldridge
+* Mark Fernandes
+* Kamal Kishore
+* Ashley Sawle
 
 ### Description
 
@@ -39,7 +43,7 @@ We will be using Microsoft Teams in running this course and members of the
 Bioinformatics Core will be available during the course for 1:1 support using
 chats and calls within Teams.
 
-### Course schedule
+### Schedule
 
 0. [Getting set up](week0.html) (6 April) - installing R and RStudio
 
