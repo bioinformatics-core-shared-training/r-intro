@@ -1,5 +1,5 @@
 ---
-title: "R training during the lockdown"
+title: "Introduction to R"
 ---
 
 <br/>

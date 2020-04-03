@@ -1,6 +1,6 @@
-name: "r-lockdown"
+name: "r-intro"
 navbar:
-  title: "R training during the lockdown"
+  title: "Introduction to R"
   left:
     - text: "Contents"
       href: index.html
