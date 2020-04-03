@@ -7,7 +7,7 @@ April - June 2020
 
 Bioinformatics Core, Cancer Research UK Cambridge Institute
 
-**Instructors:** Chandra Chilamakuri, Matt Eldridge, Mark Fernandes and Ashley Sawle
+**Instructors:** Chandra Chilamakuri, Matt Eldridge, Mark Fernandes, Kamal Kishore and Ashley Sawle
 <br/>
 
 ### Description
@@ -20,25 +20,40 @@ In this training course, we aim to provide a friendly introduction to R pitched
 at a beginners level but also for those who have been on R training courses
 previously and would like a refresher or to consolidate their skills.
 
-<<<<<<< HEAD
+The course will be run over **6 weeks** with the following structure:
+
+* **Online lesson each Monday at 11am** lasting 45 minutes via a video call in Microsoft Teams
+    * the instructor will share his/her screen featuring an RStudio window during this call
+    * this will be recorded for those who weren’t able to join the meeting or so you can replay the lesson
+* More **in-depth material** covering the concepts introduced on the Monday lesson to go through in your own time
+* A **weekly assignment** consisting of exercises to practice some of the concepts covered in that and previous weeks' lessons
+* An **online recap session each Friday at 11am** to go through the assignment and answer any questions you may have
+    * again this is expected to last around 45 minutes via a video call in Microsoft Teams
+ 
+The first lesson will be on Tuesday 14 April, not the Easter Monday bank
+holiday, and thereafter every Monday for the following 5 weeks. Similarly we
+will run the Friday recap for the week of 4 – 8 May on the Thursday instead as
+8 May is the special VE Day bank holiday.
+
+We will be using Microsoft Teams in running this course and members of the
+Bioinformatics Core will be available during the course for 1:1 support using
+chats and calls within Teams.
+
 ### Course schedule
-=======
-Course schedule:
->>>>>>> f576ebfd1583d571a15bb50740e569bcd45f8e30
 
-0. [Getting set up](week0.html) - installing R and RStudio
+0. [Getting set up](week0.html) (6 April) - installing R and RStudio
 
-1. [Introduction to R](week1.html) - Interacting with R using RStudio and introducing objects, data types, functions and reading in tabular data
+1. [Introduction to R](week1.html) (14 April) - Interacting with R using RStudio and introducing objects, data types, functions and reading in tabular data
 
-2. [Working with data](week2.html) - Creating R projects in RStudio, working with tabular data and other types of objects in R
+2. [Working with data](week2.html) (20 April) - Creating R projects in RStudio, working with tabular data and other types of objects in R
 
-3. Visualizing tabular data with ggplot2
+3. Visualizing tabular data with ggplot2 (27 April)
 
-4. The concept of “tidy” data, manipulating and transforming data
+4. The concept of “tidy” data, manipulating and transforming data (4 May)
 
-5. Elegant scripting using piping, advanced grouping and summarization operations
+5. Elegant scripting using piping, advanced grouping and summarization operations (11 May)
 
-6. Advanced topics including customization of plots, looping, conditional branching logic and writing functions
+6. Advanced topics including customization of plots, looping, conditional branching logic and writing functions (18 May)
 
 7. **Capstone project** – putting it all together in a typical data analysis including:
 
