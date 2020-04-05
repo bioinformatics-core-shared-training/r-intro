@@ -1,10 +1,15 @@
 ---
-title: Introduction to R
+title: "Introduction to R"
 ---
+
+# Introduction
+
+This site contains the materials for an R course run by the Bioinformatics Core
+at the Cancer Research UK Cambridge Institute.
 
 April - June 2020
 
-**Instructors** from the Bioinformatics Core:
+### Instructors
 
 * Chandra Chilamakuri
 * Matt Eldridge
@@ -12,7 +17,7 @@ April - June 2020
 * Kamal Kishore
 * Ashley Sawle
 
-### Description
+# Description
 
 **R** is one of the leading programming languages in **Data Science** and the
 most widely used within CRUK CI for interacting with, analyzing and visualizing
@@ -41,7 +46,7 @@ We will be using Microsoft Teams in running this course and members of the
 Bioinformatics Core will be available during the course for 1:1 support using
 chats and calls within Teams.
 
-### Schedule
+# Schedule
 
 0. [Getting set up](week0.html) (6 April) - installing R and RStudio
 

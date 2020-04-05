@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
-<title>Getting set up — Installing R and RStudio</title>
+<title>Getting Ready</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -68,6 +71,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="styles.css" type="text/css" />
 
 
 
@@ -83,7 +87,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -232,6 +235,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -244,20 +248,71 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -267,6 +322,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -291,7 +356,7 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="week0.html">Week 0 - Getting set up</a>
+      <a href="week0.html">Week 0 - Getting ready</a>
     </li>
     <li>
       <a href="week1.html">Week 1 - Introduction to R and RStudio</a>
@@ -303,7 +368,12 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/bioinformatics-core-shared-training/r-intro">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -313,22 +383,19 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Getting set up — Installing R and RStudio</h1>
+<h1 class="title toc-ignore">Getting Ready</h1>
 
 </div>
 
 
-<div style="line-height: 50%;">
-<br/>
-</div>
-<p>Before starting this course you will need to ensure that your computer is setup with the appropriate software (detailed below).</p>
-<p>In addition, online learning requires extra screen ‘real estate’ and you may find it useful (but not essential) to have a dual screen setup or two devices e.g. laptop and tablet/phone.</p>
+<p>Before starting this course you will need to ensure that your computer is set up with the required software.</p>
+<p>In addition, online learning requires extra screen ‘real estate’ and you may find it useful (but not essential) to have a dual screen setup or two devices, e.g. laptop and tablet/phone.</p>
 <p>If you have any difficulty installing any of this software then please contact one of the trainers for help.</p>
 <div style="line-height: 100%;">
 <br/>
 </div>
-<div id="installation-instructions" class="section level3">
-<h3>Installation instructions</h3>
+<div id="installing-r-and-rstudio" class="section level1">
+<h1>Installing R and RStudio</h1>
 <p><strong>R</strong> and <strong>RStudio</strong> are separate downloads and installations.</p>
 <p><strong>R</strong> is the underlying statistical computing environment. The base R system and a very large collection of packages that give you access to a huge range of statistical and analytical functionality are available from <a href="https://cran.r-project.org">CRAN</a>, the Comprehensive R Archive Network.</p>
 <p>However, using R alone is no fun. <strong>RStudio</strong> is a graphical integrated development environment (IDE) that makes using R much easier and more interactive. You need to install R before you install RStudio.</p>
@@ -336,17 +403,17 @@ $(document).ready(function () {
 <div style="line-height: 75%;">
 <br/>
 </div>
-<div id="windows" class="section level4">
-<h4>Windows</h4>
-<div id="if-you-already-have-r-and-rstudio-installed" class="section level5">
-<h5>If you already have R and RStudio installed</h5>
+<div id="windows" class="section level2">
+<h2>Windows</h2>
+<div id="if-you-already-have-r-and-rstudio-installed" class="section level4">
+<h4>If you already have R and RStudio installed</h4>
 <ul>
 <li>Open RStudio, and click on “Help” &gt; “Check for updates”. If a new version is available, quit RStudio, and download the latest version for RStudio.</li>
 </ul>
 <p>To check which version of R you are using, start RStudio and the first thing that appears in the console indicates the version of R you are running. Alternatively, you can type <code>sessionInfo()</code>, which will also display which version of R you are running. Go on the <a href="https://cran.r-project.org/bin/windows/base/">CRAN website</a> and check whether a more recent version is available. If so, please download and install it. You can <a href="https://cran.r-project.org/bin/windows/base/rw-FAQ.html#How-do-I-UNinstall-R_003f">check here</a> for more information on how to remove old versions from your system if you wish to do so.</p>
 </div>
-<div id="if-you-dont-have-r-and-rstudio-installed" class="section level5">
-<h5>If you don’t have R and RStudio installed</h5>
+<div id="if-you-dont-have-r-and-rstudio-installed" class="section level4">
+<h4>If you don’t have R and RStudio installed</h4>
 <ul>
 <li>Download R from the <a href="https://cran.r-project.org/bin/windows/base/release.htm">CRAN website</a>.</li>
 <li>Run the <code>.exe</code> file that was just downloaded</li>
@@ -360,17 +427,17 @@ $(document).ready(function () {
 </div>
 </div>
 </div>
-<div id="macos" class="section level4">
-<h4>macOS</h4>
-<div id="if-you-already-have-r-and-rstudio-installed-1" class="section level5">
-<h5>If you already have R and RStudio installed</h5>
+<div id="macos" class="section level2">
+<h2>macOS</h2>
+<div id="if-you-already-have-r-and-rstudio-installed-1" class="section level4">
+<h4>If you already have R and RStudio installed</h4>
 <ul>
 <li>Open RStudio, and click on “Help” &gt; “Check for updates”. If a new version is available, quit RStudio, and download the latest version for RStudio.</li>
 </ul>
 <p>To check the version of R you are using, start RStudio and the first thing that appears on the terminal indicates the version of R you are running. Alternatively, you can type <code>sessionInfo()</code>, which will also display which version of R you are running. Go on the <a href="https://cran.r-project.org/bin/macosx/">CRAN website</a> and check whether a more recent version is available. If so, please download and install it.</p>
 </div>
-<div id="if-you-dont-have-r-and-rstudio-installed-1" class="section level5">
-<h5>If you don’t have R and RStudio installed</h5>
+<div id="if-you-dont-have-r-and-rstudio-installed-1" class="section level4">
+<h4>If you don’t have R and RStudio installed</h4>
 <ul>
 <li>Download R from the <a href="https://cran.r-project.org/bin/macosx/">CRAN website</a>.</li>
 <li>Select the <code>.pkg</code> file for the latest R version</li>
@@ -386,8 +453,8 @@ $(document).ready(function () {
 </div>
 </div>
 </div>
-<div id="linux" class="section level4">
-<h4>Linux</h4>
+<div id="linux" class="section level2">
+<h2>Linux</h2>
 <ul>
 <li>Follow the instructions for your distribution from <a href="https://cloud.r-project.org/bin/linux">CRAN</a>, they provide information to get the most recent version of R for common distributions. For most distributions, you could use your package manager (e.g., for Debian/Ubuntu run <code>sudo apt-get install r-base</code>, and for Fedora <code>sudo yum install R</code>), but we don’t recommend this approach as the versions provided by this are usually out of date. In any case, make sure you have at least R 3.3.1.</li>
 <li>Go to the <a href="https://www.rstudio.com/products/rstudio/download/#download">RStudio download page</a></li>
@@ -398,22 +465,27 @@ $(document).ready(function () {
 <br/>
 </div>
 </div>
-<div id="for-everyone" class="section level4">
-<h4>For everyone</h4>
+</div>
+<div id="installing-the-tidyverse" class="section level1">
+<h1>Installing the tidyverse</h1>
 <p>After installing R and RStudio, please install the <code>tidyverse</code> packages.</p>
 <ul>
-<li><p>After starting RStudio, at the console (look for the tab called ‘Console’) type: <code>install.packages(&quot;tidyverse&quot;)</code></p></li>
+<li><p>After starting RStudio, at the console type: <code>install.packages(&quot;tidyverse&quot;)</code> (look for the ‘Console’ tab and type at the <code>&gt;</code> prompt)</p></li>
 <li><p>You can also do this by going to Tools -&gt; Install Packages and typing the names of the packages separated by a comma.</p></li>
 </ul>
 <div style="line-height: 100%;">
 <br/>
 </div>
-<p><strong>Credit</strong>: these instructions were adapted from <a href="https://datacarpentry.org">Data Carpentry</a> course materials.</p>
+<div id="credit" class="section level4">
+<h4>Credit</h4>
+<p>These instructions were adapted from <a href="https://datacarpentry.org">Data Carpentry</a> course materials.</p>
 </div>
 </div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -428,6 +500,49 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

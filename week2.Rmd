@@ -1,6 +1,6 @@
 ---
-title: "Week 2 - Getting started with data in R"
+title: "Week 2 -- Getting started with data in R"
 ---
 
-Materials coming soon.
+Coming soon.
 
