@@ -5,3 +5,29 @@ title: "Week 1 -- Introduction to R and RStudio"
 # Introduction
 
 In preparation.
+
+# Rstudio  a brief tour
+Rstudio provides us with a friendly interface to the R statistical progrmming language.
+It consists of four main"Panes". These can be re-sized and moved around to suit how
+you like to work.
+By default the top left-hand pane is one for creating, editing & running R scripts.
+A script is an R program that you have written. A good practice is for that script to
+perform only one role in your analysis workflow and so you may have several R scripts which you call, in a particular sequence, to analyse your data.
+As you will see, a script is basically a text file that contains R commands and
+ideally comments to explain what the codes function is (Documentation process).
+As well as R scripts, there are many types of Rstudio document including Markdown files which we will use in the teaching of this course. These can provide interactive workbooks or pdf and web documents to name but a few possible outcomes.
+
+Coming down the screen to the bottom left-hand pane w e find the console window. This is where we can find output produced by running our R scripts. We can also try out snippets of R code here. The next tab on this pane, gives us a command-line terminal to our computer (we shall not be using this on the course but it may be of use to you later).
+
+Next we move to the top right-hand corner pane. Here we have even more tabs (of which we will only consider two Environment and History). Environment keeps track or R variables which we create (more on those later) and their contents. History is like a tally role of all the R commands we have entered in our session.
+
+Our final bottom right-hand pane also has several tabs. The Files tab s a file explorer that enable us to move around our directories and select which files we wish to work on. We can also change the default working directory that Rstudio will use 
+(Absolute & Relative paths)
+The Plots tab is where any graphs that we create in R will appear. We can move through them usin g the arrow buttons and the export button will convert them to different graphics formats e.g. for publication in a paper or for the web.
+The Packages tab shows which R packages are installed (These expand R's functionallity and again will be covered later) and can also install new packages.
+The Help tab is a massively useful tab which enables you to search R help index to get help pages on R functions and provide example code to help you use them in your R scripts.
+
+# Our first look at the R language
+
+
+
