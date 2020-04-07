@@ -1,6 +1,7 @@
 ---
 title: "Week 1 -- Introduction to R and RStudio"
 ---
+<img src="images/CRUK_CI_logo.png" alt="CRUK CI Logo" height="100" width="400">    
 
 # Introduction
 
@@ -9,25 +10,89 @@ In preparation.
 # Rstudio  a brief tour
 Rstudio provides us with a friendly interface to the R statistical progrmming language.
 It consists of four main"Panes". These can be re-sized and moved around to suit how
-you like to work.
+you like to work.    
+<img src="images/Rstudioataglance.png" alt="Rstudio screenshot" height="100" width="800">    
+
 By default the top left-hand pane is one for creating, editing & running R scripts.
+<img src="images/Rstudio_scripting.png" alt="Rstudio edit pane screenshot" height="75" width="600">    
 A script is an R program that you have written. A good practice is for that script to
-perform only one role in your analysis workflow and so you may have several R scripts which you call, in a particular sequence, to analyse your data.
+perform only one role in your analysis workflow and so you may have several R scripts which you call, in a particular sequence, to analyse your data.    
 As you will see, a script is basically a text file that contains R commands and
-ideally comments to explain what the codes function is (Documentation process).
-As well as R scripts, there are many types of Rstudio document including Markdown files which we will use in the teaching of this course. These can provide interactive workbooks or pdf and web documents to name but a few possible outcomes.
+(ideally) comments to explain what the codes function is (As a Documentation process).    
+As well as R scripts, there are many types of Rstudio document including Markdown files which we will use in the teaching of this course. These can provide interactive workbooks or pdf and web documents to name but a few possible outcomes.    
 
-Coming down the screen to the bottom left-hand pane w e find the console window. This is where we can find output produced by running our R scripts. We can also try out snippets of R code here. The next tab on this pane, gives us a command-line terminal to our computer (we shall not be using this on the course but it may be of use to you later).
 
-Next we move to the top right-hand corner pane. Here we have even more tabs (of which we will only consider two Environment and History). Environment keeps track or R variables which we create (more on those later) and their contents. History is like a tally role of all the R commands we have entered in our session.
+Coming down the screen to the bottom left-hand pane we find the console window. This is where we can find output produced by running our R scripts.     
+<img src="images/Rstudio_console.png" alt="Rstudio screenshot" height="75" width="600">    
+We can also try out snippets of R code here. The next tab on this pane, gives us a command-line terminal to our computer (we shall not be using this on the course but it may be of use to you later).
+
+Next we move to the top right-hand corner pane. Here we have even more tabs (of which we will only consider two Environment and History).    
+<img src="images/Rstudio_env.png" alt="Rstudio screenshot" height="75" width="600">   
+Environment keeps track or R variables which we create (more on those later) and their contents. History is like a tally role of all the R commands we have entered in our session.
 
 Our final bottom right-hand pane also has several tabs. The Files tab s a file explorer that enable us to move around our directories and select which files we wish to work on. We can also change the default working directory that Rstudio will use 
-(Absolute & Relative paths)
-The Plots tab is where any graphs that we create in R will appear. We can move through them usin g the arrow buttons and the export button will convert them to different graphics formats e.g. for publication in a paper or for the web.
-The Packages tab shows which R packages are installed (These expand R's functionallity and again will be covered later) and can also install new packages.
+(Absolute & Relative paths).   
+<img src="images/Rstudio_filexpl.png" alt="Rstudio screenshot" height="75" width="600">    
+The Plots tab is where any graphs that we create in R will appear. We can move through them using the arrow buttons and the export button will convert them to different graphics formats e.g. for publication in a paper or for the web.    
+The Packages tab shows which R packages are installed (These expand R's functionallity and again will be covered later) and can also install new packages.    
 The Help tab is a massively useful tab which enables you to search R help index to get help pages on R functions and provide example code to help you use them in your R scripts.
 
 # Our first look at the R language
+Our overall goal for this course is to give you the ability to import your data into R, perform some selecting of data of interest, summary analysis and visualisation.
+First though, let us consider __“What is Data?”__    
+Data comes in many forms: Numbers (Integers and decimal values) or alphabetical  (characters or lines of text). Clearly a computer (or R) needs a way of representing this wide range of data with it’s diverse properties.  
 
+ _The pigeon-hole analogy:-    
+ R stores data in contiguous sections of computer memory a bit like the pigeon-holes used in many internal mail systems. These holes are indexed e.g by 1st letter of surname or a range of letters e.g. A-C.    
+Internal mail systems can carry different types of traffic small notes, large envelopes or parcels with different dimensions so there may be rows associated with small letters, big letters and parcels.   
+For a system like this it makes sense that a row contains the same type of mail with similar dimensions to avoid wasting space._
+
+## Storing our first R data value
+R has an equivalent to this called a Vector – everything is represented as a vector.   
+For example say we had a single numerical value 8 and this was the number of samples in an experiment – an R vector can be created (or assigned) thusly:
+```{r}
+Samples <- 8
+```
+The <- is the assignment action, Samples is our Vector
+If we just type _Samples_ followed by the return key R will print the contents of the vector called Samples (Try it). Notice that Rstudio tries to help us by autocompleting the variable name to avoid mis-typing.   
+What if we found out that there were actually 12 samples? We can correct this by re-assigning the value of Samples:    
+Now try outputting the value – is it 12 or 8?
+```{r}
+Samples <- 12
+```
+
+Of course our data is often a decimal value e.g. 
+```{r}
+PH <- 5.5
+```
+
+Or we may have a name e.g.    
+```{r}
+drug <- "Gefitinib"
+```
+
+## Storing more than one value
+We are much more likely to want to store a series of data e.g. observation values. Vectors can take any number of values but the assignment statement changes slightly.
+```{r}
+Obs <- c(2,5,8,5,8,2)
+```
+What happens when you ask R to print Obs?    
+Similarly, we can have long vectors of text strings:   
+```{r}
+animals <- c('cat', 'dog', 'mouse')
+drugs <- c('Gefitinib', 'FCR', "Vincristine" )
+bases <- c("c","g","t","a","n")
+```
+What happens if you print these?    
+
+## Our first  R function – help
+Functions are like mathematical functions they take argument(s) and return a result and the arguments are enclosed in brackets. They extend the capabilities of R. 
+A function that you will find most ‘helpful’ is the help() function. It provides help on a topic that is supplied as the argument.
+Try    
+```{r}
+help(help)
+```
+The result appears in the bottom left-hand pane.   
+Notice how Rstudio tries to help you by suggesting what the arguments could be (in floating yellow text box).   
 
 
