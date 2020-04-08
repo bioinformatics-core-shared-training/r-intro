@@ -4,8 +4,45 @@ title: "Week 1 -- Introduction to R and RStudio"
 <img src="images/CRUK_CI_logo.png" alt="CRUK CI Logo" height="100" width="400">    
 
 # Introduction
+_From the Introduction of the __Data Carpentry in R__ course._   
 
-In preparation.
+## Why learn R?   
+R does not involve lots of pointing and clicking, and that’s a good thing
+The learning curve might be steeper than with other software, but with R, the results of your analysis do not rely on remembering a succession of pointing and clicking, but instead on a series of written commands, and that’s a good thing! So, if you want to redo your analysis because you collected more data, you don’t have to remember which button you clicked in which order to obtain your results; you just have to run your script again.
+
+Working with scripts makes the steps you used in your analysis clear, and the code you write can be inspected by someone else who can give you feedback and spot mistakes.
+
+Working with scripts forces you to have a deeper understanding of what you are doing, and facilitates your learning and comprehension of the methods you use.
+
+### R code is great for reproducibility
+Reproducibility is when someone else (including your future self) can obtain the same results from the same dataset when using the same analysis.
+
+### R integrates with other tools to generate manuscripts from your code.    
+If you collect more data, or fix a mistake in your dataset, the figures and the statistical tests in your manuscript are updated automatically.
+
+An increasing number of journals and funding agencies expect analyses to be reproducible, so knowing R will give you an edge with these requirements.
+
+### R is interdisciplinary and extensible
+With 10,000+ packages that can be installed to extend its capabilities, R provides a framework that allows you to combine statistical approaches from many scientific disciplines to best suit the analytical framework you need to analyze your data. For instance, R has packages for image analysis, GIS, time series, population genetics, and a lot more.
+
+### R works on data of all shapes and sizes
+The skills you learn with R scale easily with the size of your dataset. Whether your dataset has hundreds or millions of lines, it won’t make much difference to you.
+
+### R is designed for data analysis.   
+It comes with special data structures and data types that make handling of missing data and statistical factors convenient.
+
+R can connect to spreadsheets, databases, and many other data formats, on your computer or on the web.
+
+### R produces high-quality graphics
+The plotting functionalities in R are endless, and allow you to adjust any aspect of your graph to convey most effectively the message from your data.
+
+### R has a large and welcoming community
+Thousands of people use R daily. Many of them are willing to help you through mailing lists and websites such as Stack Overflow, or on the RStudio community.
+
+### Not only is R free, but it is also open-source and cross-platform
+Anyone can inspect the source code to see how R works. Because of this transparency, there is less chance for mistakes, and if you (or someone else) find some, you can report and fix bugs.
+
+---
 
 # Rstudio  a brief tour
 Rstudio provides us with a friendly interface to the R statistical progrmming language.
@@ -13,6 +50,7 @@ It consists of four main"Panes". These can be re-sized and moved around to suit 
 you like to work.    
 <img src="images/Rstudioataglance.png" alt="Rstudio screenshot" height="100" width="800">    
 
+## Editing pane
 By default the top left-hand pane is one for creating, editing & running R scripts.
 <img src="images/Rstudio_scripting.png" alt="Rstudio edit pane screenshot" height="75" width="600">    
 A script is an R program that you have written. A good practice is for that script to
@@ -21,25 +59,29 @@ As you will see, a script is basically a text file that contains R commands and
 (ideally) comments to explain what the codes function is (As a Documentation process).    
 As well as R scripts, there are many types of Rstudio document including Markdown files which we will use in the teaching of this course. These can provide interactive workbooks or pdf and web documents to name but a few possible outcomes.    
 
-
+## Console
 Coming down the screen to the bottom left-hand pane we find the console window. This is where we can find output produced by running our R scripts.     
 <img src="images/Rstudio_console.png" alt="Rstudio screenshot" height="75" width="600">    
 We can also try out snippets of R code here. The next tab on this pane, gives us a command-line terminal to our computer (we shall not be using this on the course but it may be of use to you later).
 
+## Environment
 Next we move to the top right-hand corner pane. Here we have even more tabs (of which we will only consider two Environment and History).    
 <img src="images/Rstudio_env.png" alt="Rstudio screenshot" height="75" width="600">   
 Environment keeps track or R variables which we create (more on those later) and their contents. History is like a tally role of all the R commands we have entered in our session.
 
+## Files, Plots & Help
 Our final bottom right-hand pane also has several tabs. The Files tab s a file explorer that enable us to move around our directories and select which files we wish to work on. We can also change the default working directory that Rstudio will use 
 (Absolute & Relative paths).   
+In fact, it's a good practice to create a new R project and some sub-directories of it whenever we start a piece of work. Try and adopt a 'standard' structure.    
 <img src="images/Rstudio_filexpl.png" alt="Rstudio screenshot" height="75" width="600">    
 The Plots tab is where any graphs that we create in R will appear. We can move through them using the arrow buttons and the export button will convert them to different graphics formats e.g. for publication in a paper or for the web.    
 The Packages tab shows which R packages are installed (These expand R's functionallity and again will be covered later) and can also install new packages.    
-The Help tab is a massively useful tab which enables you to search R help index to get help pages on R functions and provide example code to help you use them in your R scripts.
+The Help tab is a _massively useful_ tab which enables you to search R help index to get help pages on R functions and provide example code to help you use them in your R scripts.
 
 # Our first look at the R language
 Our overall goal for this course is to give you the ability to import your data into R, perform some selecting of data of interest, summary analysis and visualisation.
 First though, let us consider __“What is Data?”__    
+
 Data comes in many forms: Numbers (Integers and decimal values) or alphabetical  (characters or lines of text). Clearly a computer (or R) needs a way of representing this wide range of data with it’s diverse properties.  
 
  _The pigeon-hole analogy:-    
@@ -76,7 +118,24 @@ We are much more likely to want to store a series of data e.g. observation value
 ```{r}
 Obs <- c(2,5,8,5,8,2)
 ```
-What happens when you ask R to print Obs?    
+What happens when you ask R to print Obs?   
+Calculations can also be included in assignments e.g. we might have a column supplied in one type of units and we need it in another.    
+```{r}
+New_Obs <- Obs * 2.2
+New_Obs
+Smaller <- Samples / 2
+Smaller
+```
+|Symbol | Effect|
+| --- | ---  |
+| +   |	Addition |
+| – 	| Subtraction |
+| * 	| Multiplication |
+| / 	| Division |
+| ^ 	| Exponent |
+| %% 	| Modulus (Remainder) |
+| %/% |	Integer Division |
+    
 Similarly, we can have long vectors of text strings:   
 ```{r}
 animals <- c('cat', 'dog', 'mouse')
@@ -94,5 +153,33 @@ help(help)
 ```
 The result appears in the bottom left-hand pane.   
 Notice how Rstudio tries to help you by suggesting what the arguments could be (in floating yellow text box).   
+_Need more help?_ You can also use ?<command> i.e. ?help.   
+If you know roughly what you need but not the actual function name use ?? e.g. ??average.   
+What if you know the function name but can't recall what the arguments are?
+Try args() function e.g. args(plot,default).    
+
+### More useful functions
+length() to find out how many elements are in a vector
+```{r}
+length(animals)
+```
+class() will tell you the class (suprise) of a vector e.g. charactter or numeric
+```{r}
+class(animals)
+class(Obs)
+```
+str() reports the structure of an object. This terse report includes such useful information as class, index range of elements e.g. 1..n and the values contained therein.   
+```{r}
+str(Obs)
+```
+typeof() - reports how object is sored e.g. integer or double
+```{r}
+?typeof
+typeof(Samples)
+```
+summary() -  one of my _favourite_ functions. R gives an object summary of the vector. this means that what is returned depends on the vector. I often use it on data after I have read it in from a file to do a 'sanity check' and find maximum and minimum vlues etc to spot unexpected values.
+```{r}
+summary(Obs)
+```
 
 
