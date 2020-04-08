@@ -5,17 +5,41 @@ date: "08/04/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+# __CRUK Online Introduction to R course__
+
+1) You need to generate an X-axis variable that incrememtally increases and represents the sampling at 5 day intervals for about a year (365 days).    
+Your friendly neighbourhood statistician has suggested that there should be an R function to do that. What is the function and how do you find out about it and what is the code you will use to create the X-axis vector? Check the vector.
+```{r}
+
 ```
 
-## 
-```{r cars}
-summary(cars)
+2) You have been asked to plot some base R graphs of counts data. The investigator has requested that certain symbols be used for each dataset being plotted.    
+What command would you use to find out the parameter which sets this for the plot.default() command and what is the parameters name?
+```{r}
+
 ```
 
-## Including Plots
+3) Your colleague has supplied you with the following table of data (number of cells per sample volume):   
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+| Day | LineA | LineB | LineC |
+| --  | ---   | ---   | ---   |
+| 1   |   4   |    5  |   14   |
+| 2   |   9   |   17  |   16   |
+| 3   |   7   |   22  |   10  |
+| 4   |   12   |  20   |   14  |
+| 5   |   23    |   24  |   20 |
+| 6   |   8    |  18  |   12    |
+
+Create some R vectors to hold this data and provide summary statisics for number of cells for each cell line. Plot some base R graphs if you like. Describe the data. 
+```{r}
+
 ```
+
+You are then provided with assay data that states that LineA had an activity of 4.2 per cell, LineB of 3.4 and LineC of 1.3.    
+Use R to calculate the activities of each sample on each day and provide summary statistics of activity for each line.    
+```{r}
+
+```
+
+
+
