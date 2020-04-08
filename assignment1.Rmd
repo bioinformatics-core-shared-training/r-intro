@@ -1,0 +1,21 @@
+---
+title: "Assignment1"
+author: "Mark Fernandes"
+date: "08/04/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
