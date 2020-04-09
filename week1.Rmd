@@ -253,10 +253,10 @@ summary(obs)
 ```
 So-called 'Base' R does possess plotting functions. However, later lessons will teach you how to plot using a much more powerful and easy-to-use _Tidyverse_ package called _ggplot2_.   
 Just to demonstrate a function with multiple paramaeters, I will use base R plot here. Once you have read in your data you may wish to do a quick & dirty plot it e.g. to spot any trends or outliers. This can be done quickly in R (but much more easily in ggplot2).       
-```{r}
+```{r scatter_plot}
  X <- c(1,2,3,4,5)
  Y <- c(9, 17, 23, 38, 52)
- plot.default(X,Y, pch = 4, col = "red")
+ plot.default(X, Y, pch = 4, col = "red")
 ```
 
 __A point to note here__ - In the help you will notice that parameters are usually presented in a specific order in the brackets. This will work fine, but you may wish to take default values or enter parameters out of order.    
