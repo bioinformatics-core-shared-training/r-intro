@@ -31,13 +31,22 @@ Your friendly neighbourhood statistician has suggested that there should be an R
 
 ```
 
-4) You have been asked to plot some base R graphs of counts data. The investigator has requested that certain symbols be used for each dataset being plotted.    
+4) Run the code below and use the typeof() and/or class() function (see it's help) and see how R teats each newly-created vector?
+```{r}
+num_char <- c(1, 2, 3, "a")
+num_logical <- c(1, 2, 3, TRUE)
+char_logical <- c("a", "b", "c", TRUE)
+tricky <- c(1, 2, 3, "4")
+```
+You should find that R coerces the data to a lowest common denominator - can you work out the heirachy?     
+
+5) You have been asked to plot some base R graphs of counts data. The investigator has requested that certain symbols be used for each dataset being plotted.    
 What command would you use to find out the parameter which sets this for the plot.default() command and what is the parameters name?
 ```{r}
 
 ```
 
-5) Your colleague has supplied you with the following table of data (number of cells per sample volume):   
+6) Your colleague has supplied you with the following table of data (number of cells per sample volume):   
 
 | Day | LineA | LineB | LineC |
 | --  | ---   | ---   | ---   |

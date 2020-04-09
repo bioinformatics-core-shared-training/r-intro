@@ -1,7 +1,6 @@
 ---
 title: "Week 1 -- Introduction to R and RStudio"
 ---
-<img src="images/CRUK_CI_logo.png" alt="CRUK CI Logo" height="100" width="400">    
 
 # Introduction
 
@@ -21,39 +20,25 @@ title: "Week 1 -- Introduction to R and RStudio"
 
 ---
 
-_From the Introduction of the __Data Carpentry in R__ course._   
-
 ## Why learn R?   
-* R does not involve lots of pointing and clicking, and that’s a good thing
-The learning curve might be steeper than with other software, but with R, the results of your analysis do not rely on remembering a succession of pointing and clicking, but instead on a series of written commands, and that’s a good thing! So, if you want to redo your analysis because you collected more data, you don’t have to remember which button you clicked in which order to obtain your results; you just have to run your script again.    
-Working with scripts makes the steps you used in your analysis clear, and the code you write can be inspected by someone else who can give you feedback and spot mistakes.   
-Working with scripts forces you to have a deeper understanding of what you are doing, and facilitates your learning and comprehension of the methods you use.
+* R involves creating & using scripts which makes the steps you used in your analysis clear and can be inspected by someone else for feedback and error-checking.    
 
-* R code is great for reproducibility
-Reproducibility is when someone else (including your future self) can obtain the same results from the same dataset when using the same analysis.
+* R code is great for reproducibility. An increasing number of journals and funding agencies expect analyses to be reproducible, so knowing R will give you an edge with these requirements.
 
 * R integrates with other tools to generate manuscripts from your code.    
-If you collect more data, or fix a mistake in your dataset, the figures and the statistical tests in your manuscript are updated automatically.
-An increasing number of journals and funding agencies expect analyses to be reproducible, so knowing R will give you an edge with these requirements.
+This document (RMarkdown a .Rmd file) is a case in point.
 
-* R is interdisciplinary and extensible
-With 10,000+ packages that can be installed to extend its capabilities, R provides a framework that allows you to combine statistical approaches from many scientific disciplines to best suit the analytical framework you need to analyze your data. For instance, R has packages for image analysis, GIS, time series, population genetics, and a lot more.
+* R is interdisciplinary and extensible and has thousands of installable packages to extend its capabilities. R has packages for image analysis, GIS, time series, population genetics, and a lot more.
 
-* R works on data of all shapes and sizes
-The skills you learn with R scale easily with the size of your dataset. Whether your dataset has hundreds or millions of lines, it won’t make much difference to you.
+* R scales well to work on data of all shapes and sizes.
 
-* R is designed for data analysis.   
-It comes with special data structures and data types that make handling of missing data and statistical factors convenient.    
-R can connect to spreadsheets, databases, and many other data formats, on your computer or on the web.
+* R can connect to spreadsheets, databases, and many other data formats, on your computer or on the web.
 
-* R produces high-quality graphics
-The plotting functionalities in R are endless, and allow you to adjust any aspect of your graph to convey most effectively the message from your data.
+* R produces high-quality graphics suitable for publication in journals or the web.
 
-* R has a large and welcoming community
-Thousands of people use R daily. Many of them are willing to help you through mailing lists and websites such as Stack Overflow, or on the RStudio community.
+* R has a large and welcoming community - Thousands use R daily and many of them are willing to help you through websites such as Stack Overflow or the RStudio community.
 
-* Not only is R free, but it is also open-source and cross-platform
-Anyone can inspect the source code to see how R works. Because of this transparency, there is less chance for mistakes, and if you (or someone else) find some, you can report and fix bugs.
+* Not only is R free, but it is also open-source and cross-platform.
 
 ---
 
@@ -147,17 +132,29 @@ Of course our data is often a decimal value e.g.
 ph <- 5.5
 ```
 
-Or we may have a name e.g.    
+Or we may have a name e.g. a _string_ of characters.        
 ```{r}
 drug <- "Gefitinib"
+```
+
+A less obvious type of data (but incredibly useful later on in this course) is for logical values i.e. TRUE and FALSE.   
+```{r}
+yes <- TRUE
+no <- FALSE
+yes
+no
 ```
 
 ## Storing more than one value
 We are much more likely to want to store a series of data e.g. observation values. Vectors can take any number of values but the assignment statement changes slightly.
 ```{r}
 obs <- c(2,5,8,5,8,2)
+obs
+vulcan <- c(TRUE, FALSE,!TRUE,!FALSE)
+vulcan
 ```
 What happens when you ask R to print obs?   
+__Note__ that with the logical vector we can use the __!__ operator to negate (or NOT) a logical i.e. !TRUE is equal to FALSE.   
 Calculations can also be included in assignments e.g. we might have a column supplied in one type of units and we need it in another.    
 ```{r}
 new_obs <- obs * 2.2
@@ -165,7 +162,8 @@ new_obs
 smaller <- samples / 2
 smaller
 ```
-__Notice__ that each and every element of the vector has been multiplied by 2.2. This is what was happening when we used 1:30 * 2.    
+__Notice that each and every element of the vector has been multiplied by 2.2__. This is what was happening when we used 1:30 * 2.  
+
 |Symbol | Effect|
 | --- | ---  |
 | +   |	Addition |
@@ -175,7 +173,12 @@ __Notice__ that each and every element of the vector has been multiplied by 2.2.
 | ^ 	| Exponent |
 | %% 	| Modulus (Remainder) |
 | %/% |	Integer Division |
-    
+
+__Note__ that when applying arithmetical functions to vectors they must be appropriate. For example, if you try and add 3 to the character string "a" then R will quite rightly return an error message.
+```{r}
+# "a" + 3
+```
+
 Similarly, we can have long vectors of text strings:   
 ```{r}
 animals <- c('cat', 'dog', 'mouse')
@@ -185,8 +188,8 @@ bases <- c("c","g","t","a","n")
 What happens if you print these?    
 
 ## Our first  R function – help
-Functions are like mathematical functions they take argument(s) and return a result and the arguments are enclosed in brackets. They extend the capabilities of R. 
-A function that you will find most ‘helpful’ is the help() function. It provides help on a topic that is supplied as the argument.
+Functions are like mathematical functions they take argument(s) and return a result and the arguments are enclosed in brackets i.e. $Y = F(X)$   
+They extend the capabilities of R. A function that you will find most ‘helpful’ is the help() function. It provides help on the topic that is supplied as the argument.
 Try    
 ```{r}
 help(help)
@@ -203,7 +206,7 @@ length() to find out how many elements are in a vector
 ```{r}
 length(animals)
 ```
-class() will tell you the class (suprise) of a vector e.g. charactter or numeric
+class() will tell you the class (suprise) of a vector e.g. character or numeric
 ```{r}
 class(animals)
 class(obs)
@@ -212,12 +215,39 @@ str() reports the structure of an object. This terse report includes such useful
 ```{r}
 str(obs)
 ```
-typeof() - reports how object is sored e.g. integer or double
+typeof() - reports how object is sored e.g. character, integer or double.  If we explicitly want a vector to be integer-only we can use another function __as.integer()__ or a suffix of 'L' when we assign it (see below).   
 ```{r}
 ?typeof
+samples
 typeof(samples)
+hint <- 5L
+hint2 <- as.integer(25)
+hint
+typeof(hint)
+hint2
+typeof(hint2)
+drug
+typeof(drug)
 ```
-summary() -  one of my __favourite__ functions. R gives an object summary of the vector. this means that what is returned depends on the vector. I often use it on data after I have read it in from a file to do a 'sanity check' and find maximum and minimum vlues etc to spot unexpected values.
+    
+So what does R mean by these types and why would we use one over another? What does R have to tell us on this topic?       
+```{r}
+?integer
+```
+```{r}
+?double
+```
+```{r}
+?character
+```
+Integer - whole discrete numbers e.g. counts, mice.    
+Double - continuous decimal values e.g. specific activity or a voltage reading.    
+Character - A string of one to N alphanumeric characters e.g. a drug name.    
+Factor - A new one. Categorical values that may or may not have any heirachical order e.g. drug1, drug2, drug3. We would use these to seperate data e.g. when plotting. More about factors later in the course.    
+Computational aspects of these types relate to space required to store the value (number of bytes) and speed at accessing the value. Order of lowest to highest is typically: integer, double and character. However, unless you are dealing with huge quantities of data or lots of processing, this is unlikely to affect your programs. 
+__Important__ - you can only store one type of data in any one vector i.e. all logical or all character etc. If you mix them, R will store them in the lowest common denominator of type in order to preserve as much information as possible about the value.     
+
+summary() -  one of my __favourite__ functions. R gives an object summary of the vector. this means that what is returned depends on the vector. I often use it on data after I have read it in from a file to do a 'sanity check' and find maximum and minimum values etc to spot unexpected (and possibly erroneous) values.
 ```{r}
 summary(obs)
 ```
@@ -229,6 +259,23 @@ Just to demonstrate a function with multiple paramaeters, I will use base R plot
  plot.default(X,Y, pch = 4, col = "red")
 ```
 
+__A point to note here__ - In the help you will notice that parameters are usually presented in a specific order in the brackets. This will work fine, but you may wish to take default values or enter parameters out of order.    
+You can do this by using a parameter name e.g. the plot character is called 'pch' and we can put pch = N anywhere between the brackets.   
+However, just because you can is not a good reason. Doing things out of order for no reason can make your code less readable.    
+
+# Summary
+In this session we have covered the following concepts:   
+* The Rstudio environment and the functions associated with each pane   
+* Using the RStudio console as a calculator and place to test out R code   
+* Working within an RMarkdown document and running code therein    
+* Storing a single item of data in an R vector   
+* Storing multiple items of data in an R vector   
+* Arithmetic operators and applying them to R vectors   
+* Functions in R     
+* Many different ways of getting help within R    
+* Learning about the different types of vector in R (integer, double, character)   
+* Further lessons in how we can supply parameters to an R function    
+
 ----
 
-Over to you for the assignment - see you again at the end of the week!    
+Over to you for the assignment (Assignment1.Rmd) - see you again at the end of the week!    
