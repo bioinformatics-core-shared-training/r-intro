@@ -13,6 +13,10 @@ If you're reading this right now in RStudio then all is good and well. If not,
 please open RStudio and open this file using the 'Open File...' option from the
 'File' menu.
 
+Also, it might be a good idea to create a folder on your computer in which to
+store this assignment and the assignments for the coming weeks, along with some
+data files that future assignments will make use of.
+
 In the assignments we will describe what we're asking you to do in some plain
 text which will be followed by am empty code block in which you will write the
 R commands in answer to the exercise.
