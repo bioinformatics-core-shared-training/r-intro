@@ -1,0 +1,169 @@
+---
+title: "Assignment 1"
+---
+
+# A word about R markdown
+
+The assignments for our online R training course will all take the form of R
+markdown documents like this one. These are files ending in '.Rmd' that combine
+R code blocks with plain text, such as this paragraph that you're reading now.
+
+To run the R code blocks you need to have this R markdown file open in RStudio.
+If you're reading this right now in RStudio then all is good and well. If not,
+please open RStudio and open this file using the 'Open File...' option from the
+'File' menu.
+
+In the assignments we will describe what we're asking you to do in some plain
+text which will be followed by am empty code block in which you will write the
+R commands in answer to the exercise.
+
+Here's an example. Suppose we ask you to add two numbers, 34 and 102, together.
+The empty code block where you would carry out this calculation would look like
+this:
+
+```{r}
+
+```
+
+It should appear as a grey box with three small grey and green icons at the top
+on the right hand side.
+
+You can fill in the answer as follows:
+
+```{r}
+34 + 102
+```
+
+You can add extra lines as necessary by hitting the 'Return' key.
+
+Now to run this command you can click on the green arrow or triangle icon, the
+one that is furthest right and points right-ward. If you hover over this icon,
+you should get a tool tip saying 'Run current chunk'. Click on this and see what
+happens.
+
+You should see the answer printed just below the code block, much as you would
+have seen in the Console prefixed with the, hopefully, now familiar '[1]' that
+indicates this is a vector and you're looking at the first element.
+
+In this first assignment, we deliberately are going to restrict our use of the
+markdown format to just a few features. You'll notice the header containing the
+title, author and date and also section headings starting with '#'. Other than
+that we will just use sections of plain text and R code blocks or chunks as
+they're more properly known. As we go through successive assignment on the
+course, we'll introduce more features of R markdown. It's a great way of writing
+R code for analyzing and visualizing your data that lets you present your
+work in a beautiful self-describing reports, a surefire way to impress your
+group leader and colleagues alike.
+
+Now on with this week's exercises.
+
+# Using R as a calculator
+
+1. Convert the following temperatures given in degrees Fahrenheit to Celsius:
+45, 96, 451
+
+```{r}
+
+```
+
+Hint: just do what you'd normally do if you can't remember the formula for
+converting between Celsius and Fahrenheit (Google in my case).
+
+If you like, you can experiment with getting your R code right in the Console
+window first and then copy it into the code chunk above when you're happy with
+it. It's not crucial and getting it wrong in the R markdown is no big deal.
+You can always fix any problems (the most likely being forgetting to use
+parentheses or brackets in the right place) and re-run your code using the
+green arrow/triangle icon.
+
+Check you've got the right answer by finding a web page with a handy
+conversion tool.
+
+2. Similarly, convert the following temperatures in degrees Celsius to
+Fahrenheit: -65, 100, 20
+
+```{r}
+
+```
+
+
+3. Generate a sequence of numbers representing the days at which you take a
+measurement or a sample at 5-day intervals for about a year.
+
+```{r}
+
+```
+
+Your friendly neighbourhood statistician has suggested that there should be an R
+function to do that. What is the function and how do you find out about it and
+what is the code you will use to create the sequence? Check the resulting vector.
+
+```{r}
+
+```
+
+4. Run the code below and use the typeof() and/or class() function (see it's
+help) and see how R teats each newly-created vector?
+
+```{r}
+num_char <- c(1, 2, 3, "a")
+num_logical <- c(1, 2, 3, TRUE)
+char_logical <- c("a", "b", "c", TRUE)
+tricky <- c(1, 2, 3, "4")
+```
+
+Create a new code chunk to test each of the vectors in a separate block. You
+can do this by using the 'Insert' menu just at the top of the pane for this
+markdown file and selecting R for an R code chunk, or by using the keyboard
+shortcut (on a Mac this is cmd-alt-i).
+
+You should find that R coerces the data to a lowest common denominator - can you
+work out the hierarchy?
+
+5. You have been asked to plot a graph of counts data measured over several
+days. The Principal Investigator has requested that certain symbols be used for
+each dataset being plotted (he's a bit like that!). What command would you use
+to find out the parameter which sets this for the plot.default command and what
+is the parameter's name?
+
+```{r}
+days <- c(1, 2, 4, 6, 8, 12, 16)
+counts <- days ** 2 + rnorm(days, 2)
+
+# add your code here
+
+```
+
+Check out what we did in the above example for getting some example counts
+data points. Can you make sense of what is going on here? Look at the help
+page for the `rnorm` function.
+
+6) Your colleague has supplied you with the following table of data (number of
+cells per sample volume):
+
+| Day | LineA | LineB | LineC |
+| --- | ----- | ----- | ----- |
+|  1  |    4  |    5  |   14  |
+|  2  |    9  |   17  |   16  |
+|  3  |    7  |   22  |   10  |
+|  4  |   12  |   20  |   14  |
+|  5  |   23  |   24  |   20  |
+|  6  |    8  |   18  |   12  |
+
+Create some R vectors to hold this data and provide summary statisics for number
+of cells for each cell line. Plot some base R graphs if you like. Describe the
+data.
+
+```{r}
+
+```
+
+You are then provided with assay data that states that LineA had an activity of
+4.2 per cell, LineB an activity of 3.4 and LineC of 1.3.
+
+Use R to calculate the activities of each sample on each day and provide summary
+statistics of activity for each line.
+
+```{r}
+
+```
