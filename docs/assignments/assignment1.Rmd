@@ -49,11 +49,17 @@ In this first assignment, we deliberately are going to restrict our use of the
 markdown format to just a few features. You'll notice the header containing the
 title, author and date and also section headings starting with '#'. Other than
 that we will just use sections of plain text and R code blocks or chunks as
-they're more properly known. As we go through successive assignment on the
-course, we'll introduce more features of R markdown. It's a great way of writing
-R code for analyzing and visualizing your data that lets you present your
-work in a beautiful self-describing reports, a surefire way to impress your
-group leader and colleagues alike.
+they're more properly known.
+
+As we go through successive assignment on the course, we'll introduce more
+features of R markdown. It's a great way of writing R code for analyzing and
+visualizing your data that lets you present your work in a beautiful
+self-describing reports, a surefire way to impress your group leader and
+colleagues alike.
+
+R markdown is really easy to learn and will let you do a lot of cool things.
+Our course website was created with R markdown documents that are not that
+much more complicated than this assignment.
 
 Now on with this week's exercises.
 
@@ -86,6 +92,7 @@ Fahrenheit: -65, 100, 20
 
 ```
 
+# Generating sequence vectors
 
 3. Generate a sequence of numbers representing the days at which you take a
 measurement or a sample at 5-day intervals for about a year.
@@ -101,6 +108,8 @@ what is the code you will use to create the sequence? Check the resulting vector
 ```{r}
 
 ```
+
+# Looking at types of objects
 
 4. Run the code below and use the typeof() and/or class() function (see it's
 help) and see how R teats each newly-created vector?
@@ -120,6 +129,8 @@ shortcut (on a Mac this is cmd-alt-i).
 You should find that R coerces the data to a lowest common denominator - can you
 work out the hierarchy?
 
+# Plotting data
+
 5. You have been asked to plot a graph of counts data measured over several
 days. The Principal Investigator has requested that certain symbols be used for
 each dataset being plotted (he's a bit like that!). What command would you use
@@ -137,6 +148,8 @@ counts <- days ** 2 + rnorm(days, 2)
 Check out what we did in the above example for getting some example counts
 data points. Can you make sense of what is going on here? Look at the help
 page for the `rnorm` function.
+
+# Exploring and summarizing data
 
 6) Your colleague has supplied you with the following table of data (number of
 cells per sample volume):
@@ -167,3 +180,10 @@ statistics of activity for each line.
 ```{r}
 
 ```
+
+# Creating a report for your assignment
+
+Click on the 'Knit' menu at the top of this file and select either whichever
+option you prefer to create an HTML, PDF or Word document version of your
+assignment. This will run all the code chunks and "knit" the resulting
+results with the surrounding text to produce a report.
