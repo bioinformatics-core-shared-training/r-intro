@@ -9,17 +9,17 @@ markdown documents like this one. These are files ending in '.Rmd' that combine
 R code blocks with plain text, such as this paragraph that you're reading now.
 
 To run the R code blocks you need to have this R markdown file open in RStudio.
-If you're reading this right now in RStudio then all is good and well. If not,
-please open RStudio and open this file using the 'Open File...' option from the
+If you're reading this in RStudio right now then all is good and well. If not,
+please start RStudio and open this file using the 'Open File...' option from the
 'File' menu.
 
 Also, it might be a good idea to create a folder on your computer in which to
 store this assignment and the assignments for the coming weeks, along with some
-data files that future assignments will make use of.
+data files that will be provided for use in some of the future assignments.
 
-In the assignments we will describe what we're asking you to do in some plain
-text which will be followed by am empty code block in which you will write the
-R commands in answer to the exercise.
+In these assignments we will describe what we're asking you to do in some plain
+text which will be followed by an empty code block in which you will write the
+R commands as your answers to the exercise.
 
 Here's an example. Suppose we ask you to add two numbers, 34 and 102, together.
 The empty code block where you would carry out this calculation would look like
@@ -46,24 +46,25 @@ you should get a tool tip saying 'Run current chunk'. Click on this and see what
 happens.
 
 You should see the answer printed just below the code block, much as you would
-have seen in the Console prefixed with the, hopefully, now familiar '[1]' that
+have seen in the Console prefixed with the (hopefully) now familiar '[1]' that
 indicates this is a vector and you're looking at the first element.
 
-In this first assignment, we deliberately are going to restrict our use of the
+In this first assignment, we are deliberately going to restrict our use of the
 markdown format to just a few features. You'll notice the header containing the
 title, author and date and also section headings starting with '#'. Other than
 that we will just use sections of plain text and R code blocks or chunks as
 they're more properly known.
 
-As we go through successive assignment on the course, we'll introduce more
+As we go through successive assignments during the course, we'll introduce more
 features of R markdown. It's a great way of writing R code for analyzing and
-visualizing your data that lets you present your work in a beautiful
-self-describing reports, a surefire way to impress your group leader and
+visualizing your data that lets you present your work in beautiful,
+self-describing reports, a sure-fire way to impress your group leader and
 colleagues alike.
 
 R markdown is really easy to learn and will let you do a lot of cool things.
 Our course website was created with R markdown documents that are not that
-much more complicated than this assignment.
+much more complicated than the file you're reading right now for this
+assignment.
 
 Now on with this week's exercises.
 
@@ -115,8 +116,8 @@ what is the code you will use to create the sequence? Check the resulting vector
 
 # Looking at types of objects
 
-4. Run the code below and use the typeof() and/or class() function (see it's
-help) and see how R teats each newly-created vector?
+4. Run the code below and use the typeof() and/or class() function (check it's
+help page) and see how R treats each newly-created vector?
 
 ```{r}
 num_char <- c(1, 2, 3, "a")
@@ -159,7 +160,7 @@ number and apply it in the above code chunk.
 
 # Exploring and summarizing data
 
-6) Your colleague has supplied you with the following table of data (number of
+6. Your colleague has supplied you with the following table of data (number of
 cells per sample volume):
 
 | Day | LineA | LineB | LineC |
@@ -195,3 +196,4 @@ Click on the 'Knit' menu at the top of this file and select either whichever
 option you prefer to create an HTML, PDF or Word document version of your
 assignment. This will run all the code chunks and "knit" the resulting
 results with the surrounding text to produce a report.
+
