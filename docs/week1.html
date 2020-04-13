@@ -419,8 +419,7 @@ div.tocify {
 <ul>
 <li><p>R involves creating &amp; using scripts which makes the steps you used in your analysis clear and can be inspected by someone else for feedback and error-checking.</p></li>
 <li><p>R code is great for reproducibility. An increasing number of journals and funding agencies expect analyses to be reproducible, so knowing R will give you an edge with these requirements.</p></li>
-<li><p>R integrates with other tools to generate manuscripts from your code.<br />
-This document (RMarkdown a .Rmd file) is a case in point.</p></li>
+<li><p>R integrates with other tools to generate manuscripts from your code. This document (RMarkdown a .Rmd file) is a case in point.</p></li>
 <li><p>R is interdisciplinary and extensible and has thousands of installable packages to extend its capabilities. R has packages for image analysis, GIS, time series, population genetics, and a lot more.</p></li>
 <li><p>R scales well to work on data of all shapes and sizes.</p></li>
 <li><p>R can connect to spreadsheets, databases, and many other data formats, on your computer or on the web.</p></li>
@@ -433,75 +432,77 @@ This document (RMarkdown a .Rmd file) is a case in point.</p></li>
 </div>
 <div id="rstudio-a-brief-tour" class="section level1">
 <h1>Rstudio a brief tour</h1>
-<p>Rstudio provides us with a friendly interface to the R statistical progrmming language. It consists of four main“Panes”. These can be re-sized and moved around to suit how you like to work.<br />
-<img src="images/Rstudioataglance.png" alt="Rstudio screenshot" width="90%"></p>
+<p>Rstudio provides us with a friendly interface to the R statistical progrmming language. It consists of four main “Panes”. These can be re-sized and moved around to suit how you like to work.</p>
+<p><img src="images/Rstudioataglance.png" alt="Rstudio screenshot" width="90%"></p>
 <div id="editing-pane" class="section level2">
 <h2>Editing pane</h2>
-<p>By default the top left-hand pane is one for creating, editing &amp; running R scripts. <img src="images/Rstudio_scripting.png" alt="Rstudio edit pane screenshot" width="90%"><br />
-A script is an R program that you have written. A good practice is for that script to perform only one role in your analysis workflow and so you may have several R scripts which you call, in a particular sequence, to analyse your data.<br />
-As you will see, a script is basically a text file that contains R commands and (ideally) comments to explain what the codes function is (As a Documentation process).<br />
-As well as R scripts, there are many types of Rstudio document including Markdown files which we will use in the teaching of this course. These can provide interactive workbooks or pdf and web documents to name but a few possible outcomes.</p>
+<p>By default the top left-hand pane is one for creating, editing &amp; running R scripts.</p>
+<p><img src="images/Rstudio_scripting.png" alt="Rstudio edit pane screenshot" width="90%"></p>
+<p>A script is an R program that you have written. A good practice is for that script to perform only one role in your analysis workflow and so you may have several R scripts which you call, in a particular sequence, to analyse your data.</p>
+<p>As you will see, a script is basically a text file that contains R commands and (ideally) comments to explain what the codes function is (as a documentation process).</p>
+<p>As well as R scripts, there are many types of Rstudio document including Markdown files which we will use in the teaching of this course. These can provide interactive workbooks or pdf and web documents to name but a few possible outcomes.</p>
 </div>
 <div id="console" class="section level2">
 <h2>Console</h2>
-<p>Coming down the screen to the bottom left-hand pane we find the console window. This is where we can find output produced by running our R scripts.<br />
-<img src="images/Rstudio_console.png" alt="Rstudio screenshot" width="90%"></p>
-<p>We can also try out snippets of R code here. Those of you who have only used graphical interfaces like Windows or MacOS where you click on commands using a mouse may find this aspect of R somewhat different. We type in commands to R using the command-line.</p>
-<p>This area can also be used like a calculator. Let’s just type in something like 23 + 45 followed by the return key and see what happens. We get <em>[1] 68</em>. Now 68 is clearly the answer but what is that 1 in brackets?</p>
-<p>Here is another example to explain. If we type <em>1:36</em> and press enter - what happens?<br />
-R generates output counting from 1 to 36 but cannot fit all the output on one line and so starts another like this: _ [1] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 [28] 28 29 30 31 32 33 34 35 36_<br />
-Now we ave two lines beginning with a number in square brackets.</p>
-<p>This is just R helping us to keep tabs on which number we are looking at [1] denotes that the line starts with the first result and the [28] denotes that this line starts with the 28th result. Let’s try another one and generate a sequence incrementing in steps of 2:<br />
-<em>1:36 * 2<br />
-[1] 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50 52 54<br />
-[28] 56 58 60 62 64 66 68 70 72</em></p>
+<p>Coming down the screen to the bottom left-hand pane we find the console window. This is where we can find output produced by running our R scripts.</p>
+<p><img src="images/Rstudio_console.png" alt="Rstudio screenshot" width="90%"></p>
+<p>We can also try out snippets of R code here. Those of you who have only used graphical interfaces like Windows or MacOS where you click on commands using a mouse may find this aspect of R somewhat different. We type in commands to R using the command line.</p>
+<p>This area can also be used like a calculator. Let’s just type in something like <code>23 + 45</code> followed by the return key and see what happens. You should get the following:</p>
+<pre><code>&gt; 23 + 45
+[1] 68</code></pre>
+<p>Now 68 is clearly the answer but what is that 1 in brackets?</p>
+<p>Here is another example to explain. If we type <code>1:36</code> and press enter, what happens? R generates output counting from 1 to 36 but cannot fit all the output on one line and so starts another like this:</p>
+<pre><code>&gt; 1:36
+ [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+[26] 26 27 28 29 30 31 32 33 34 35 36</code></pre>
+<p>Now we have two lines beginning with a number in square brackets. Note that the number of values displayed on each line may differ on your computer; it largely depends on the width of your console pane and the font size. Try creating a larger sequence of numbers, e.g. <code>1:100</code>, if all 36 numbers fit on a single line in your case.</p>
+<p>This is just R helping us to keep tabs on which number we are looking at. <code>[1]</code> denotes that the line starts with the first result and the <code>[26]</code> denotes that this line starts with the 26th number. Let’s try another one and generate a sequence incrementing in steps of 2:</p>
+<pre><code>&gt; 1:36 * 2
+ [1]  2  4  6  8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50
+[26] 52 54 56 58 60 62 64 66 68 70 72</code></pre>
 <p>There are other tabs on this pane but we shall not be covering these on this course.</p>
 </div>
 <div id="environment" class="section level2">
 <h2>Environment</h2>
-<p>Next we move to the top right-hand corner pane. Here we have even more tabs (of which we will only consider two Environment and History).<br />
-<img src="images/Rstudio_env.png" alt="Rstudio screenshot" width="90%"><br />
-Environment keeps track on R variables which we create (more on those later) and their contents. History is like a tally role of all the R commands we have entered in our session.</p>
+<p>Next we move to the top right-hand corner pane. Here we have even more tabs (of which we will only consider two Environment and History).</p>
+<p><img src="images/Rstudio_env.png" alt="Rstudio screenshot" width="80%"></p>
+<p>Environment keeps track on R variables which we create (more on those later) and their contents. History is like a tally role of all the R commands we have entered in our session.</p>
 </div>
 <div id="files-plots-help" class="section level2">
 <h2>Files, Plots &amp; Help</h2>
-<p>Our final bottom right-hand pane also has several tabs. The Files tab s a file explorer that enable us to move around our directories and select which files we wish to work on. We can also change the default working directory that Rstudio will use (Absolute &amp; Relative paths).<br />
-In fact, it’s a good practice to create a new R project and some sub-directories of it whenever we start a piece of work. Try and adopt a ‘standard’ structure.<br />
-<img src="images/Rstudio_filexpl.png" alt="Rstudio screenshot" width="90%"><br />
-The Plots tab is where any graphs that we create in R will appear. We can move through them using the arrow buttons and the export button will convert them to different graphics formats e.g. for publication in a paper or for the web.<br />
-The Packages tab shows which R packages are installed (These expand R’s functionallity and again will be covered later) and can also install new packages.<br />
-The Help tab is a <em>massively useful</em> tab which enables you to search R help index to get help pages on R functions and provide example code to help you use them in your R scripts.</p>
+<p>Our final bottom right-hand pane also has several tabs. The Files tab is a file explorer that enable us to move around our directories and select which files we wish to work on. We can also change the default working directory that Rstudio will use.</p>
+<p><img src="images/Rstudio_filexpl.png" alt="Rstudio screenshot" width="80%"></p>
+<p>The Plots tab is where any graphs that we create in R will appear. We can move through them using the arrow buttons and the export button will convert them to different graphics formats e.g. for publication in a paper or for the web.</p>
+<p>The Packages tab shows which R packages are installed (These expand R’s functionallity and again will be covered later) and can also install new packages.</p>
+<p>The Help tab is a <em>massively useful</em> tab which enables you to search R help index to get help pages on R functions and provide example code to help you use them in your R scripts.</p>
 </div>
 </div>
 <div id="our-first-look-at-the-r-language" class="section level1">
 <h1>Our first look at the R language</h1>
-<p>Our overall goal for this course is to give you the ability to import your data into R, perform some selecting of data of interest, summary analysis and visualisation. First though, let us consider <strong>“What is Data?”</strong></p>
+<p>Our overall goal for this course is to give you the ability to import your data into R, select a subset of the data most of interest for a given analysis, carry out an analysis to summarize these data and create visualizations of the data. First though, let us consider <strong>“What is Data?”</strong></p>
 <p>Data comes in many forms: Numbers (Integers and decimal values) or alphabetical (characters or lines of text). Clearly a computer (or R) needs a way of representing this wide range of data with it’s diverse properties.</p>
-<p><em>The pigeon-hole analogy:-<br />
-R stores data in contiguous sections of computer memory a bit like the pigeon-holes used in many internal mail systems. These holes are indexed e.g by 1st letter of surname or a range of letters e.g. A-C.<br />
-Internal mail systems can carry different types of traffic small notes, large envelopes or parcels with different dimensions so there may be rows associated with small letters, big letters and parcels.<br />
-For a system like this it makes sense that a row contains the same type of mail with similar dimensions to avoid wasting space.</em></p>
+<p><em>The pigeon-hole analogy:- R stores data in contiguous sections of computer memory a bit like the pigeon-holes used in many internal mail systems. These holes are indexed e.g by 1st letter of surname or a range of letters e.g. A-C. Internal mail systems can carry different types of traffic small notes, large envelopes or parcels with different dimensions so there may be rows associated with small letters, big letters and parcels. For a system like this it makes sense that a row contains the same type of mail with similar dimensions to avoid wasting space.</em></p>
 <div id="storing-our-first-r-data-value" class="section level2">
 <h2>Storing our first R data value</h2>
-<p>R has an equivalent to this called a Vector – everything is represented as a vector.<br />
-For example say we had a single numerical value 8 and this was the number of samples in an experiment – an R vector can be created (or assigned) thusly:</p>
+<p>R has an equivalent to this called a Vector – everything is represented as a vector. For example say we had a single numerical value 8 and this was the number of samples in an experiment – an R vector can be created (or assigned) thusly:</p>
 <pre class="r"><code>samples &lt;- 8</code></pre>
-<p>The &lt;- is the assignment action, Samples is our Vector If we just type <em>samples</em> followed by the return key R will print the contents of the vector called samples (Try it). Notice that Rstudio tries to help us by autocompleting the variable name to avoid mis-typing.<br />
-Be kind to yourself and use meaningful names for your vectors like samples rather than s. When you come back to your code after 6 months or give it to colleagues it will be more obvious what your program is doing and how it works. Also, note that the variable Samples is different to the variable samples (<strong>Case matters</strong>).</p>
+<p>The <code>&lt;-</code> is the assignment action and <code>samples</code> is the name of our vector.</p>
+<p>If we just type <code>samples</code> followed by the return key R will print the contents of the vector called samples (Try it). Notice that Rstudio tries to help us by autocompleting the variable name to avoid mis-typing.</p>
+<p>Be kind to yourself and use meaningful names for your vectors like <code>samples</code> rather than <code>s</code>. When you come back to your code after 6 months or give it to colleagues it will be more obvious what your program is doing and how it works. Also, note that the variable Samples is different to the variable samples (<strong>Case matters</strong>).</p>
 <pre class="r"><code>samples &lt;- 8
 Samples &lt;- 24
 samples</code></pre>
 <pre><code>## [1] 8</code></pre>
 <pre class="r"><code>Samples</code></pre>
 <pre><code>## [1] 24</code></pre>
-<p>What if we found out that there were actually 12 samples? We can correct this by re-assigning the value of samples:<br />
-Now try outputting the value – is it 12 or 8?</p>
+<p>What if we found out that there were actually 12 samples? We can correct this by re-assigning the value of samples:</p>
+<p>Now try outputting the value – is it 12 or 8?</p>
 <pre class="r"><code>samples &lt;- 12</code></pre>
 <p>Of course our data is often a decimal value e.g.</p>
 <pre class="r"><code>ph &lt;- 5.5</code></pre>
 <p>Or we may have a name e.g. a <em>string</em> of characters.</p>
 <pre class="r"><code>drug &lt;- &quot;Gefitinib&quot;</code></pre>
-<p>A less obvious type of data (but incredibly useful later on in this course) is for logical values i.e. TRUE and FALSE.</p>
+<p>A less obvious type of data (but incredibly useful later on in this course) are logical values i.e. <code>TRUE</code> and <code>FALSE</code>.</p>
 <pre class="r"><code>yes &lt;- TRUE
 no &lt;- FALSE
 yes</code></pre>
@@ -512,22 +513,23 @@ yes</code></pre>
 <div id="storing-more-than-one-value" class="section level2">
 <h2>Storing more than one value</h2>
 <p>We are much more likely to want to store a series of data e.g. observation values. Vectors can take any number of values but the assignment statement changes slightly.</p>
-<pre class="r"><code>obs &lt;- c(2,5,8,5,8,2)
+<pre class="r"><code>obs &lt;- c(2, 5, 8, 5, 8, 2)
 obs</code></pre>
 <pre><code>## [1] 2 5 8 5 8 2</code></pre>
-<pre class="r"><code>vulcan &lt;- c(TRUE, FALSE,!TRUE,!FALSE)
+<pre class="r"><code>vulcan &lt;- c(TRUE, FALSE, !TRUE, !FALSE)
 vulcan</code></pre>
 <pre><code>## [1]  TRUE FALSE FALSE  TRUE</code></pre>
-<p>What happens when you ask R to print obs?<br />
-<strong>Note</strong> that with the logical vector we can use the <strong>!</strong> operator to negate (or NOT) a logical i.e. !TRUE is equal to FALSE.<br />
-Calculations can also be included in assignments e.g. we might have a column supplied in one type of units and we need it in another.</p>
+<p>What happens when you ask R to print obs?</p>
+<p><strong>Note</strong> that with the logical vector we can use the <strong><code>!</code></strong> operator to negate (or NOT) a logical i.e. <code>!TRUE</code> is equal to <code>FALSE</code>.</p>
+<p>Calculations can also be included in assignments e.g. we might have a column supplied in one type of units and we need it in another.</p>
 <pre class="r"><code>new_obs &lt;- obs * 2.2
 new_obs</code></pre>
 <pre><code>## [1]  4.4 11.0 17.6 11.0 17.6  4.4</code></pre>
 <pre class="r"><code>smaller &lt;- samples / 2
 smaller</code></pre>
 <pre><code>## [1] 6</code></pre>
-<p><strong>Notice that each and every element of the vector has been multiplied by 2.2</strong>. This is what was happening when we used 1:30 * 2.</p>
+<p><strong>Notice that each and every element of the vector has been multiplied by 2.2</strong>. This is what was happening when we used <code>1:36 * 2</code> earlier.</p>
+<p>Here are some more arithmetic operators you’re likely to come across.</p>
 <table>
 <thead>
 <tr class="header">
@@ -567,37 +569,38 @@ smaller</code></pre>
 </tbody>
 </table>
 <p><strong>Note</strong> that when applying arithmetical functions to vectors they must be appropriate. For example, if you try and add 3 to the character string “a” then R will quite rightly return an error message.</p>
-<pre class="r"><code># &quot;a&quot; + 3</code></pre>
+<pre><code>&gt; &quot;a&quot; + 3
+Error in &quot;a&quot; + 3 : non-numeric argument to binary operator</code></pre>
 <p>Similarly, we can have long vectors of text strings:</p>
 <pre class="r"><code>animals &lt;- c(&#39;cat&#39;, &#39;dog&#39;, &#39;mouse&#39;)
-drugs &lt;- c(&#39;Gefitinib&#39;, &#39;FCR&#39;, &quot;Vincristine&quot; )
-bases &lt;- c(&quot;c&quot;,&quot;g&quot;,&quot;t&quot;,&quot;a&quot;,&quot;n&quot;)</code></pre>
+drugs &lt;- c(&#39;Gefitinib&#39;, &#39;FCR&#39;, &quot;Vincristine&quot;)
+bases &lt;- c(&quot;c&quot;, &quot;g&quot;, &quot;t&quot;, &quot;a&quot;, &quot;n&quot;)</code></pre>
 <p>What happens if you print these?</p>
 </div>
 <div id="our-first-r-function-help" class="section level2">
 <h2>Our first R function – help</h2>
-<p>Functions are like mathematical functions they take argument(s) and return a result and the arguments are enclosed in brackets i.e. <span class="math inline">\(Y = F(X)\)</span><br />
-They extend the capabilities of R. A function that you will find most ‘helpful’ is the help() function. It provides help on the topic that is supplied as the argument. Try</p>
+<p>Functions are like mathematical functions they take argument(s) and return a result and the arguments are enclosed in brackets i.e. <span class="math inline">\(Y = F(X)\)</span></p>
+<p>They extend the capabilities of R. A function that you will find most ‘helpful’ is the help() function. It provides help on the topic that is supplied as the argument.</p>
+<p>Try</p>
 <pre class="r"><code>help(help)</code></pre>
-<p>The result appears in the bottom left-hand pane.<br />
-Notice how Rstudio tries to help you by suggesting what the arguments could be (in floating yellow text box).<br />
-<em>Need more help?</em> You can also use ?<command> i.e. ?help.<br />
-If you know roughly what you need but not the actual function name use ?? e.g. ??average.<br />
-What if you know the function name but can’t recall what the arguments are? Try args() function e.g. args(plot,default).</p>
+<p>The result appears in the bottom right-hand pane.</p>
+<p>Notice how Rstudio tries to help you by suggesting what the arguments could be (in floating yellow text box). <em>Need more help?</em> You can also use ?<command> i.e. <code>?help</code>.</p>
+<p>If you know roughly what you need but not the actual function name use <code>??</code> e.g. <code>??average</code>.</p>
+<p>What if you know the function name but can’t recall what the arguments are? Try <code>args()</code> function e.g. <code>args(plot.default)</code>.</p>
 <div id="more-useful-functions" class="section level3">
 <h3>More useful functions</h3>
-<p>length() to find out how many elements are in a vector</p>
+<p><strong><code>length()</code></strong> to find out how many elements are in a vector</p>
 <pre class="r"><code>length(animals)</code></pre>
 <pre><code>## [1] 3</code></pre>
-<p>class() will tell you the class (suprise) of a vector e.g. character or numeric</p>
+<p><strong><code>class()</code></strong> will tell you the class (suprise) of a vector e.g. character or numeric</p>
 <pre class="r"><code>class(animals)</code></pre>
 <pre><code>## [1] &quot;character&quot;</code></pre>
 <pre class="r"><code>class(obs)</code></pre>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-<p>str() reports the structure of an object. This terse report includes such useful information as class, index range of elements e.g. 1..n and the values contained therein.</p>
+<p><strong><code>str()</code></strong> reports the structure of an object. This terse report includes such useful information as class, index range of elements e.g. 1..n and the values contained therein. The same output can be seen for each object in the Environment pane in the top right-hand pane.</p>
 <pre class="r"><code>str(obs)</code></pre>
 <pre><code>##  num [1:6] 2 5 8 5 8 2</code></pre>
-<p>typeof() - reports how object is sored e.g. character, integer or double. If we explicitly want a vector to be integer-only we can use another function <strong>as.integer()</strong> or a suffix of ‘L’ when we assign it (see below).</p>
+<p><strong><code>typeof()</code></strong> - reports how object is stored e.g. character, integer, double or logical. If we explicitly want a vector to be integer-only we can use another function <strong><code>as.integer()</code></strong> or a suffix of <strong><code>L</code></strong> when we assign it (see below).</p>
 <pre class="r"><code>?typeof
 samples</code></pre>
 <pre><code>## [1] 12</code></pre>
@@ -621,42 +624,43 @@ hint</code></pre>
 <pre class="r"><code>?integer</code></pre>
 <pre class="r"><code>?double</code></pre>
 <pre class="r"><code>?character</code></pre>
-<p>Integer - whole discrete numbers e.g. counts, mice.<br />
-Double - continuous decimal values e.g. specific activity or a voltage reading.<br />
-Character - A string of one to N alphanumeric characters e.g. a drug name.<br />
-Factor - A new one. Categorical values that may or may not have any heirachical order e.g. drug1, drug2, drug3. We would use these to seperate data e.g. when plotting. More about factors later in the course.<br />
-Computational aspects of these types relate to space required to store the value (number of bytes) and speed at accessing the value. Order of lowest to highest is typically: integer, double and character. However, unless you are dealing with huge quantities of data or lots of processing, this is unlikely to affect your programs. <strong>Important</strong> - you can only store one type of data in any one vector i.e. all logical or all character etc. If you mix them, R will store them in the lowest common denominator of type in order to preserve as much information as possible about the value.</p>
-<p>summary() - one of my <strong>favourite</strong> functions. R gives an object summary of the vector. this means that what is returned depends on the vector. I often use it on data after I have read it in from a file to do a ‘sanity check’ and find maximum and minimum values etc to spot unexpected (and possibly erroneous) values.</p>
+<p><strong>Integer</strong> - whole discrete numbers e.g. numbers of mice, cell counts.</p>
+<p><strong>Double</strong> - continuous decimal values e.g. specific activity or a voltage reading.</p>
+<p><strong>Character</strong> - A string of one to N alphanumeric characters e.g. a drug name.</p>
+<p><strong>Factor</strong> - A new one. Categorical values that may or may not have any heirachical order e.g. drug1, drug2, drug3. We would use these to seperate data e.g. when plotting. More about factors later in the course.</p>
+<p>Computational aspects of these types relate to space required to store the value (number of bytes) and speed at accessing the value. Order of lowest to highest is typically: integer, double and character. However, unless you are dealing with huge quantities of data or lots of processing, this is unlikely to affect your programs.</p>
+<p><strong>Important</strong> - you can only store one type of data in any one vector i.e. all logical or all character etc. If you mix them, R will store them in the lowest common denominator of type in order to preserve as much information as possible about the value.</p>
+<p><strong><code>summary()</code></strong> - one of my <strong>favourite</strong> functions. R gives an object summary of the vector. this means that what is returned depends on the vector. I often use it on data after I have read it in from a file to do a ‘sanity check’ and find maximum and minimum values etc to spot unexpected (and possibly erroneous) values.</p>
 <pre class="r"><code>summary(obs)</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##    2.00    2.75    5.00    5.00    7.25    8.00</code></pre>
-<p>So-called ‘Base’ R does possess plotting functions. However, later lessons will teach you how to plot using a much more powerful and easy-to-use <em>Tidyverse</em> package called <em>ggplot2</em>.<br />
-Just to demonstrate a function with multiple paramaeters, I will use base R plot here. Once you have read in your data you may wish to do a quick &amp; dirty plot it e.g. to spot any trends or outliers. This can be done quickly in R (but much more easily in ggplot2).</p>
+<p>So-called ‘Base’ R does possess plotting functions. However, later lessons will teach you how to plot using a much more powerful and easy-to-use <em>tidyverse</em> package called <em>ggplot2</em>.</p>
+<p>Just to demonstrate a function with multiple parameters, I will use base R plot here. Once you have read in your data you may wish to do a quick &amp; dirty plot it e.g. to spot any trends or outliers. This can be done quickly in R (but much finer control in ggplot2).</p>
 <pre class="r"><code> X &lt;- c(1,2,3,4,5)
  Y &lt;- c(9, 17, 23, 38, 52)
  plot.default(X, Y, pch = 4, col = &quot;red&quot;)</code></pre>
 <p><img src="week1_files/figure-html/scatter_plot-1.png" width="672" /></p>
-<p><strong>A point to note here</strong> - In the help you will notice that parameters are usually presented in a specific order in the brackets. This will work fine, but you may wish to take default values or enter parameters out of order.<br />
-You can do this by using a parameter name e.g. the plot character is called ‘pch’ and we can put pch = N anywhere between the brackets.<br />
-However, just because you can is not a good reason. Doing things out of order for no reason can make your code less readable.</p>
+<p><strong>A point to note here</strong> - In the help you will notice that parameters are usually presented in a specific order in the brackets. This will work fine, but you may wish to take default values or enter parameters out of order. You can do this by using a parameter name e.g. the plot character is called ‘pch’ and we can put <code>pch = N</code> anywhere between the brackets. However, just because you can is not a good reason. Doing things out of order for no reason can make your code less readable.</p>
 </div>
 </div>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>In this session we have covered the following concepts:<br />
-* The Rstudio environment and the functions associated with each pane<br />
-* Using the RStudio console as a calculator and place to test out R code<br />
-* Working within an RMarkdown document and running code therein<br />
-* Storing a single item of data in an R vector<br />
-* Storing multiple items of data in an R vector<br />
-* Arithmetic operators and applying them to R vectors<br />
-* Functions in R<br />
-* Many different ways of getting help within R<br />
-* Learning about the different types of vector in R (integer, double, character)<br />
-* Further lessons in how we can supply parameters to an R function</p>
+<p>In this session we have covered the following concepts:</p>
+<ul>
+<li>The Rstudio environment and the functions associated with each pane</li>
+<li>Using the RStudio console as a calculator and place to test out R code</li>
+<li>Storing a single item of data in an R vector</li>
+<li>Storing multiple items of data in an R vector</li>
+<li>Arithmetic operators and applying them to R vectors</li>
+<li>Calling functions in R</li>
+<li>Many different ways of getting help within R</li>
+<li>Learning about the different types of vector in R (integer, double, character)</li>
+<li>Further details on how we can supply parameters to an R function</li>
+</ul>
+<p>We also cover how to work within an R markdown document and run code therein in this week’s assignment.</p>
 <hr />
-<p>Over to you for the assignment (Assignment1.Rmd) - see you again at the end of the week!</p>
+<p>Over to you for the assignment (assignment1.Rmd) - see you again at the end of the week!</p>
 </div>
 
 
