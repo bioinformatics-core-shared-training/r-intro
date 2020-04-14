@@ -2,5 +2,19 @@
 title: "Week 2 -- Getting started with data in R"
 ---
 
-Coming soon.
+> ### Learning objectives
+>
+> * Create and run a script file containing your R code
+> * More on vectors including manipulating their content and extracting values or subsets
+> * Vector arithmetic
+> * Understand what a factor is and when it might be useful
+> * More sophisticated data structures but all built from vectors (lists, matrices, data frames)
+> * Learn how R deals with missing values
+> * Demystify functions by writing a simple one of our own
+> * Learn how to install and use packages that extend R's basic functionality
+> * Read data in tabular format from a spreadsheet
+> * Calculate summary statistics on your tabular data
+> * Introduce the **`tibble`**, arguably the most important data structure you will use in R
+
+# Introduction
 
