@@ -15,7 +15,9 @@ April - June 2020
 * Matt Eldridge
 * Mark Fernandes
 * Kamal Kishore
+* Sergio Martinez Cuesta
 * Ashley Sawle
+* Rory Stark
 
 # Description
 
