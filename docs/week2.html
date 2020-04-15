@@ -431,7 +431,7 @@ div.tocify {
 <img src="images/RStudio_modified_script.png" style="width:50.0%" />
 
 </div>
-<p>This tells us that we haven’t yet saved our changes. There are various ways to do so just like in Word or Excel or other applications you’re familiar with, for example using the ‘<strong>Save</strong>’ option from the ‘<strong>File</strong>’ menu, clicking on the ‘<strong>Save</strong>’ icon or using a keyboard shortcut, which is my preference by far. On a Mac this would be <kbd>cmd</kbd> + <kbd>S</kbd> (press the <kbd>cmd</kbd> key first and, while keeping this depressed, click the <kbd>S</kbd> key); on Windows you would do the same thing using <kbd>ctrl</kbd> + <kbd>S</kbd>.</p>
+<p>This tells us that we haven’t yet saved our changes. There are various ways to do so just like in Word or Excel or other applications you’re familiar with, for example using the ‘<strong>Save</strong>’ option from the ‘<strong>File</strong>’ menu, clicking on the ‘<strong>Save</strong>’ button or using a keyboard shortcut, which is my preference by far. On a Mac this would be <kbd>cmd</kbd> + <kbd>S</kbd> (press the <kbd>cmd</kbd> key first and, while keeping this depressed, click the <kbd>S</kbd> key); on Windows you would do the same thing using <kbd>ctrl</kbd> + <kbd>S</kbd>.</p>
 <p>If the file already exists it will be saved without any further ado. As this is a new file then RStudio needs to know what you want to call it and in which folder on your computer you want it to be saved. You can choose these using the file dialog that appears. RStudio will add a ‘.R’ suffix if you don’t specify one.</p>
 <p>It is a good idea to keep your scripts and assignment files for this course together in one folder or directory.</p>
 <div id="running-scripts" class="section level2">
@@ -445,6 +445,86 @@ div.tocify {
 <p>The keyboard shortcut is more convenient in practice as you won’t have to stop typing at the keyboard to use your mouse. This is <kbd>cmd</kbd> + <kbd>return</kbd> on a Mac and <kbd>ctrl</kbd> + <kbd>enter</kbd> on Windows.</p>
 <p>Running a line in your script will automatically move the cursor onto the next command which can be very convenient as you’ll be able to run successive commands just by repeatedly clicking ‘<strong>Run</strong>’ or using the keyboard shortcut.</p>
 <p>You can also run the entire script by clicking on the ‘<strong>Source</strong>’ button, a little to the right of the ‘<strong>Run</strong>’ button. More useful though is to run ‘<strong>Source with Echo</strong>’ as this will also display your commands and the outputs from these in the Console window.</p>
+</div>
+<div id="adding-comments-to-scripts" class="section level2">
+<h2>Adding comments to scripts</h2>
+<p>It is a very good idea to add comments to your code to explain what it’s doing or what you intended. This will help others to understand your code and more than likely even yourself when you come to revisit it a few weeks or months later.</p>
+<p>Anything following a <code>#</code> symbol is a comment that R will ignore. Here’s an example of adding comments to our simple script.</p>
+<div class="figure">
+<img src="images/RStudio_script_comments.png" />
+
+</div>
+<p>Comments usually appear at the beginning of lines but can appear at the end of an R statement.</p>
+<pre class="r"><code>days &lt;- c(1, 2, 4, 6, 8, 12, 16) # didn&#39;t manage to get a measurement on day 10</code></pre>
+<p>It is also quite common when looking at R code to see lines of code commented out, usually replaced by another line that does something similar.</p>
+<pre class="r"><code># random_numbers &lt;- rnorm(100, mean = 0, sd = 1)
+random_numbers &lt;- rnorm(100, mean = 0, sd = 0.5)</code></pre>
+</div>
+</div>
+<div id="vectors" class="section level1">
+<h1>Vectors</h1>
+<div id="recap" class="section level2">
+<h2>Recap</h2>
+<p>In week 1 we introduced <strong>vectors</strong>, the simplest type of data structure in R. It is a collection of values or things of the same type in a given order. We created some last week using <code>c()</code> and the <code>:</code> operator.</p>
+<pre class="r"><code>some_numbers &lt;- 1:10
+days_of_the_week &lt;- c(&quot;Sunday&quot;, &quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;, &quot;Saturday&quot;)</code></pre>
+<p>In the first example, an integer vector was created with 10 values from 1 to 10. <code>some_numbers</code> is a name that refers to the vector and can be used in other R statements while <code>1:10</code> is the vector object itself.</p>
+<pre class="r"><code>squares &lt;- some_numbers ^ 2
+squares</code></pre>
+<pre><code>##  [1]   1   4   9  16  25  36  49  64  81 100</code></pre>
+<p>A single value is known as a <strong>scalar</strong>. An example from last week was the number of samples in our experiment.</p>
+<pre class="r"><code>samples &lt;- 8
+samples</code></pre>
+<pre><code>## [1] 8</code></pre>
+<p>But as we saw last week, R doesn’t treat this single value any differently; it is still a vector, just one that has a length of 1.</p>
+<p>Almost every object in R is a vector of one kind or another, or is constructed of vectors, so it’s really important to understand these well.</p>
+</div>
+<div id="combining-vectors" class="section level2">
+<h2>Combining vectors</h2>
+<p>The other way we’ve encountered for creating a vector is to use <code>c()</code>. This is actually a function and we can get help for it just as we can for any other function.</p>
+<pre class="r"><code>?c</code></pre>
+<p>From the help page you can see that <code>c</code> stands for ‘combine’.</p>
+<p>One of the most useful things about the help pages for functions are the examples given – you’ll need to scroll down to the bottom of the page. These can be really helpful in demonstrating how a function works. You can very easily cut and paste these examples and run these in the console window as a way of experimenting with the function.</p>
+<p>Let’s have a look at the first example. It’s slighly more complicated than what we did last week.</p>
+<pre class="r"><code>c(1, 7:9)</code></pre>
+<pre><code>## [1] 1 7 8 9</code></pre>
+<p>This is actually combining two vectors, the first with a single value <code>1</code> and the second with values <code>7</code>, <code>8</code> and <code>9</code>. Here’s another example:</p>
+<pre class="r"><code>cats &lt;- c(&quot;felix&quot;, &quot;kitty&quot;, &quot;tigger&quot;)
+dogs &lt;- c(&quot;spot&quot;, &quot;snoopy&quot;)
+cats_and_dogs &lt;- c(cats, dogs)
+cats_and_dogs</code></pre>
+<pre><code>## [1] &quot;felix&quot;  &quot;kitty&quot;  &quot;tigger&quot; &quot;spot&quot;   &quot;snoopy&quot;</code></pre>
+</div>
+<div id="coercion" class="section level2">
+<h2>Coercion</h2>
+<p>Atomic vectors must contain values that are all of the same type. A bit later on, we’ll introduce another type of data structure that don’t have this restriction – lists. First though, a look at back at one of the exercises from last week’s assignment in which we tried to create vectors of things that are of different types.</p>
+<pre class="r"><code>integer_logical &lt;- c(1:5, c(TRUE, FALSE, TRUE))
+integer_logical</code></pre>
+<pre><code>## [1] 1 2 3 4 5 1 0 1</code></pre>
+<pre class="r"><code>typeof(integer_logical)</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<p>Combining an integer vector, <code>1:5</code>, containing the numbers 1 through 5, with a logical vector results in an integer vector. The logical values have been <em>‘coerced’</em> into integers. But why the logical values and not the integers to produce a logical vector?</p>
+<p>If you think about it, it makes more sense to convert logical values where <code>TRUE</code> and <code>FALSE</code> are usually represented in computers by the bits <code>1</code> and <code>0</code> respectively, i.e. <code>TRUE</code> and <code>FALSE</code> have natural and understandable equivalents in the world of integers. Which logical value would you give to the number <code>5</code> for example?</p>
+<p>Similarly, integers get converted to doubles in this example:</p>
+<pre class="r"><code>integer_double &lt;- c(3.4, 2.3, -3:6)
+integer_double</code></pre>
+<pre><code>##  [1]  3.4  2.3 -3.0 -2.0 -1.0  0.0  1.0  2.0  3.0  4.0  5.0  6.0</code></pre>
+<pre class="r"><code>typeof(integer_double)</code></pre>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<p>Again, this makes more sense than converting doubles (numbers with a decimal point) to integers (whole numbers) and losing some of their precision.</p>
+<p>Finally, it is really not obvious how to convert most character strings into either logical or numeric values, so when combining vectors that contain characters everything else gets ‘coerced’ to becoming characters also.</p>
+<pre class="r"><code>we_all_want_to_be_characters &lt;- c(FALSE, 1:5, 23L, 3.23, 5.2e4, 1e-6, &quot;matt&quot;)
+we_all_want_to_be_characters</code></pre>
+<pre><code>##  [1] &quot;FALSE&quot; &quot;1&quot;     &quot;2&quot;     &quot;3&quot;     &quot;4&quot;     &quot;5&quot;     &quot;23&quot;    &quot;3.23&quot; 
+##  [9] &quot;52000&quot; &quot;1e-06&quot; &quot;matt&quot;</code></pre>
+<pre class="r"><code>typeof(we_all_want_to_be_characters)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+</div>
+<div id="extracting-subsets" class="section level2">
+<h2>Extracting subsets</h2>
+</div>
+<div id="assigning-subsets" class="section level2">
+<h2>Assigning subsets</h2>
 </div>
 </div>
 

@@ -72,10 +72,10 @@ asterisk?
 This tells us that we haven't yet saved our changes. There are various ways to
 do so just like in Word or Excel or other applications you're familiar with, for
 example using the '**Save**' option from the '**File**' menu, clicking on the
-'**Save**' icon or using a keyboard shortcut, which is my preference by far. On
-a Mac this would be <kbd>cmd</kbd> + <kbd>S</kbd> (press the <kbd>cmd</kbd> key
-first and, while keeping this depressed, click the <kbd>S</kbd> key); on Windows
-you would do the same thing using <kbd>ctrl</kbd> + <kbd>S</kbd>.
+'**Save**' button or using a keyboard shortcut, which is my preference by far.
+On a Mac this would be <kbd>cmd</kbd> + <kbd>S</kbd> (press the <kbd>cmd</kbd>
+key first and, while keeping this depressed, click the <kbd>S</kbd> key); on
+Windows you would do the same thing using <kbd>ctrl</kbd> + <kbd>S</kbd>.
 
 If the file already exists it will be saved without any further ado. As this is
 a new file then RStudio needs to know what you want to call it and in which
@@ -110,4 +110,153 @@ You can also run the entire script by clicking on the '**Source**' button, a
 little to the right of the '**Run**' button. More useful though is to run 
 '**Source with Echo**' as this will also display your commands and the outputs
 from these in the Console window.
+
+## Adding comments to scripts
+
+It is a very good idea to add comments to your code to explain what it's doing
+or what you intended. This will help others to understand your code and more
+than likely even yourself when you come to revisit it a few weeks or months
+later.
+
+Anything following a `#` symbol is a comment that R will ignore. Here's an
+example of adding comments to our simple script.
+
+![](images/RStudio_script_comments.png)
+
+Comments usually appear at the beginning of lines but can appear at the end of
+an R statement.
+
+```{r}
+days <- c(1, 2, 4, 6, 8, 12, 16) # didn't manage to get a measurement on day 10
+```
+
+It is also quite common when looking at R code to see lines of code commented
+out, usually replaced by another line that does something similar.
+
+```{r}
+# random_numbers <- rnorm(100, mean = 0, sd = 1)
+random_numbers <- rnorm(100, mean = 0, sd = 0.5)
+```
+
+# Vectors
+
+## Recap
+
+In week 1 we introduced **vectors**, the simplest type of data structure in R.
+It is a collection of values or things of the same type in a given order. We
+created some last week using `c()` and the `:` operator.
+
+```{r}
+some_numbers <- 1:10
+days_of_the_week <- c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+```
+
+In the first example, an integer vector was created with 10 values from 1 to 10.
+`some_numbers` is a name that refers to the vector and can be used in other R
+statements while `1:10` is the vector object itself.
+
+```{r}
+squares <- some_numbers ^ 2
+squares
+```
+
+A single value is known as a **scalar**. An example from last week was the
+number of samples in our experiment.
+
+```{r}
+samples <- 8
+samples
+```
+
+But as we saw last week, R doesn't treat this single value any differently;
+it is still a vector, just one that has a length of 1.
+
+Almost every object in R is a vector of one kind or another, or is constructed
+of vectors, so it's really important to understand these well.
+
+## Combining vectors
+
+The other way we've encountered for creating a vector is to use `c()`. This is
+actually a function and we can get help for it just as we can for any other
+function.
+
+```{r}
+?c
+```
+
+From the help page you can see that `c` stands for 'combine'.
+
+One of the most useful things about the help pages for functions are the
+examples given -- you'll need to scroll down to the bottom of the page. These
+can be really helpful in demonstrating how a function works. You can very
+easily cut and paste these examples and run these in the console window as a
+way of experimenting with the function.
+
+Let's have a look at the first example. It's slighly more complicated than
+what we did last week.
+
+```{r}
+c(1, 7:9)
+```
+
+This is actually combining two vectors, the first with a single value `1`
+and the second with values `7`, `8` and `9`. Here's another example:
+
+```{r}
+cats <- c("felix", "kitty", "tigger")
+dogs <- c("spot", "snoopy")
+cats_and_dogs <- c(cats, dogs)
+cats_and_dogs
+```
+
+## Coercion
+
+Atomic vectors must contain values that are all of the same type. A bit later
+on, we'll introduce another type of data structure that don't have this
+restriction -- lists. First though, a look at back at one of the exercises
+from last week's assignment in which we tried to create vectors of things
+that are of different types.
+
+```{r}
+integer_logical <- c(1:5, c(TRUE, FALSE, TRUE))
+integer_logical
+typeof(integer_logical)
+```
+
+Combining an integer vector, `1:5`, containing the numbers 1 through 5, with a
+logical vector results in an integer vector. The logical values have been
+*'coerced'* into integers. But why the logical values and not the integers to
+produce a logical vector?
+
+If you think about it, it makes more sense to convert logical values where
+`TRUE` and `FALSE` are usually represented in computers by the bits `1` and `0`
+respectively, i.e. `TRUE` and `FALSE` have natural and understandable
+equivalents in the world of integers. Which logical value would you give to the
+number `5` for example?
+
+Similarly, integers get converted to doubles in this example:
+
+```{r}
+integer_double <- c(3.4, 2.3, -3:6)
+integer_double
+typeof(integer_double)
+```
+
+Again, this makes more sense than converting doubles (numbers with a decimal
+point) to integers (whole numbers) and losing some of their precision.
+
+Finally, it is really not obvious how to convert most character strings into
+either logical or numeric values, so when combining vectors that contain
+characters everything else gets 'coerced' to becoming characters also.
+
+```{r}
+we_all_want_to_be_characters <- c(FALSE, 1:5, 23L, 3.23, 5.2e4, 1e-6, "matt")
+we_all_want_to_be_characters
+typeof(we_all_want_to_be_characters)
+```
+
+## Extracting subsets
+
+## Assigning subsets
+
 
