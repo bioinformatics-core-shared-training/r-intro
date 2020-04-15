@@ -7,14 +7,107 @@ title: "Week 2 -- Getting started with data in R"
 > * Create and run a script file containing your R code
 > * More on vectors including manipulating their content and extracting values or subsets
 > * Vector arithmetic
-> * Understand what a factor is and when it might be useful
 > * More sophisticated data structures but all built from vectors (lists, matrices, data frames)
 > * Learn how R deals with missing values
-> * Demystify functions by writing a simple one of our own
 > * Learn how to install and use packages that extend R's basic functionality
 > * Read data in tabular format from a spreadsheet
 > * Calculate summary statistics on your tabular data
 > * Introduce the **`tibble`**, arguably the most important data structure you will use in R
 
 # Introduction
+
+In this course, we'll be mostly focusing on a set of R packages specifically
+designed for the most useful and common operations for interacting with and
+visualizing data, and particularly data in a tabular form. This collection of
+packages is known as the **tidyverse**.
+
+Learning the **tidyverse** is more than just about learning some useful
+functions to get certain tasks done. This collection of packages form a
+coherant system for data manipulation, exploration and visualization that
+share a common design philosophy. There is a certain elegance to code crafted
+using the tidyverse approach that is in stark contrast to the strange and
+often cryptic equivalent using traditional 'base R'. This author only really
+became a true R convert on being introduced to the tidyverse.
+
+Sadly, as much as we'd like, we can't just cover the tidyverse alone and
+ignore the fundamentals of the R language. So this week we will look at some
+aspects of R that are crucial to understanding how R is handling your data,
+even though we will come back to these same aspects in later weeks to show
+you how those same operations are more easily and elegantly carried out with
+the tidyverse.
+
+We will also start to look at the most important data structure you'll use
+with your data, assuming it is in tabular form, the **data frame**, and its
+superior tidyverse derivative, the **tibble**.
+
+# Scripts
+
+Up to now, we were mostly typing code in the Console pane at the `>` prompt.
+This is a very interactive way of working with R but what if you want to save
+the commands you've typed for a future session working in R?
+
+Instead we can create a script file containing our R commands that we can come
+back to later. This is the way most R coding is done so let's have a go.
+
+From the RStudio '**File**' menu, select '**New File**' and then '**R Script**'.
+
+![](images/RStudio_new_file_menu.png){width=50%}
+
+You should now have new file in the top left-hand side of RStudio for your new
+R script named 'Untitled1'. The Console window no longer occupies the whole of
+left-hand side but is now a bit smaller and is underneath the new R script in
+the bottom left-hand side.
+
+![](images/RStudio_new_script.png){width=100%}
+
+We can type code into this file just as we have done in the Console window at
+the command prompt.
+
+Type in some of the commands from last week's assignment. Do you notice that the
+file name on the tab for this pane is now highlighted in red and has an
+asterisk?
+
+![](images/RStudio_modified_script.png){width=50%}
+
+This tells us that we haven't yet saved our changes. There are various ways to
+do so just like in Word or Excel or other applications you're familiar with, for
+example using the '**Save**' option from the '**File**' menu, clicking on the
+'**Save**' icon or using a keyboard shortcut, which is my preference by far. On
+a Mac this would be <kbd>cmd</kbd> + <kbd>S</kbd> (press the <kbd>cmd</kbd> key
+first and, while keeping this depressed, click the <kbd>S</kbd> key); on Windows
+you would do the same thing using <kbd>ctrl</kbd> + <kbd>S</kbd>.
+
+If the file already exists it will be saved without any further ado. As this is
+a new file then RStudio needs to know what you want to call it and in which
+folder on your computer you want it to be saved. You can choose these using the
+file dialog that appears. RStudio will add a '.R' suffix if you don't specify
+one.
+
+It is a good idea to keep your scripts and assignment files for this course
+together in one folder or directory.
+
+## Running scripts
+
+Having typed an R command and hit the return key you'll notice that the
+command isn't actually run like it was in the console window. That's because
+you're writing your R code in an editor. To run a single line of code within
+your script you can press the '**Run**' button at the top of the script.
+
+![](images/RStudio_run_script_command.png)
+
+This will run the line of code on which the cursor is flashing or the next line
+of code if the cursor is on a blank or empty line.
+
+The keyboard shortcut is more convenient in practice as you won't have to stop
+typing at the keyboard to use your mouse. This is <kbd>cmd</kbd> +
+<kbd>return</kbd> on a Mac and <kbd>ctrl</kbd> + <kbd>enter</kbd> on Windows.
+
+Running a line in your script will automatically move the cursor onto the
+next command which can be very convenient as you'll be able to run successive
+commands just by repeatedly clicking '**Run**' or using the keyboard shortcut.
+
+You can also run the entire script by clicking on the '**Source**' button, a
+little to the right of the '**Run**' button. More useful though is to run 
+'**Source with Echo**' as this will also display your commands and the outputs
+from these in the Console window.
 

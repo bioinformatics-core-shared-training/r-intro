@@ -396,10 +396,8 @@ div.tocify {
 <li>Create and run a script file containing your R code</li>
 <li>More on vectors including manipulating their content and extracting values or subsets</li>
 <li>Vector arithmetic</li>
-<li>Understand what a factor is and when it might be useful</li>
 <li>More sophisticated data structures but all built from vectors (lists, matrices, data frames)</li>
 <li>Learn how R deals with missing values</li>
-<li>Demystify functions by writing a simple one of our own</li>
 <li>Learn how to install and use packages that extend R’s basic functionality</li>
 <li>Read data in tabular format from a spreadsheet</li>
 <li>Calculate summary statistics on your tabular data</li>
@@ -408,6 +406,46 @@ div.tocify {
 </blockquote>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
+<p>In this course, we’ll be mostly focusing on a set of R packages specifically designed for the most useful and common operations for interacting with and visualizing data, and particularly data in a tabular form. This collection of packages is known as the <strong>tidyverse</strong>.</p>
+<p>Learning the <strong>tidyverse</strong> is more than just about learning some useful functions to get certain tasks done. This collection of packages form a coherant system for data manipulation, exploration and visualization that share a common design philosophy. There is a certain elegance to code crafted using the tidyverse approach that is in stark contrast to the strange and often cryptic equivalent using traditional ‘base R’. This author only really became a true R convert on being introduced to the tidyverse.</p>
+<p>Sadly, as much as we’d like, we can’t just cover the tidyverse alone and ignore the fundamentals of the R language. So this week we will look at some aspects of R that are crucial to understanding how R is handling your data, even though we will come back to these same aspects in later weeks to show you how those same operations are more easily and elegantly carried out with the tidyverse.</p>
+<p>We will also start to look at the most important data structure you’ll use with your data, assuming it is in tabular form, the <strong>data frame</strong>, and its superior tidyverse derivative, the <strong>tibble</strong>.</p>
+</div>
+<div id="scripts" class="section level1">
+<h1>Scripts</h1>
+<p>Up to now, we were mostly typing code in the Console pane at the <code>&gt;</code> prompt. This is a very interactive way of working with R but what if you want to save the commands you’ve typed for a future session working in R?</p>
+<p>Instead we can create a script file containing our R commands that we can come back to later. This is the way most R coding is done so let’s have a go.</p>
+<p>From the RStudio ‘<strong>File</strong>’ menu, select ‘<strong>New File</strong>’ and then ‘<strong>R Script</strong>’.</p>
+<div class="figure">
+<img src="images/RStudio_new_file_menu.png" style="width:50.0%" />
+
+</div>
+<p>You should now have new file in the top left-hand side of RStudio for your new R script named ‘Untitled1’. The Console window no longer occupies the whole of left-hand side but is now a bit smaller and is underneath the new R script in the bottom left-hand side.</p>
+<div class="figure">
+<img src="images/RStudio_new_script.png" style="width:100.0%" />
+
+</div>
+<p>We can type code into this file just as we have done in the Console window at the command prompt.</p>
+<p>Type in some of the commands from last week’s assignment. Do you notice that the file name on the tab for this pane is now highlighted in red and has an asterisk?</p>
+<div class="figure">
+<img src="images/RStudio_modified_script.png" style="width:50.0%" />
+
+</div>
+<p>This tells us that we haven’t yet saved our changes. There are various ways to do so just like in Word or Excel or other applications you’re familiar with, for example using the ‘<strong>Save</strong>’ option from the ‘<strong>File</strong>’ menu, clicking on the ‘<strong>Save</strong>’ icon or using a keyboard shortcut, which is my preference by far. On a Mac this would be <kbd>cmd</kbd> + <kbd>S</kbd> (press the <kbd>cmd</kbd> key first and, while keeping this depressed, click the <kbd>S</kbd> key); on Windows you would do the same thing using <kbd>ctrl</kbd> + <kbd>S</kbd>.</p>
+<p>If the file already exists it will be saved without any further ado. As this is a new file then RStudio needs to know what you want to call it and in which folder on your computer you want it to be saved. You can choose these using the file dialog that appears. RStudio will add a ‘.R’ suffix if you don’t specify one.</p>
+<p>It is a good idea to keep your scripts and assignment files for this course together in one folder or directory.</p>
+<div id="running-scripts" class="section level2">
+<h2>Running scripts</h2>
+<p>Having typed an R command and hit the return key you’ll notice that the command isn’t actually run like it was in the console window. That’s because you’re writing your R code in an editor. To run a single line of code within your script you can press the ‘<strong>Run</strong>’ button at the top of the script.</p>
+<div class="figure">
+<img src="images/RStudio_run_script_command.png" />
+
+</div>
+<p>This will run the line of code on which the cursor is flashing or the next line of code if the cursor is on a blank or empty line.</p>
+<p>The keyboard shortcut is more convenient in practice as you won’t have to stop typing at the keyboard to use your mouse. This is <kbd>cmd</kbd> + <kbd>return</kbd> on a Mac and <kbd>ctrl</kbd> + <kbd>enter</kbd> on Windows.</p>
+<p>Running a line in your script will automatically move the cursor onto the next command which can be very convenient as you’ll be able to run successive commands just by repeatedly clicking ‘<strong>Run</strong>’ or using the keyboard shortcut.</p>
+<p>You can also run the entire script by clicking on the ‘<strong>Source</strong>’ button, a little to the right of the ‘<strong>Run</strong>’ button. More useful though is to run ‘<strong>Source with Echo</strong>’ as this will also display your commands and the outputs from these in the Console window.</p>
+</div>
 </div>
 
 
