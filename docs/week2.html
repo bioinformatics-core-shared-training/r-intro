@@ -13,7 +13,7 @@
 
 <title>Week 2 – Getting started with data in R</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -25,6 +25,14 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.6/datatables.js"></script>
+<link href="site_libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -533,6 +541,9 @@ log2fc[3]</code></pre>
 <p>Multiple values can be extracted by providing a vector of indices, e.g.</p>
 <pre class="r"><code>log2fc[c(2, 4, 5)]</code></pre>
 <pre><code>## [1] -1.00  0.97 -0.02</code></pre>
+<p>You can also extract elements in a different order, e.g.</p>
+<pre class="r"><code>log2fc[c(2, 5, 4)]</code></pre>
+<pre><code>## [1] -1.00 -0.02  0.97</code></pre>
 <p>It is possible to exclude values instead by providing negative indices.</p>
 <pre class="r"><code>log2fc[c(-2, -3)]</code></pre>
 <pre><code>## [1]  2.30  0.97 -0.02  1.23</code></pre>
@@ -636,6 +647,125 @@ some_numbers</code></pre>
 log2fc</code></pre>
 <pre><code>## [1]  1.00 -1.00  0.48  0.97 -0.02  1.00</code></pre>
 </div>
+</div>
+<div id="vector-arithmetic" class="section level1">
+<h1>Vector arithmetic</h1>
+<p>Many operations in R are <strong>vectorized</strong>, which means that the operation is applied to an entire set of values at once. We’ve already seen lots of examples of this, like the following:</p>
+<pre class="r"><code>some_numbers &lt;- 1:10
+squares &lt;- some_numbers ^ 2
+squares</code></pre>
+<pre><code>##  [1]   1   4   9  16  25  36  49  64  81 100</code></pre>
+<p>Here we used the <strong><code>^</code></strong> exponent operator to raise our numbers to the power of 2. This happened in a single operation, i.e. just one line of code. In other computer languages we might have had to write what is known as a loop in order to iterate over and perform the calculation for each value in turn, but not in R.</p>
+<p>Another way of writing the above statement to get the same result would be to multiple our numbers by themselves.</p>
+<pre class="r"><code>squares &lt;- some_numbers * some_numbers
+squares</code></pre>
+<pre><code>##  [1]   1   4   9  16  25  36  49  64  81 100</code></pre>
+<p>What actually happened here was slightly different though. Two vectors (actually the same vector in this case) of the same length were multiplied together. R did this <strong><em>element-by-element</em></strong>, which means that the first element from the first vector was multiplied by the first element of the second vector. Likewise, the second elements from each vector were multiplied by each other and so on.</p>
+<p>Here’s another example involving two different vectors, but again these are of the same length.</p>
+<pre class="r"><code>1:10 + 10:1</code></pre>
+<pre><code>##  [1] 11 11 11 11 11 11 11 11 11 11</code></pre>
+<p>Can you see why we get this result? (type <code>10:1</code> in the console if you’re sure about what that gives).</p>
+<p>Usually vector arithmetic involves two vectors of the same length or involves a vector and a scalar (a vector of length 1). One of the first examples from last week was the second scenario involving a vector and a single value.</p>
+<pre class="r"><code>1:36 * 2</code></pre>
+<pre><code>##  [1]  2  4  6  8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46
+## [24] 48 50 52 54 56 58 60 62 64 66 68 70 72</code></pre>
+<div id="vector-recycling-advanced" class="section level2">
+<h2>Vector recycling (advanced)</h2>
+<p>It is possible to perform calculations using two vectors of different sizes. When R runs out of values to use from the shorter of the two vectors, it wraps around to the beginning of that shorter one. For example, we can set alternate values in our set of numbers to be negative as follows:</p>
+<pre class="r"><code>some_numbers * c(1, -1)</code></pre>
+<pre><code>##  [1]   1  -2   3  -4   5  -6   7  -8   9 -10</code></pre>
+<p>When R gets to the third element it has exhausted the shorter vector, <code>c(1, -1)</code>, so it goes back to the beginning, i.e. back to the first value, <code>1</code>. It uses the second vector 5 times in what is referred to as <strong><em>vector recycling</em></strong>.</p>
+<p>You will probably never have to do something like this (why would you?) but without you knowing it you will carry out vector arithmetic using recycling very frequently. This is because a very common operation is to carry out a calculation on a vector using a single scalar value. For example, multiplying all values by a constant.</p>
+<pre class="r"><code>heights_in_metres &lt;- c(1.86, 1.65, 1.72, 1.4, 1.79)
+heights_in_centimetres &lt;- 100 * heights_in_metres
+heights_in_centimetres</code></pre>
+<pre><code>## [1] 186 165 172 140 179</code></pre>
+<p>The multiplier of 100 is effectively being recycled and so is equivalent to us having written the following:</p>
+<pre class="r"><code>heights_in_centimetres &lt;- c(100, 100, 100, 100, 100) * heights_in_metres</code></pre>
+</div>
+</div>
+<div id="combining-data-of-different-types" class="section level1">
+<h1>Combining data of different types</h1>
+<p>Vectors are all very well and good but your data are almost certainly more complicated than an ordered set of values all of the same type. You’ve probably been working with Excel spreadsheets that contain some columns that are numerical while others contain names or character strings, e.g. the following table of Star Wars characters.</p>
+<div id="htmlwidget-59a98f21927d2b81aa74" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-59a98f21927d2b81aa74">{"x":{"filter":"none","data":[["Luke Skywalker","C-3PO","R2-D2","Darth Vader","Leia Organa","Owen Lars","Beru Whitesun lars","R5-D4","Biggs Darklighter","Obi-Wan Kenobi","Anakin Skywalker","Wilhuff Tarkin","Chewbacca","Han Solo","Greedo","Jabba Desilijic Tiure","Wedge Antilles","Jek Tono Porkins","Yoda","Palpatine","Boba Fett","IG-88","Bossk","Lando Calrissian","Lobot","Ackbar","Mon Mothma","Arvel Crynyd","Wicket Systri Warrick","Nien Nunb","Qui-Gon Jinn","Nute Gunray","Finis Valorum","Jar Jar Binks","Roos Tarpals","Rugor Nass","Ric Olié","Watto","Sebulba","Quarsh Panaka","Shmi Skywalker","Darth Maul","Bib Fortuna","Ayla Secura","Dud Bolt","Gasgano","Ben Quadinaros","Mace Windu","Ki-Adi-Mundi","Kit Fisto","Eeth Koth","Adi Gallia","Saesee Tiin","Yarael Poof","Plo Koon","Mas Amedda","Gregar Typho","Cordé","Cliegg Lars","Poggle the Lesser","Luminara Unduli","Barriss Offee","Dormé","Dooku","Bail Prestor Organa","Jango Fett","Zam Wesell","Dexter Jettster","Lama Su","Taun We","Jocasta Nu","Ratts Tyerell","R4-P17","Wat Tambor","San Hill","Shaak Ti","Grievous","Tarfful","Raymus Antilles","Sly Moore","Tion Medon","Finn","Rey","Poe Dameron","BB8","Captain Phasma","Padmé Amidala"],[172,167,96,202,150,178,165,97,183,182,188,180,228,180,173,175,170,180,66,170,183,200,190,177,175,180,150,null,88,160,193,191,170,196,224,206,183,137,112,183,163,175,180,178,94,122,163,188,198,196,171,184,188,264,188,196,185,157,183,183,170,166,165,193,191,183,168,198,229,213,167,79,96,193,191,178,216,234,188,178,206,null,null,null,null,null,165],[77,75,32,136,49,120,75,32,84,77,84,null,112,80,74,1358,77,110,17,75,78.2,140,113,79,79,83,null,null,20,68,89,90,null,66,82,null,null,null,40,null,null,80,null,55,45,null,65,84,82,87,null,50,null,null,80,null,85,null,null,80,56.2,50,null,80,null,79,55,102,88,null,null,15,null,48,null,57,159,136,79,48,80,null,null,null,null,null,45],["male",null,null,"male","female","male","female",null,"male","male","male","male","male","male","male","hermaphrodite","male","male","male","male","male","none","male","male","male","male","female","male","male","male","male","male","male","male","male","male","male","male","male","male","female","male","male","female","male","male","male","male","male","male","male","female","male","male","male","male","male","female","male","male","female","female","female","male","male","male","female","male","male","female","female","male","female","male","male","female","male","male","male","female","male","male","female","male","none","female","female"],["Human","Droid","Droid","Human","Human","Human","Human","Droid","Human","Human","Human","Human","Wookiee","Human","Rodian","Hutt","Human","Human","Yoda's species","Human","Human","Droid","Trandoshan","Human","Human","Mon Calamari","Human","Human","Ewok","Sullustan","Human","Neimodian","Human","Gungan","Gungan","Gungan",null,"Toydarian","Dug",null,"Human","Zabrak","Twi'lek","Twi'lek","Vulptereen","Xexto","Toong","Human","Cerean","Nautolan","Zabrak","Tholothian","Iktotchi","Quermian","Kel Dor","Chagrian","Human","Human","Human","Geonosian","Mirialan","Mirialan","Human","Human","Human","Human","Clawdite","Besalisk","Kaminoan","Kaminoan","Human","Aleena",null,"Skakoan","Muun","Togruta","Kaleesh","Wookiee","Human",null,"Pau'an","Human","Human","Human","Droid",null,"Human"],["Tatooine","Tatooine","Naboo","Tatooine","Alderaan","Tatooine","Tatooine","Tatooine","Tatooine","Stewjon","Tatooine","Eriadu","Kashyyyk","Corellia","Rodia","Nal Hutta","Corellia","Bestine IV",null,"Naboo","Kamino",null,"Trandosha","Socorro","Bespin","Mon Cala","Chandrila",null,"Endor","Sullust",null,"Cato Neimoidia","Coruscant","Naboo","Naboo","Naboo","Naboo","Toydaria","Malastare","Naboo","Tatooine","Dathomir","Ryloth","Ryloth","Vulpter","Troiken","Tund","Haruun Kal","Cerea","Glee Anselm","Iridonia","Coruscant","Iktotch","Quermia","Dorin","Champala","Naboo","Naboo","Tatooine","Geonosis","Mirial","Mirial","Naboo","Serenno","Alderaan","Concord Dawn","Zolan","Ojom","Kamino","Kamino","Coruscant","Aleen Minor",null,"Skako","Muunilinst","Shili","Kalee","Kashyyyk","Alderaan","Umbara","Utapau",null,null,null,null,null,"Naboo"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>name<\/th>\n      <th>height<\/th>\n      <th>mass<\/th>\n      <th>gender<\/th>\n      <th>species<\/th>\n      <th>homeworld<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>Note that the first column contains character type data, the second and third columns contain numerical data (of type double) and the remaining columns contain the special type we briefly touched on last week, factors, that look like character types but have a limited set of values or categories.</p>
+<div id="lists" class="section level2">
+<h2>Lists</h2>
+<p>R’s simplest structure that combines data of different types is a <strong>list</strong>. A list is a collection of vectors. It is also a vector itself but is a step up in complexity from the atomic vectors we’ve been looking at up till now. Vectors in a list can be of different types and different lengths.</p>
+<pre class="r"><code>my_first_list &lt;- list(1:10, c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;), c(TRUE, FALSE), 100, c(1.3, 2.2, 0.75, 3.8))
+my_first_list</code></pre>
+<pre><code>## [[1]]
+##  [1]  1  2  3  4  5  6  7  8  9 10
+## 
+## [[2]]
+## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;
+## 
+## [[3]]
+## [1]  TRUE FALSE
+## 
+## [[4]]
+## [1] 100
+## 
+## [[5]]
+## [1] 1.30 2.20 0.75 3.80</code></pre>
+<p><code>my_first_list</code> has 5 elements and when printed out like this looks quite strange at first sight. Note how each of the elements of a list is referred to by an index within 2 sets of square brackets. This gives a clue to how you can access individual elements in the list.</p>
+<pre class="r"><code>my_first_list[[2]]</code></pre>
+<pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+<p>Elements in lists are normally named, e.g.</p>
+<pre class="r"><code>genomics_instruments &lt;- list(sequencers = c(&quot;NovaSeq 6000&quot;, &quot;HiSeq 4000&quot;, &quot;NextSeq 500&quot;, &quot;MiSeq&quot;), liquid_handling_robots = c(&quot;Mosquito HV&quot;, &quot;Bravo&quot;))
+genomics_instruments</code></pre>
+<pre><code>## $sequencers
+## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;       
+## 
+## $liquid_handling_robots
+## [1] &quot;Mosquito HV&quot; &quot;Bravo&quot;</code></pre>
+<p>We can still access the elements using the double square brackets but now we can use either the index (position) or the name.</p>
+<pre class="r"><code>genomics_instruments[[1]]</code></pre>
+<pre><code>## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;</code></pre>
+<pre class="r"><code>genomics_instruments[[&quot;sequencers&quot;]]</code></pre>
+<pre><code>## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;</code></pre>
+<p>Even more conveniently we can use the <code>$</code> operator.</p>
+<pre class="r"><code>genomics_instruments$sequencers</code></pre>
+<pre><code>## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;</code></pre>
+<pre class="r"><code>genomics_instruments[1]</code></pre>
+<pre><code>## $sequencers
+## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;</code></pre>
+</div>
+<div id="data-frames" class="section level2">
+<h2>Data frames</h2>
+<p>A much more useful data structure and the one we will mostly be using for the rest of the course is the <strong>data frame</strong>. This is actually a special type of list in which all the elements are vectors of the same length. The data frame is how R represents tabular data like the Star Wars table.</p>
+<p>TODO</p>
+<ul>
+<li>need to explain that the starwars table is a data frame in the dplyr package in the tidyverse so need to load the tidyverse, library(tidyverse)</li>
+<li>access columns in the data frame using $ notation just as we did for lists</li>
+<li>selecting multiple columns using vectors or indices or names, e.g. starwars[c(1, 2, 3, 8, 10, 9)] or starwars[c(“name”, “height”, “mass”, “gender”, “species”, “homeworld”)</li>
+<li>colnames(), dim(), nrow() and ncol() functions</li>
+<li>access individual elements in matrix-like notation, e.g. [2, 6]</li>
+<li>access subsets of rows, e.g. starwars[1:5,] or rows and columns, e.g. starwars[1:5, c(“name”, “species”)]</li>
+<li>compute some summary statistics, e.g. summary(starwars[c(“name”, “height”, “mass”, “gender”, “species”, “homeworld”)]) or create a starwars_selected_columns object first to make this it bit easier to read</li>
+</ul>
+</div>
+<div id="tibbles" class="section level2">
+<h2>Tibbles</h2>
+</div>
+</div>
+<div id="reading-data-into-r" class="section level1">
+<h1>Reading data into R</h1>
+<p>TODO</p>
+<ul>
+<li>details about the working directory from which files are read or are written to, getwd() and how to change this using setwd() or navigating to the directory using RStudio</li>
+</ul>
+</div>
+<div id="missing-values-na" class="section level1">
+<h1>Missing values (NA)</h1>
+<p>TODO</p>
+<ul>
+<li>e.g. gender column in starwars table</li>
+</ul>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
 </div>
 
 
