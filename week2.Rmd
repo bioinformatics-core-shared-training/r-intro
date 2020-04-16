@@ -388,6 +388,25 @@ The following table lists the logical operators you can use in R.
 you apply them to other types, those other types will be coerced to logicals in
 exactly the same way we saw earlier.
 
-## Assigning subsets
+## Modifying subsets
+
+All subsetting operations can be combined with assignment. So we can modify or
+overwrite the values at specified position in our vector.
+
+```{r}
+some_numbers <- 1:10
+some_numbers[c(2, 4, 8)] <- c(150, 34, -10)
+some_numbers
+```
+
+And, as before, we could use a condition to decide which values to change. For
+example, you may decide that log~2~ fold changes above 1 are somewhat unreliable
+with your detection method and so you'd like to put a cap on any values above
+this limit.
+
+```{r}
+log2fc[log2fc > 1] <- 1
+log2fc
+```
 
 
