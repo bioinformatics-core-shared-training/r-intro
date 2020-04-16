@@ -21,7 +21,7 @@ designed for the most useful and common operations for interacting with and
 visualizing data, and particularly data in a tabular form. This collection of
 packages is known as the **tidyverse**.
 
-Learning the **tidyverse** is more than just about learning some useful
+Learning the **tidyverse** is more than just about learning some helpful
 functions to get certain tasks done. This collection of packages form a
 coherant system for data manipulation, exploration and visualization that
 share a common design philosophy. There is a certain elegance to code crafted
@@ -75,13 +75,12 @@ example using the '**Save**' option from the '**File**' menu, clicking on the
 '**Save**' button or using a keyboard shortcut, which is my preference by far.
 On a Mac this would be <kbd>cmd</kbd> + <kbd>S</kbd> (press the <kbd>cmd</kbd>
 key first and, while keeping this depressed, click the <kbd>S</kbd> key); on
-Windows you would do the same thing using <kbd>ctrl</kbd> + <kbd>S</kbd>.
+Windows you would do the same thing using <kbd>Ctrl</kbd> + <kbd>S</kbd>.
 
 If the file already exists it will be saved without any further ado. As this is
-a new file then RStudio needs to know what you want to call it and in which
-folder on your computer you want it to be saved. You can choose these using the
-file dialog that appears. RStudio will add a '.R' suffix if you don't specify
-one.
+a new file, RStudio needs to know what you want to call it and in which folder
+on your computer you want it to be saved. You can choose these using the file
+dialog that appears. RStudio will add a '.R' suffix if you don't specify one.
 
 It is a good idea to keep your scripts and assignment files for this course
 together in one folder or directory.
@@ -100,7 +99,7 @@ of code if the cursor is on a blank or empty line.
 
 The keyboard shortcut is more convenient in practice as you won't have to stop
 typing at the keyboard to use your mouse. This is <kbd>cmd</kbd> +
-<kbd>return</kbd> on a Mac and <kbd>ctrl</kbd> + <kbd>enter</kbd> on Windows.
+<kbd>return</kbd> on a Mac and <kbd>Ctrl</kbd> + <kbd>enter</kbd> on Windows.
 
 Running a line in your script will automatically move the cursor onto the
 next command which can be very convenient as you'll be able to run successive
@@ -131,7 +130,8 @@ days <- c(1, 2, 4, 6, 8, 12, 16) # didn't manage to get a measurement on day 10
 ```
 
 It is also quite common when looking at R code to see lines of code commented
-out, usually replaced by another line that does something similar.
+out, usually replaced by another line that does something similar or makes a
+small change.
 
 ```{r}
 # random_numbers <- rnorm(100, mean = 0, sd = 1)
@@ -143,8 +143,8 @@ random_numbers <- rnorm(100, mean = 0, sd = 0.5)
 ## Recap
 
 In week 1 we introduced **vectors**, the simplest type of data structure in R.
-It is a collection of values or things of the same type in a given order. We
-created some last week using `c()` and the `:` operator.
+An atomic vector is a collection of values or things of the same type in a given
+order. We created some last week using `c()` and the `:` operator.
 
 ```{r}
 some_numbers <- 1:10
@@ -184,13 +184,14 @@ function.
 ?c
 ```
 
-From the help page you can see that `c` stands for 'combine'.
+From the help page you can see that `c` stands for 'combine' (or perhaps also
+'concatenate', both terms are used in the documentation).
 
 One of the most useful things about the help pages for functions are the
-examples given -- you'll need to scroll down to the bottom of the page. These
-can be really helpful in demonstrating how a function works. You can very
-easily cut and paste these examples and run these in the console window as a
-way of experimenting with the function.
+examples that are given -- you'll need to scroll down to the bottom of the page
+to see them. These can be really helpful in demonstrating how a function works.
+You can very easily cut and paste these examples and run these in the console
+window as a way of experimenting with and learning about the function.
 
 Let's have a look at the first example. It's slighly more complicated than
 what we did last week.
@@ -212,7 +213,7 @@ cats_and_dogs
 ## Coercion
 
 Atomic vectors must contain values that are all of the same type. A bit later
-on, we'll introduce another type of data structure that don't have this
+on, we'll introduce another type of data structure that doesn't have this
 restriction -- lists. First though, a look at back at one of the exercises
 from last week's assignment in which we tried to create vectors of things
 that are of different types.
@@ -237,7 +238,7 @@ number `5` for example?
 Similarly, integers get converted to doubles in this example:
 
 ```{r}
-integer_double <- c(3.4, 2.3, -3:6)
+integer_double <- c(3.4, 7, 2.3, 6:-3)
 integer_double
 typeof(integer_double)
 ```
@@ -247,7 +248,7 @@ point) to integers (whole numbers) and losing some of their precision.
 
 Finally, it is really not obvious how to convert most character strings into
 either logical or numeric values, so when combining vectors that contain
-characters everything else gets 'coerced' to becoming characters also.
+characters everything else gets 'coerced' into becoming characters also.
 
 ```{r}
 we_all_want_to_be_characters <- c(FALSE, 1:5, 23L, 3.23, 5.2e4, 1e-6, "matt")
@@ -256,6 +257,9 @@ typeof(we_all_want_to_be_characters)
 ```
 
 ## Extracting subsets
+
+
+### Conditional subsetting
 
 ## Assigning subsets
 
