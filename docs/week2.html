@@ -522,8 +522,106 @@ we_all_want_to_be_characters</code></pre>
 </div>
 <div id="extracting-subsets" class="section level2">
 <h2>Extracting subsets</h2>
+<p>One of the operations we do frequently on our data is to select subsets that are of particular interest. For example, we may be interested in the top 50 genes in a differential expression analysis for our RNA-seq experiment where those genes of interest are the ones with a log fold change above a certain value and with a p value below 0.01.</p>
+<p>Having a good understanding of how to select a subset of values from a vector is going to be invaluable when we come to do the same for more complicated data structures so let’s take a look.</p>
+<p>The main subsetting operator we’ll use is the square bracket, <strong><code>[</code></strong>. Here’s an example.</p>
+<pre class="r"><code>log2fc &lt;- c(2.3, -1, 0.48, 0.97, -0.02, 1.23)
+log2fc[3]</code></pre>
+<pre><code>## [1] 0.48</code></pre>
+<p>We have a vector of 5 log<sub>2</sub> fold change values and we’ve chosen to select the third value.</p>
+<p>If you’re familiar with other programming languages you will notice that the indexing scheme in R starts from 1, not 0. So the first element in the vector is referred to using the index 1, i.e. <code>log2fc[1]</code>.</p>
+<p>Multiple values can be extracted by providing a vector of indices, e.g.</p>
+<pre class="r"><code>log2fc[c(2, 4, 5)]</code></pre>
+<pre><code>## [1] -1.00  0.97 -0.02</code></pre>
+<p>It is possible to exclude values instead by providing negative indices.</p>
+<pre class="r"><code>log2fc[c(-2, -3)]</code></pre>
+<pre><code>## [1]  2.30  0.97 -0.02  1.23</code></pre>
+<p>Which is usually more conveniently written using a vector of positive indices and negating these as follows.</p>
+<pre class="r"><code>log2fc[-c(2, 3)]</code></pre>
+<pre><code>## [1]  2.30  0.97 -0.02  1.23</code></pre>
+<p>Finally, we can also subset our vector using a vector of logical values.</p>
+<pre class="r"><code>log2fc[c(TRUE, FALSE, TRUE, TRUE, FALSE, FALSE)]</code></pre>
+<pre><code>## [1] 2.30 0.48 0.97</code></pre>
 <div id="conditional-subsetting" class="section level3">
 <h3>Conditional subsetting</h3>
+<p>You may be thinking that this last one seems very abstract and why on earth it could possibly be useful, but actually, it is probably the most useful way of selecting values of interest. To understand why, we’ll need to introduce the concept of logical operators.</p>
+<p>Let’s say we’re interested in just the log<sub>2</sub> fold changes that are above a threshold of 0.5. We can test each of the values using the <code>&gt;</code> logical operator.</p>
+<pre class="r"><code>log2fc &gt; 0.5</code></pre>
+<pre><code>## [1]  TRUE FALSE FALSE  TRUE FALSE  TRUE</code></pre>
+<p>This results in a logical vector containing <code>TRUE</code> and <code>FALSE</code> values for each element. The values at positions 1, 4 and 6 in our vector are above the threshold so result in <code>TRUE</code>, the others result in <code>FALSE</code>.</p>
+<p>We can use this resulting vector to subset our original <code>log2fc</code> vector.</p>
+<pre class="r"><code>log2fc_threshold &lt;- 0.5
+above_threshold &lt;- log2fc &gt; log2fc_threshold
+above_threshold</code></pre>
+<pre><code>## [1]  TRUE FALSE FALSE  TRUE FALSE  TRUE</code></pre>
+<pre class="r"><code>log2fc[above_threshold]</code></pre>
+<pre><code>## [1] 2.30 0.97 1.23</code></pre>
+<p>In practice, we wouldn’t really create a variable containing our logical vector signifying whether values are of interest. Instead we’d do this in a single step.</p>
+<pre class="r"><code>log2fc[log2fc &gt; 0.5]</code></pre>
+<pre><code>## [1] 2.30 0.97 1.23</code></pre>
+<p>On the other hand in a real R script we might want to have a variable for the threshold that might be chosen by the user as an command-line argument so could be different each time the script is run.</p>
+<pre class="r"><code>log2fc_above_threshold &lt;- log2fc[log2fc &gt; log2fc_threshold]
+log2fc_above_threshold</code></pre>
+<pre><code>## [1] 2.30 0.97 1.23</code></pre>
+<p>You can combine two or more conditions using <strong><code>&amp;</code></strong> if you want both conditions to be true or using <strong><code>|</code></strong> if either of the conditions is acceptable but not necessarily both.</p>
+<pre class="r"><code># small fold changes
+log2fc[log2fc &lt; 0.5 &amp; log2fc &gt; -0.5]</code></pre>
+<pre><code>## [1]  0.48 -0.02</code></pre>
+<pre class="r"><code># large fold changes
+log2fc[log2fc &gt; 1 | log2fc &lt; -1]</code></pre>
+<pre><code>## [1] 2.30 1.23</code></pre>
+<p><code>&amp;</code> and <code>|</code> are the Boolean AND and OR operators.</p>
+</div>
+<div id="logical-operators" class="section level3">
+<h3>Logical operators</h3>
+<p>The following table lists the logical operators you can use in R.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Operator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>&lt;</td>
+<td>less than</td>
+</tr>
+<tr class="even">
+<td>&lt;=</td>
+<td>less than or equal to</td>
+</tr>
+<tr class="odd">
+<td>&gt;</td>
+<td>greater than</td>
+</tr>
+<tr class="even">
+<td>&gt;=</td>
+<td>greater than or equal to</td>
+</tr>
+<tr class="odd">
+<td>==</td>
+<td>exactly equal to</td>
+</tr>
+<tr class="even">
+<td>!=</td>
+<td>not equal to</td>
+</tr>
+<tr class="odd">
+<td>!x</td>
+<td>not x</td>
+</tr>
+<tr class="even">
+<td>x</td>
+<td>y</td>
+</tr>
+<tr class="odd">
+<td>x &amp; y</td>
+<td>x AND y</td>
+</tr>
+</tbody>
+</table>
+<p><code>x</code> and <code>y</code> in the last 3 of these operators are intended for logical values; if you apply them to other types, those other types will be coerced to logicals in exactly the same way we saw earlier.</p>
 </div>
 </div>
 <div id="assigning-subsets" class="section level2">
