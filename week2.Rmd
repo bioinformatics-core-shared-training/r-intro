@@ -5,9 +5,9 @@ title: "Week 2 -- Getting started with data in R"
 > ### Learning objectives
 >
 > * Create and run a script file containing your R code
-> * More on vectors including manipulating their content and extracting values or subsets
+> * More on vectors including extracting values or subsets and modifying their contents
 > * Vector arithmetic
-> * More sophisticated data structures but all built from vectors (lists, matrices, data frames)
+> * More sophisticated data structures but all built from vectors (lists and data frames)
 > * Learn how R deals with missing values
 > * Learn how to install and use packages that extend R's basic functionality
 > * Read data in tabular format from a spreadsheet
@@ -21,7 +21,7 @@ designed for the most useful and common operations for interacting with and
 visualizing data, and particularly data in a tabular form. This collection of
 packages is known as the **tidyverse**.
 
-Learning the **tidyverse** is more than just about learning some helpful
+Learning the **tidyverse** is more than just learning about some helpful
 functions to get certain tasks done. This collection of packages form a
 coherant system for data manipulation, exploration and visualization that
 share a common design philosophy. There is a certain elegance to code crafted
@@ -32,8 +32,8 @@ became a true R convert on being introduced to the tidyverse.
 Sadly, as much as we'd like, we can't just cover the tidyverse alone and
 ignore the fundamentals of the R language. So this week we will look at some
 aspects of R that are crucial to understanding how R is handling your data,
-even though we will come back to these same aspects in later weeks to show
-you how those same operations are more easily and elegantly carried out with
+even though we will come back to some of these concepts in later weeks to show
+you how those same operations are more easily and elegantly carried out in
 the tidyverse.
 
 We will also start to look at the most important data structure you'll use
@@ -42,7 +42,7 @@ superior tidyverse derivative, the **tibble**.
 
 # Scripts
 
-Up to now, we were mostly typing code in the Console pane at the `>` prompt.
+Up to now, we were mostly typing code in the Console pane at the **`>`** prompt.
 This is a very interactive way of working with R but what if you want to save
 the commands you've typed for a future session working in R?
 
@@ -53,10 +53,9 @@ From the RStudio '**File**' menu, select '**New File**' and then '**R Script**'.
 
 ![](images/RStudio_new_file_menu.png){width=50%}
 
-You should now have new file in the top left-hand side of RStudio for your new
+You should now have a new file in the top left-hand side of RStudio for your new
 R script named 'Untitled1'. The Console window no longer occupies the whole of
-left-hand side but is now a bit smaller and is underneath the new R script in
-the bottom left-hand side.
+left-hand side.
 
 ![](images/RStudio_new_script.png){width=100%}
 
@@ -71,11 +70,13 @@ asterisk?
 
 This tells us that we haven't yet saved our changes. There are various ways to
 do so just like in Word or Excel or other applications you're familiar with, for
-example using the '**Save**' option from the '**File**' menu, clicking on the
-'**Save**' button or using a keyboard shortcut, which is my preference by far.
-On a Mac this would be <kbd>cmd</kbd> + <kbd>S</kbd> (press the <kbd>cmd</kbd>
-key first and, while keeping this depressed, click the <kbd>S</kbd> key); on
-Windows you would do the same thing using <kbd>Ctrl</kbd> + <kbd>S</kbd>.
+example using the '**Save**' option from the '**File**' menu or clicking on the
+'**Save**' button.
+
+My preference by far is to use a keyboard shortcut. On a Mac this would be
+<kbd>cmd</kbd> + <kbd>S</kbd> (press the <kbd>cmd</kbd> key first and, while
+keeping this depressed, click the <kbd>S</kbd> key); on Windows you would do the
+same thing using <kbd>Ctrl</kbd> + <kbd>S</kbd>.
 
 If the file already exists it will be saved without any further ado. As this is
 a new file, RStudio needs to know what you want to call it and in which folder
@@ -117,7 +118,7 @@ or what you intended. This will help others to understand your code and more
 than likely even yourself when you come to revisit it a few weeks or months
 later.
 
-Anything following a `#` symbol is a comment that R will ignore. Here's an
+Anything following a **`#`** symbol is a comment that R will ignore. Here's an
 example of adding comments to our simple script.
 
 ![](images/RStudio_script_comments.png)
@@ -140,11 +141,9 @@ random_numbers <- rnorm(100, mean = 0, sd = 0.5)
 
 # Vectors
 
-## Recap
-
 In week 1 we introduced **vectors**, the simplest type of data structure in R.
 An atomic vector is a collection of values or things of the same type in a given
-order. We created some last week using `c()` and the `:` operator.
+order. We created some last week using **`c()`** and the **`:`** operator.
 
 ```{r}
 some_numbers <- 1:10
@@ -176,8 +175,8 @@ of vectors, so it's really important to understand these well.
 
 ## Combining vectors
 
-The other way we've encountered for creating a vector is to use `c()`. This is
-actually a function and we can get help for it just as we can for any other
+The other way we've encountered for creating a vector is to use **`c()`**. This
+is actually a function and we can get help for it just as we can for any other
 function.
 
 ```{r}
@@ -233,7 +232,7 @@ If you think about it, it makes more sense to convert logical values where
 `TRUE` and `FALSE` are usually represented in computers by the bits `1` and `0`
 respectively, i.e. `TRUE` and `FALSE` have natural and understandable
 equivalents in the world of integers. Which logical value would you give to the
-number `5` for example?
+number 5 for example?
 
 Similarly, integers get converted to doubles in this example:
 
@@ -268,7 +267,7 @@ Having a good understanding of how to select a subset of values from a vector
 is going to be invaluable when we come to do the same for more complicated
 data structures so let's take a look.
 
-The main subsetting operator we'll use is the square bracket, **`[`**. Here's an
+The main subsetting operator we'll use is the square bracket, **`[]`**. Here's an
 example.
 
 ```{r}
@@ -276,8 +275,8 @@ log2fc <- c(2.3, -1, 0.48, 0.97, -0.02, 1.23)
 log2fc[3]
 ```
 
-We have a vector of 5 log~2~ fold change values and we've chosen to select the
-third value.
+We have a vector of five log~2~ fold change values and we've chosen to select
+the third value.
 
 If you're familiar with other programming languages you will notice that the
 indexing scheme in R starts from 1, not 0. So the first element in the vector
@@ -317,12 +316,13 @@ log2fc[c(TRUE, FALSE, TRUE, TRUE, FALSE, FALSE)]
 ### Conditional subsetting
 
 You may be thinking that this last one seems very abstract and why on earth it
-could possibly be useful, but actually, it is probably the most useful way of
-selecting values of interest. To understand why, we'll need to introduce the
-concept of logical operators.
+could possibly be useful, but actually, it is probably the most frequently used
+way of selecting values of interest. To understand why, we'll need to introduce
+the concept of logical operators.
 
 Let's say we're interested in just the log~2~ fold changes that are above a
-threshold of 0.5. We can test each of the values using the `>` logical operator.
+threshold of 0.5. We can test each of the values using the **`>`** logical
+operator.
 
 ```{r}
 log2fc > 0.5
@@ -372,7 +372,8 @@ log2fc[log2fc < 0.5 & log2fc > -0.5]
 log2fc[log2fc > 1 | log2fc < -1]
 ```
 
-`&` and `|` are the Boolean AND and OR operators.
+`&` and `|` are the R versions of the AND and OR operations in Boolean algebra
+but applied to vectors.
 
 ### Logical operators
 
@@ -386,8 +387,8 @@ The following table lists the logical operators you can use in R.
 |   >= 	   | greater than or equal to |
 |   == 	   | exactly equal to         |
 |   != 	   | not equal to             |
-|   !x     | not x                    |
-| x | y 	 | x OR y                   |
+|   !x     | NOT x                    |
+| x \| y 	 | x OR y                   |
 | x & y    | x AND y                  |
 
 `x` and `y` in the last 3 of these operators are intended for logical values; if
@@ -430,11 +431,10 @@ squares
 Here we used the **`^`** exponent operator to raise our numbers to the power of
 2. This happened in a single operation, i.e. just one line of code. In other
 computer languages we might have had to write what is known as a loop in order
-to iterate over and perform the calculation for each value in turn, but not in
-R.
+to iterate over and perform the calculation for each value in turn.
 
 Another way of writing the above statement to get the same result would be to
-multiple our numbers by themselves.
+multiply our numbers by themselves.
 
 ```{r}
 squares <- some_numbers * some_numbers
@@ -456,7 +456,7 @@ of the same length.
 ```
 
 Can you see why we get this result? (type `10:1` in the console if you're
-sure about what that gives).
+not sure about what that gives).
 
 Usually vector arithmetic involves two vectors of the same length or involves
 a vector and a scalar (a vector of length 1). One of the first examples from
@@ -479,7 +479,7 @@ some_numbers * c(1, -1)
 
 When R gets to the third element it has exhausted the shorter vector,
 `c(1, -1)`, so it goes back to the beginning, i.e. back to the first value,
-`1`. It uses the second vector 5 times in what is referred to as **_vector
+`1`. It uses the second vector five times in what is referred to as **_vector
 recycling_**.
 
 You will probably never have to do something like this (why would you?) but
@@ -499,6 +499,13 @@ to us having written the following:
 
 ```{r}
 heights_in_centimetres <- c(100, 100, 100, 100, 100) * heights_in_metres
+```
+
+Vector recycling in R requires that the length of the longer vector is an exact
+multiple of the length of the shorter. If not, R will give a warning.
+
+```{r}
+1:7 * c(1, -1)
 ```
 
 # Combining data of different types
@@ -534,7 +541,7 @@ my_first_list <- list(1:10, c("a", "b", "c"), c(TRUE, FALSE), 100, c(1.3, 2.2, 0
 my_first_list
 ```
 
-`my_first_list` has 5 elements and when printed out like this looks quite
+`my_first_list` has five elements and when printed out like this looks quite
 strange at first sight. Note how each of the elements of a list is referred to
 by an index within 2 sets of square brackets. This gives a clue to how you can
 access individual elements in the list.
@@ -562,10 +569,6 @@ Even more conveniently we can use the `$` operator.
 
 ```{r}
 genomics_instruments$sequencers
-```
-
-```{r}
-genomics_instruments[1]
 ```
 
 ## Data frames
