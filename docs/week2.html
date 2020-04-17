@@ -415,7 +415,7 @@ div.tocify {
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>In this course, we’ll be mostly focusing on a set of R packages specifically designed for the most useful and common operations for interacting with and visualizing data, and particularly data in a tabular form. This collection of packages is known as the <strong>tidyverse</strong>.</p>
-<p>Learning the <strong>tidyverse</strong> is more than just learning about some helpful functions to get certain tasks done. This collection of packages form a coherant system for data manipulation, exploration and visualization that share a common design philosophy. There is a certain elegance to code crafted using the tidyverse approach that is in stark contrast to the strange and often cryptic equivalent using traditional ‘base R’. This author only really became a true R convert on being introduced to the tidyverse.</p>
+<p>Learning the <strong>tidyverse</strong> is more than just learning about some helpful functions to get certain tasks done. This collection of packages form a coherant system for data manipulation, exploration and visualization that share a common design philosophy. There is a certain elegance to code crafted using the tidyverse approach that is in stark contrast to the strange and often cryptic equivalent using traditional ‘base R’. This old-timer only really became a true R convert on being introduced to the tidyverse.</p>
 <p>Sadly, as much as we’d like, we can’t just cover the tidyverse alone and ignore the fundamentals of the R language. So this week we will look at some aspects of R that are crucial to understanding how R is handling your data, even though we will come back to some of these concepts in later weeks to show you how those same operations are more easily and elegantly carried out in the tidyverse.</p>
 <p>We will also start to look at the most important data structure you’ll use with your data, assuming it is in tabular form, the <strong>data frame</strong>, and its superior tidyverse derivative, the <strong>tibble</strong>.</p>
 </div>
@@ -484,14 +484,17 @@ squares</code></pre>
 samples</code></pre>
 <pre><code>## [1] 8</code></pre>
 <p>But as we saw last week, R doesn’t treat this single value any differently; it is still a vector, just one that has a length of 1.</p>
+<p>And talking of lengths, one function you’re likely to use is the <code>length()</code> function, which unsurprisingly returns the numbers of elements in a vector.</p>
+<pre class="r"><code>length(some_numbers)</code></pre>
+<pre><code>## [1] 10</code></pre>
 <p>Almost every object in R is a vector of one kind or another, or is constructed of vectors, so it’s really important to understand these well.</p>
 <div id="combining-vectors" class="section level2">
 <h2>Combining vectors</h2>
 <p>The other way we’ve encountered for creating a vector is to use <strong><code>c()</code></strong>. This is actually a function and we can get help for it just as we can for any other function.</p>
 <pre class="r"><code>?c</code></pre>
 <p>From the help page you can see that <code>c</code> stands for ‘combine’ (or perhaps also ‘concatenate’, both terms are used in the documentation).</p>
-<p>One of the most useful things about the help pages for functions are the examples that are given – you’ll need to scroll down to the bottom of the page to see them. These can be really helpful in demonstrating how a function works. You can very easily cut and paste these examples and run these in the console window as a way of experimenting with and learning about the function.</p>
-<p>Let’s have a look at the first example. It’s slighly more complicated than what we did last week.</p>
+<p>One of the most useful things about the help pages for functions are the examples that are given – you’ll need to scroll down to the bottom of the help page to see them. These can be really helpful in demonstrating how a function works. You can very easily cut and paste these examples and run these in the console window as a way of experimenting with and learning about the function.</p>
+<p>Let’s have a look at the first example from the help page for <code>c()</code>. It’s slighly more complicated than what we did last week.</p>
 <pre class="r"><code>c(1, 7:9)</code></pre>
 <pre><code>## [1] 1 7 8 9</code></pre>
 <p>This is actually combining two vectors, the first with a single value <code>1</code> and the second with values <code>7</code>, <code>8</code> and <code>9</code>. Here’s another example:</p>
@@ -503,7 +506,7 @@ cats_and_dogs</code></pre>
 </div>
 <div id="coercion" class="section level2">
 <h2>Coercion</h2>
-<p>Atomic vectors must contain values that are all of the same type. A bit later on, we’ll introduce another type of data structure that doesn’t have this restriction – lists. First though, a look at back at one of the exercises from last week’s assignment in which we tried to create vectors of things that are of different types.</p>
+<p>Atomic vectors must contain values that are all of the same type. A bit later on, we’ll introduce another type of data structure that doesn’t have this restriction – the list. First though, a look at back at one of the exercises from last week’s assignment in which we tried to create vectors of things that are of different types.</p>
 <pre class="r"><code>integer_logical &lt;- c(1:5, c(TRUE, FALSE, TRUE))
 integer_logical</code></pre>
 <pre><code>## [1] 1 2 3 4 5 1 0 1</code></pre>
@@ -518,7 +521,7 @@ integer_double</code></pre>
 <pre class="r"><code>typeof(integer_double)</code></pre>
 <pre><code>## [1] &quot;double&quot;</code></pre>
 <p>Again, this makes more sense than converting doubles (numbers with a decimal point) to integers (whole numbers) and losing some of their precision.</p>
-<p>Finally, it is really not obvious how to convert most character strings into either logical or numeric values, so when combining vectors that contain characters everything else gets ‘coerced’ into becoming characters also.</p>
+<p>Finally, it is really not obvious how to convert most character strings into either logical or numeric values, so when combining vectors that contain characters everything else gets ‘coerced’ into becoming characters.</p>
 <pre class="r"><code>we_all_want_to_be_characters &lt;- c(FALSE, 1:5, 23L, 3.23, 5.2e4, 1e-6, &quot;matt&quot;)
 we_all_want_to_be_characters</code></pre>
 <pre><code>##  [1] &quot;FALSE&quot; &quot;1&quot;     &quot;2&quot;     &quot;3&quot;     &quot;4&quot;     &quot;5&quot;     &quot;23&quot;    &quot;3.23&quot; 
@@ -690,8 +693,8 @@ heights_in_centimetres</code></pre>
 <div id="combining-data-of-different-types" class="section level1">
 <h1>Combining data of different types</h1>
 <p>Vectors are all very well and good but your data are almost certainly more complicated than an ordered set of values all of the same type. You’ve probably been working with Excel spreadsheets that contain some columns that are numerical while others contain names or character strings, e.g. the following table of Star Wars characters.</p>
-<div id="htmlwidget-58188c325878ecda5a96" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-58188c325878ecda5a96">{"x":{"filter":"none","data":[["Luke Skywalker","C-3PO","R2-D2","Darth Vader","Leia Organa","Owen Lars","Beru Whitesun lars","R5-D4","Biggs Darklighter","Obi-Wan Kenobi","Anakin Skywalker","Wilhuff Tarkin","Chewbacca","Han Solo","Greedo","Jabba Desilijic Tiure","Wedge Antilles","Jek Tono Porkins","Yoda","Palpatine","Boba Fett","IG-88","Bossk","Lando Calrissian","Lobot","Ackbar","Mon Mothma","Arvel Crynyd","Wicket Systri Warrick","Nien Nunb","Qui-Gon Jinn","Nute Gunray","Finis Valorum","Jar Jar Binks","Roos Tarpals","Rugor Nass","Ric Olié","Watto","Sebulba","Quarsh Panaka","Shmi Skywalker","Darth Maul","Bib Fortuna","Ayla Secura","Dud Bolt","Gasgano","Ben Quadinaros","Mace Windu","Ki-Adi-Mundi","Kit Fisto","Eeth Koth","Adi Gallia","Saesee Tiin","Yarael Poof","Plo Koon","Mas Amedda","Gregar Typho","Cordé","Cliegg Lars","Poggle the Lesser","Luminara Unduli","Barriss Offee","Dormé","Dooku","Bail Prestor Organa","Jango Fett","Zam Wesell","Dexter Jettster","Lama Su","Taun We","Jocasta Nu","Ratts Tyerell","R4-P17","Wat Tambor","San Hill","Shaak Ti","Grievous","Tarfful","Raymus Antilles","Sly Moore","Tion Medon","Finn","Rey","Poe Dameron","BB8","Captain Phasma","Padmé Amidala"],[172,167,96,202,150,178,165,97,183,182,188,180,228,180,173,175,170,180,66,170,183,200,190,177,175,180,150,null,88,160,193,191,170,196,224,206,183,137,112,183,163,175,180,178,94,122,163,188,198,196,171,184,188,264,188,196,185,157,183,183,170,166,165,193,191,183,168,198,229,213,167,79,96,193,191,178,216,234,188,178,206,null,null,null,null,null,165],[77,75,32,136,49,120,75,32,84,77,84,null,112,80,74,1358,77,110,17,75,78.2,140,113,79,79,83,null,null,20,68,89,90,null,66,82,null,null,null,40,null,null,80,null,55,45,null,65,84,82,87,null,50,null,null,80,null,85,null,null,80,56.2,50,null,80,null,79,55,102,88,null,null,15,null,48,null,57,159,136,79,48,80,null,null,null,null,null,45],["male",null,null,"male","female","male","female",null,"male","male","male","male","male","male","male","hermaphrodite","male","male","male","male","male","none","male","male","male","male","female","male","male","male","male","male","male","male","male","male","male","male","male","male","female","male","male","female","male","male","male","male","male","male","male","female","male","male","male","male","male","female","male","male","female","female","female","male","male","male","female","male","male","female","female","male","female","male","male","female","male","male","male","female","male","male","female","male","none","female","female"],["Human","Droid","Droid","Human","Human","Human","Human","Droid","Human","Human","Human","Human","Wookiee","Human","Rodian","Hutt","Human","Human","Yoda's species","Human","Human","Droid","Trandoshan","Human","Human","Mon Calamari","Human","Human","Ewok","Sullustan","Human","Neimodian","Human","Gungan","Gungan","Gungan",null,"Toydarian","Dug",null,"Human","Zabrak","Twi'lek","Twi'lek","Vulptereen","Xexto","Toong","Human","Cerean","Nautolan","Zabrak","Tholothian","Iktotchi","Quermian","Kel Dor","Chagrian","Human","Human","Human","Geonosian","Mirialan","Mirialan","Human","Human","Human","Human","Clawdite","Besalisk","Kaminoan","Kaminoan","Human","Aleena",null,"Skakoan","Muun","Togruta","Kaleesh","Wookiee","Human",null,"Pau'an","Human","Human","Human","Droid",null,"Human"],["Tatooine","Tatooine","Naboo","Tatooine","Alderaan","Tatooine","Tatooine","Tatooine","Tatooine","Stewjon","Tatooine","Eriadu","Kashyyyk","Corellia","Rodia","Nal Hutta","Corellia","Bestine IV",null,"Naboo","Kamino",null,"Trandosha","Socorro","Bespin","Mon Cala","Chandrila",null,"Endor","Sullust",null,"Cato Neimoidia","Coruscant","Naboo","Naboo","Naboo","Naboo","Toydaria","Malastare","Naboo","Tatooine","Dathomir","Ryloth","Ryloth","Vulpter","Troiken","Tund","Haruun Kal","Cerea","Glee Anselm","Iridonia","Coruscant","Iktotch","Quermia","Dorin","Champala","Naboo","Naboo","Tatooine","Geonosis","Mirial","Mirial","Naboo","Serenno","Alderaan","Concord Dawn","Zolan","Ojom","Kamino","Kamino","Coruscant","Aleen Minor",null,"Skako","Muunilinst","Shili","Kalee","Kashyyyk","Alderaan","Umbara","Utapau",null,null,null,null,null,"Naboo"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>name<\/th>\n      <th>height<\/th>\n      <th>mass<\/th>\n      <th>gender<\/th>\n      <th>species<\/th>\n      <th>homeworld<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-3cee74553809fa7956c1" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3cee74553809fa7956c1">{"x":{"filter":"none","data":[["Luke Skywalker","C-3PO","R2-D2","Darth Vader","Leia Organa","Owen Lars","Beru Whitesun lars","R5-D4","Biggs Darklighter","Obi-Wan Kenobi","Anakin Skywalker","Wilhuff Tarkin","Chewbacca","Han Solo","Greedo","Jabba Desilijic Tiure","Wedge Antilles","Jek Tono Porkins","Yoda","Palpatine","Boba Fett","IG-88","Bossk","Lando Calrissian","Lobot","Ackbar","Mon Mothma","Arvel Crynyd","Wicket Systri Warrick","Nien Nunb","Qui-Gon Jinn","Nute Gunray","Finis Valorum","Jar Jar Binks","Roos Tarpals","Rugor Nass","Ric Olié","Watto","Sebulba","Quarsh Panaka","Shmi Skywalker","Darth Maul","Bib Fortuna","Ayla Secura","Dud Bolt","Gasgano","Ben Quadinaros","Mace Windu","Ki-Adi-Mundi","Kit Fisto","Eeth Koth","Adi Gallia","Saesee Tiin","Yarael Poof","Plo Koon","Mas Amedda","Gregar Typho","Cordé","Cliegg Lars","Poggle the Lesser","Luminara Unduli","Barriss Offee","Dormé","Dooku","Bail Prestor Organa","Jango Fett","Zam Wesell","Dexter Jettster","Lama Su","Taun We","Jocasta Nu","Ratts Tyerell","R4-P17","Wat Tambor","San Hill","Shaak Ti","Grievous","Tarfful","Raymus Antilles","Sly Moore","Tion Medon","Finn","Rey","Poe Dameron","BB8","Captain Phasma","Padmé Amidala"],[172,167,96,202,150,178,165,97,183,182,188,180,228,180,173,175,170,180,66,170,183,200,190,177,175,180,150,null,88,160,193,191,170,196,224,206,183,137,112,183,163,175,180,178,94,122,163,188,198,196,171,184,188,264,188,196,185,157,183,183,170,166,165,193,191,183,168,198,229,213,167,79,96,193,191,178,216,234,188,178,206,null,null,null,null,null,165],[77,75,32,136,49,120,75,32,84,77,84,null,112,80,74,1358,77,110,17,75,78.2,140,113,79,79,83,null,null,20,68,89,90,null,66,82,null,null,null,40,null,null,80,null,55,45,null,65,84,82,87,null,50,null,null,80,null,85,null,null,80,56.2,50,null,80,null,79,55,102,88,null,null,15,null,48,null,57,159,136,79,48,80,null,null,null,null,null,45],["male",null,null,"male","female","male","female",null,"male","male","male","male","male","male","male","hermaphrodite","male","male","male","male","male","none","male","male","male","male","female","male","male","male","male","male","male","male","male","male","male","male","male","male","female","male","male","female","male","male","male","male","male","male","male","female","male","male","male","male","male","female","male","male","female","female","female","male","male","male","female","male","male","female","female","male","female","male","male","female","male","male","male","female","male","male","female","male","none","female","female"],["Human","Droid","Droid","Human","Human","Human","Human","Droid","Human","Human","Human","Human","Wookiee","Human","Rodian","Hutt","Human","Human","Yoda's species","Human","Human","Droid","Trandoshan","Human","Human","Mon Calamari","Human","Human","Ewok","Sullustan","Human","Neimodian","Human","Gungan","Gungan","Gungan",null,"Toydarian","Dug",null,"Human","Zabrak","Twi'lek","Twi'lek","Vulptereen","Xexto","Toong","Human","Cerean","Nautolan","Zabrak","Tholothian","Iktotchi","Quermian","Kel Dor","Chagrian","Human","Human","Human","Geonosian","Mirialan","Mirialan","Human","Human","Human","Human","Clawdite","Besalisk","Kaminoan","Kaminoan","Human","Aleena",null,"Skakoan","Muun","Togruta","Kaleesh","Wookiee","Human",null,"Pau'an","Human","Human","Human","Droid",null,"Human"],["Tatooine","Tatooine","Naboo","Tatooine","Alderaan","Tatooine","Tatooine","Tatooine","Tatooine","Stewjon","Tatooine","Eriadu","Kashyyyk","Corellia","Rodia","Nal Hutta","Corellia","Bestine IV",null,"Naboo","Kamino",null,"Trandosha","Socorro","Bespin","Mon Cala","Chandrila",null,"Endor","Sullust",null,"Cato Neimoidia","Coruscant","Naboo","Naboo","Naboo","Naboo","Toydaria","Malastare","Naboo","Tatooine","Dathomir","Ryloth","Ryloth","Vulpter","Troiken","Tund","Haruun Kal","Cerea","Glee Anselm","Iridonia","Coruscant","Iktotch","Quermia","Dorin","Champala","Naboo","Naboo","Tatooine","Geonosis","Mirial","Mirial","Naboo","Serenno","Alderaan","Concord Dawn","Zolan","Ojom","Kamino","Kamino","Coruscant","Aleen Minor",null,"Skako","Muunilinst","Shili","Kalee","Kashyyyk","Alderaan","Umbara","Utapau",null,null,null,null,null,"Naboo"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>name<\/th>\n      <th>height<\/th>\n      <th>mass<\/th>\n      <th>gender<\/th>\n      <th>species<\/th>\n      <th>homeworld<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p>Note that the first column contains character type data, the second and third columns contain numerical data (of type double) and the remaining columns contain the special type we briefly touched on last week, factors, that look like character types but have a limited set of values or categories.</p>
 <div id="lists" class="section level2">
 <h2>Lists</h2>
@@ -731,23 +734,165 @@ genomics_instruments</code></pre>
 <p>Even more conveniently we can use the <code>$</code> operator.</p>
 <pre class="r"><code>genomics_instruments$sequencers</code></pre>
 <pre><code>## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;</code></pre>
+<p>You can see what the names of elements in your list are using the <code>names()</code> function.</p>
+<pre class="r"><code>names(genomics_instruments)</code></pre>
+<pre><code>## [1] &quot;sequencers&quot;             &quot;liquid_handling_robots&quot;</code></pre>
 </div>
 <div id="data-frames" class="section level2">
 <h2>Data frames</h2>
 <p>A much more useful data structure and the one we will mostly be using for the rest of the course is the <strong>data frame</strong>. This is actually a special type of list in which all the elements are vectors of the same length. The data frame is how R represents tabular data like the Star Wars table.</p>
-<p>TODO</p>
-<ul>
-<li>need to explain that the starwars table is a data frame in the dplyr package in the tidyverse so need to load the tidyverse, library(tidyverse)</li>
-<li>access columns in the data frame using $ notation just as we did for lists</li>
-<li>selecting multiple columns using vectors or indices or names, e.g. starwars[c(1, 2, 3, 8, 10, 9)] or starwars[c(“name”, “height”, “mass”, “gender”, “species”, “homeworld”)</li>
-<li>colnames(), dim(), nrow() and ncol() functions</li>
-<li>access individual elements in matrix-like notation, e.g. [2, 6]</li>
-<li>access subsets of rows, e.g. starwars[1:5,] or rows and columns, e.g. starwars[1:5, c(“name”, “species”)]</li>
-<li>compute some summary statistics, e.g. summary(starwars[c(“name”, “height”, “mass”, “gender”, “species”, “homeworld”)]) or create a starwars_selected_columns object first to make this it bit easier to read</li>
-</ul>
+<p>There are a number of example data frames lurking in the background just waiting for you to call on them. Many of the examples for functions given in the help pages for those functions make use of these. Two such data frames that are often used in example code snippets are <strong><code>iris</code></strong> and <strong><code>mtcars</code></strong>. To bring them to the foreground, you can just start using them by name.</p>
+<pre class="r"><code>iris</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<p>Here we’ve only displayed the first few rows. If you type <code>iris</code> into the console pane you’ll notice that it prints the entire table with row numbers that indicate that the data frame contains measurements for 150 irises.</p>
+<p>You can also get help for a data set such as <code>iris</code> in the usual way.</p>
+<pre class="r"><code>?iris</code></pre>
+<p>This reveals that <code>iris</code> is a rather famous old data set from measurements taken by the esteemed British statistician and geneticist, Ronald Fisher (he of Fisher’s exact test fame).</p>
+<p>And just for completeness, here’s an example of a help page that uses <code>iris</code> in one of its examples (look at the very last line where the mysterious <code>iris</code> appears, potentially causing a lot of confusion to the uninitiated).</p>
+<pre class="r"><code>?unique</code></pre>
+<p>A data frame is a special type of list so you can access its elements in the same way as we saw previously for lists.</p>
+<pre class="r"><code>names(iris)</code></pre>
+<pre><code>## [1] &quot;Sepal.Length&quot; &quot;Sepal.Width&quot;  &quot;Petal.Length&quot; &quot;Petal.Width&quot; 
+## [5] &quot;Species&quot;</code></pre>
+<pre class="r"><code>iris$Petal.Width # or equivalently iris[[&quot;Petal.Width&quot;]] or iris[[4]]</code></pre>
+<pre><code>##   [1] 0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.1 0.2 0.2 0.1 0.1 0.2 0.4 0.4
+##  [18] 0.3 0.3 0.3 0.2 0.4 0.2 0.5 0.2 0.2 0.4 0.2 0.2 0.2 0.2 0.4 0.1 0.2
+##  [35] 0.2 0.2 0.2 0.1 0.2 0.2 0.3 0.3 0.2 0.6 0.4 0.3 0.2 0.2 0.2 0.2 1.4
+##  [52] 1.5 1.5 1.3 1.5 1.3 1.6 1.0 1.3 1.4 1.0 1.5 1.0 1.4 1.3 1.4 1.5 1.0
+##  [69] 1.5 1.1 1.8 1.3 1.5 1.2 1.3 1.4 1.4 1.7 1.5 1.0 1.1 1.0 1.2 1.6 1.5
+##  [86] 1.6 1.5 1.3 1.3 1.3 1.2 1.4 1.2 1.0 1.3 1.2 1.3 1.3 1.1 1.3 2.5 1.9
+## [103] 2.1 1.8 2.2 2.1 1.7 1.8 1.8 2.5 2.0 1.9 2.1 2.0 2.4 2.3 1.8 2.2 2.3
+## [120] 1.5 2.3 2.0 2.0 1.8 2.1 1.8 1.8 1.8 2.1 1.6 1.9 2.0 2.2 1.5 1.4 2.3
+## [137] 2.4 1.8 1.8 2.1 2.4 2.3 1.9 2.3 2.5 2.3 1.9 2.0 2.3 1.8</code></pre>
+<p>In that last example we extracted the <code>Petal.Width</code> column which itself is a vector. We can further subset the values in that column to, say, return the first 10 values only.</p>
+<pre class="r"><code>iris$Petal.Length[1:10]</code></pre>
+<pre><code>##  [1] 1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5</code></pre>
+<p>We can also select a subset of columns as follows:</p>
+<pre class="r"><code>iris[c(&quot;Petal.Width&quot;, &quot;Petal.Length&quot;, &quot;Species&quot;)] # or equivalently iris[c(4, 3, 5)]</code></pre>
+<pre><code>##   Petal.Width Petal.Length Species
+## 1         0.2          1.4  setosa
+## 2         0.2          1.4  setosa
+## 3         0.2          1.3  setosa
+## 4         0.2          1.5  setosa
+## 5         0.2          1.4  setosa
+## 6         0.4          1.7  setosa</code></pre>
+<p>Data frames have rows and columns both of which have names that can be used to extract subsets of our tabular data. You can get those names using <strong><code>rownames()</code></strong> and <strong><code>colnames()</code></strong>.</p>
+<pre class="r"><code>colnames(iris) # this is essentially the same as names()</code></pre>
+<pre><code>## [1] &quot;Sepal.Length&quot; &quot;Sepal.Width&quot;  &quot;Petal.Length&quot; &quot;Petal.Width&quot; 
+## [5] &quot;Species&quot;</code></pre>
+<pre class="r"><code>rownames(iris)</code></pre>
+<pre><code>##   [1] &quot;1&quot;   &quot;2&quot;   &quot;3&quot;   &quot;4&quot;   &quot;5&quot;   &quot;6&quot;   &quot;7&quot;   &quot;8&quot;   &quot;9&quot;   &quot;10&quot;  &quot;11&quot; 
+##  [12] &quot;12&quot;  &quot;13&quot;  &quot;14&quot;  &quot;15&quot;  &quot;16&quot;  &quot;17&quot;  &quot;18&quot;  &quot;19&quot;  &quot;20&quot;  &quot;21&quot;  &quot;22&quot; 
+##  [23] &quot;23&quot;  &quot;24&quot;  &quot;25&quot;  &quot;26&quot;  &quot;27&quot;  &quot;28&quot;  &quot;29&quot;  &quot;30&quot;  &quot;31&quot;  &quot;32&quot;  &quot;33&quot; 
+##  [34] &quot;34&quot;  &quot;35&quot;  &quot;36&quot;  &quot;37&quot;  &quot;38&quot;  &quot;39&quot;  &quot;40&quot;  &quot;41&quot;  &quot;42&quot;  &quot;43&quot;  &quot;44&quot; 
+##  [45] &quot;45&quot;  &quot;46&quot;  &quot;47&quot;  &quot;48&quot;  &quot;49&quot;  &quot;50&quot;  &quot;51&quot;  &quot;52&quot;  &quot;53&quot;  &quot;54&quot;  &quot;55&quot; 
+##  [56] &quot;56&quot;  &quot;57&quot;  &quot;58&quot;  &quot;59&quot;  &quot;60&quot;  &quot;61&quot;  &quot;62&quot;  &quot;63&quot;  &quot;64&quot;  &quot;65&quot;  &quot;66&quot; 
+##  [67] &quot;67&quot;  &quot;68&quot;  &quot;69&quot;  &quot;70&quot;  &quot;71&quot;  &quot;72&quot;  &quot;73&quot;  &quot;74&quot;  &quot;75&quot;  &quot;76&quot;  &quot;77&quot; 
+##  [78] &quot;78&quot;  &quot;79&quot;  &quot;80&quot;  &quot;81&quot;  &quot;82&quot;  &quot;83&quot;  &quot;84&quot;  &quot;85&quot;  &quot;86&quot;  &quot;87&quot;  &quot;88&quot; 
+##  [89] &quot;89&quot;  &quot;90&quot;  &quot;91&quot;  &quot;92&quot;  &quot;93&quot;  &quot;94&quot;  &quot;95&quot;  &quot;96&quot;  &quot;97&quot;  &quot;98&quot;  &quot;99&quot; 
+## [100] &quot;100&quot; &quot;101&quot; &quot;102&quot; &quot;103&quot; &quot;104&quot; &quot;105&quot; &quot;106&quot; &quot;107&quot; &quot;108&quot; &quot;109&quot; &quot;110&quot;
+## [111] &quot;111&quot; &quot;112&quot; &quot;113&quot; &quot;114&quot; &quot;115&quot; &quot;116&quot; &quot;117&quot; &quot;118&quot; &quot;119&quot; &quot;120&quot; &quot;121&quot;
+## [122] &quot;122&quot; &quot;123&quot; &quot;124&quot; &quot;125&quot; &quot;126&quot; &quot;127&quot; &quot;128&quot; &quot;129&quot; &quot;130&quot; &quot;131&quot; &quot;132&quot;
+## [133] &quot;133&quot; &quot;134&quot; &quot;135&quot; &quot;136&quot; &quot;137&quot; &quot;138&quot; &quot;139&quot; &quot;140&quot; &quot;141&quot; &quot;142&quot; &quot;143&quot;
+## [144] &quot;144&quot; &quot;145&quot; &quot;146&quot; &quot;147&quot; &quot;148&quot; &quot;149&quot; &quot;150&quot;</code></pre>
+<p>In this case the row names are just numbers but did you notice that these row numbers are all displayed in quotation marks? They are in fact characters.</p>
+<pre class="r"><code>typeof(rownames(iris))</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<p>If we take a look at the <code>mtcars</code> data frame we can see that the row names are models of cars.</p>
+<pre class="r"><code>rownames(mtcars)</code></pre>
+<pre><code>##  [1] &quot;Mazda RX4&quot;           &quot;Mazda RX4 Wag&quot;       &quot;Datsun 710&quot;         
+##  [4] &quot;Hornet 4 Drive&quot;      &quot;Hornet Sportabout&quot;   &quot;Valiant&quot;            
+##  [7] &quot;Duster 360&quot;          &quot;Merc 240D&quot;           &quot;Merc 230&quot;           
+## [10] &quot;Merc 280&quot;            &quot;Merc 280C&quot;           &quot;Merc 450SE&quot;         
+## [13] &quot;Merc 450SL&quot;          &quot;Merc 450SLC&quot;         &quot;Cadillac Fleetwood&quot; 
+## [16] &quot;Lincoln Continental&quot; &quot;Chrysler Imperial&quot;   &quot;Fiat 128&quot;           
+## [19] &quot;Honda Civic&quot;         &quot;Toyota Corolla&quot;      &quot;Toyota Corona&quot;      
+## [22] &quot;Dodge Challenger&quot;    &quot;AMC Javelin&quot;         &quot;Camaro Z28&quot;         
+## [25] &quot;Pontiac Firebird&quot;    &quot;Fiat X1-9&quot;           &quot;Porsche 914-2&quot;      
+## [28] &quot;Lotus Europa&quot;        &quot;Ford Pantera L&quot;      &quot;Ferrari Dino&quot;       
+## [31] &quot;Maserati Bora&quot;       &quot;Volvo 142E&quot;</code></pre>
+<p>We could look up the row for a particular car using the square bracket notation but in a slightly different and odd-looking way.</p>
+<pre class="r"><code>mtcars[&quot;Ferrari Dino&quot;, ]</code></pre>
+<pre><code>##               mpg cyl disp  hp drat   wt qsec vs am gear carb
+## Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6</code></pre>
+<p>The <strong><code>,</code></strong> is somehow telling R to subset based on rows, not columns. If you omit the comma, R will think you’re referring to columns and will complain because it can’t find columns for the Ferrari or the Maserati (give it go and see for yourself).</p>
+<p>Similarly we can extract multiple rows by providing a vector of car names:</p>
+<pre class="r"><code>mtcars[c(&quot;Ferrari Dino&quot;, &quot;Maserati Bora&quot;), ]</code></pre>
+<pre><code>##                mpg cyl disp  hp drat   wt qsec vs am gear carb
+## Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
+## Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8</code></pre>
+<p>This was of accessing the data frame makes more sense when we look at how we can access subsets of rows and columns at the same time, for example selecting the first five rows and the first five columns.</p>
+<pre class="r"><code>mtcars[1:5, 1:5] # equivalent to mtcars[c(&quot;Mazda RX4&quot;, &quot;Mazda RX4 Wag&quot;, &quot;Datsun 710&quot;, &quot;Hornet 4 Drive&quot;, &quot;Hornet Sportabout&quot;), c(&quot;mpg&quot;, &quot;cyl&quot;, &quot;disp&quot;, &quot;hp&quot;, &quot;drat&quot;)]</code></pre>
+<pre><code>##                    mpg cyl disp  hp drat
+## Mazda RX4         21.0   6  160 110 3.90
+## Mazda RX4 Wag     21.0   6  160 110 3.90
+## Datsun 710        22.8   4  108  93 3.85
+## Hornet 4 Drive    21.4   6  258 110 3.08
+## Hornet Sportabout 18.7   8  360 175 3.15</code></pre>
+<p>We can extract just a single element in our table.</p>
+<pre class="r"><code>mtcars[4, 3]</code></pre>
+<pre><code>## [1] 258</code></pre>
+<p>Other useful functions for data frames are <strong><code>dim()</code></strong>, <strong><code>nrow()</code></strong> and <strong><code>ncol()</code></strong> that let you know about the dimensions of your table.</p>
+<pre class="r"><code>dim(mtcars)</code></pre>
+<pre><code>## [1] 32 11</code></pre>
+<pre class="r"><code>nrow(mtcars)</code></pre>
+<pre><code>## [1] 32</code></pre>
+<pre class="r"><code>ncol(mtcars)</code></pre>
+<pre><code>## [1] 11</code></pre>
+<p>Some functions work just as well (or even better) with data frames as they do with vectors. Remember the <strong><code>summary()</code></strong> function from last week? Let’s give that a go on the <code>iris</code> data frame.</p>
+<pre class="r"><code>summary(iris)</code></pre>
+<pre><code>##   Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   
+##  Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  
+##  1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  
+##  Median :5.800   Median :3.000   Median :4.350   Median :1.300  
+##  Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  
+##  3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  
+##  Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  
+##        Species  
+##  setosa    :50  
+##  versicolor:50  
+##  virginica :50  
+##                 
+##                 
+## </code></pre>
+<p>Wow, that’s amazing! One simple command to compute all those useful summary statistics for our entire data set.</p>
+<div id="viewing-data-frames" class="section level3">
+<h3>Viewing data frames</h3>
+<p>One last aside before moving on the more user-friendly tidyverse version of the data frame (the tibble). Earlier we truncated the data frame when printing it out because it was really a bit too long to digest in one go. Although we hid this from view, we used the <strong><code>head()</code></strong> function.</p>
+<pre class="r"><code>head(iris)</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<p>You can specify how many rows to return from the ‘head’ (top) of the data frame – have a look at the help page to see how. Also, the help page lets you know about the equivalent function, <strong><code>tail()</code></strong>, for returning the last few rows.</p>
+<p>Another way of inspecting the contents of a data frame in RStudio is to bring up a spreadsheet-style data viewer using the <code>View()</code> function.</p>
+<pre class="r"><code>View(iris)</code></pre>
+<p>This will open a new tab pane in the top left-hand part of RStudio alongside any script or markdown files you have open.</p>
+<div class="figure">
+<img src="images/RStudio_data_viewer.png" />
+
+</div>
+<p>This viewer has some handy filtering capabilities - try using the search box, e.g. by entering the search term ‘versi’, and see what happens.</p>
+<p>Another handy hint: you can look at one of a data frames listed in the Environment tab pane by double-clicking on it.</p>
+</div>
 </div>
 <div id="tibbles" class="section level2">
 <h2>Tibbles</h2>
+<p>TODO</p>
+<ul>
+<li>need to explain that the starwars table is a data frame in the dplyr package in the tidyverse so need to load the tidyverse, library(tidyverse)</li>
+<li>printing to the console</li>
+<li>viewing by double-clicking in the Environment pane</li>
+</ul>
 </div>
 </div>
 <div id="packages" class="section level1">

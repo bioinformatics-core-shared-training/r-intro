@@ -26,7 +26,7 @@ functions to get certain tasks done. This collection of packages form a
 coherant system for data manipulation, exploration and visualization that
 share a common design philosophy. There is a certain elegance to code crafted
 using the tidyverse approach that is in stark contrast to the strange and
-often cryptic equivalent using traditional 'base R'. This author only really
+often cryptic equivalent using traditional 'base R'. This old-timer only really
 became a true R convert on being introduced to the tidyverse.
 
 Sadly, as much as we'd like, we can't just cover the tidyverse alone and
@@ -170,6 +170,13 @@ samples
 But as we saw last week, R doesn't treat this single value any differently;
 it is still a vector, just one that has a length of 1.
 
+And talking of lengths, one function you're likely to use is the `length()`
+function, which unsurprisingly returns the numbers of elements in a vector.
+
+```{r}
+length(some_numbers)
+```
+
 Almost every object in R is a vector of one kind or another, or is constructed
 of vectors, so it's really important to understand these well.
 
@@ -179,7 +186,7 @@ The other way we've encountered for creating a vector is to use **`c()`**. This
 is actually a function and we can get help for it just as we can for any other
 function.
 
-```{r}
+```{r eval = FALSE}
 ?c
 ```
 
@@ -187,13 +194,13 @@ From the help page you can see that `c` stands for 'combine' (or perhaps also
 'concatenate', both terms are used in the documentation).
 
 One of the most useful things about the help pages for functions are the
-examples that are given -- you'll need to scroll down to the bottom of the page
-to see them. These can be really helpful in demonstrating how a function works.
-You can very easily cut and paste these examples and run these in the console
-window as a way of experimenting with and learning about the function.
+examples that are given -- you'll need to scroll down to the bottom of the help
+page to see them. These can be really helpful in demonstrating how a function
+works. You can very easily cut and paste these examples and run these in the
+console window as a way of experimenting with and learning about the function.
 
-Let's have a look at the first example. It's slighly more complicated than
-what we did last week.
+Let's have a look at the first example from the help page for `c()`. It's
+slighly more complicated than what we did last week.
 
 ```{r}
 c(1, 7:9)
@@ -213,7 +220,7 @@ cats_and_dogs
 
 Atomic vectors must contain values that are all of the same type. A bit later
 on, we'll introduce another type of data structure that doesn't have this
-restriction -- lists. First though, a look at back at one of the exercises
+restriction -- the list. First though, a look at back at one of the exercises
 from last week's assignment in which we tried to create vectors of things
 that are of different types.
 
@@ -247,7 +254,7 @@ point) to integers (whole numbers) and losing some of their precision.
 
 Finally, it is really not obvious how to convert most character strings into
 either logical or numeric values, so when combining vectors that contain
-characters everything else gets 'coerced' into becoming characters also.
+characters everything else gets 'coerced' into becoming characters.
 
 ```{r}
 we_all_want_to_be_characters <- c(FALSE, 1:5, 23L, 3.23, 5.2e4, 1e-6, "matt")
@@ -571,6 +578,13 @@ Even more conveniently we can use the `$` operator.
 genomics_instruments$sequencers
 ```
 
+You can see what the names of elements in your list are using the `names()`
+function.
+
+```{r}
+names(genomics_instruments)
+```
+
 ## Data frames
 
 A much more useful data structure and the one we will mostly be using for the
@@ -578,17 +592,183 @@ rest of the course is the **data frame**. This is actually a special type of
 list in which all the elements are vectors of the same length. The data frame is
 how R represents tabular data like the Star Wars table.
 
+There are a number of example data frames lurking in the background just waiting
+for you to call on them. Many of the examples for functions given in the help
+pages for those functions make use of these. Two such data frames that are often
+used in example code snippets are **`iris`** and **`mtcars`**. To bring them to
+the foreground, you can just start using them by name.
+
+```{r eval = FALSE}
+iris
+```
+
+```{r echo = FALSE}
+head(iris)
+```
+
+Here we've only displayed the first few rows. If you type `iris` into the
+console pane you'll notice that it prints the entire table with row numbers
+that indicate that the data frame contains measurements for 150 irises.
+
+You can also get help for a data set such as `iris` in the usual way.
+
+```{r eval = FALSE}
+?iris
+```
+
+This reveals that `iris` is a rather famous old data set from measurements taken
+by the esteemed British statistician and geneticist, Ronald Fisher (he of
+Fisher's exact test fame).
+
+And just for completeness, here's an example of a help page that uses `iris` in
+one of its examples (look at the very last line where the mysterious `iris`
+appears, potentially causing a lot of confusion to the uninitiated).
+
+```{r eval = FALSE}
+?unique
+```
+
+A data frame is a special type of list so you can access its elements in the
+same way as we saw previously for lists.
+
+```{r}
+names(iris)
+iris$Petal.Width # or equivalently iris[["Petal.Width"]] or iris[[4]]
+```
+
+In that last example we extracted the `Petal.Width` column which itself is a
+vector. We can further subset the values in that column to, say, return the
+first 10 values only.
+
+```{r}
+iris$Petal.Length[1:10]
+```
+
+We can also select a subset of columns as follows:
+
+```{r eval = FALSE}
+iris[c("Petal.Width", "Petal.Length", "Species")] # or equivalently iris[c(4, 3, 5)]
+```
+
+```{r echo = FALSE}
+head(iris[c("Petal.Width", "Petal.Length", "Species")])
+```
+
+Data frames have rows and columns both of which have names that can be used to
+extract subsets of our tabular data. You can get those names using
+**`rownames()`** and **`colnames()`**.
+
+```{r}
+colnames(iris) # this is essentially the same as names()
+rownames(iris)
+```
+
+In this case the row names are just numbers but did you notice that these
+row numbers are all displayed in quotation marks? They are in fact characters.
+
+```{r}
+typeof(rownames(iris))
+```
+
+If we take a look at the `mtcars` data frame we can see that the row names are
+models of cars.
+
+```{r}
+rownames(mtcars)
+```
+
+We could look up the row for a particular car using the square bracket notation
+but in a slightly different and odd-looking way.
+
+```{r}
+mtcars["Ferrari Dino", ]
+```
+
+The **`,`** is somehow telling R to subset based on rows, not columns. If you
+omit the comma, R will think you're referring to columns and will complain
+because it can't find columns for the Ferrari or the Maserati (give it go and
+see for yourself).
+
+Similarly we can extract multiple rows by providing a vector of car names:
+
+```{r}
+mtcars[c("Ferrari Dino", "Maserati Bora"), ]
+```
+
+This was of accessing the data frame makes more sense when we look at how
+we can access subsets of rows and columns at the same time, for example
+selecting the first five rows and the first five columns.
+
+```{r}
+mtcars[1:5, 1:5] # equivalent to mtcars[c("Mazda RX4", "Mazda RX4 Wag", "Datsun 710", "Hornet 4 Drive", "Hornet Sportabout"), c("mpg", "cyl", "disp", "hp", "drat")]
+```
+
+We can extract just a single element in our table.
+
+```{r}
+mtcars[4, 3]
+```
+
+Other useful functions for data frames are **`dim()`**, **`nrow()`** and
+**`ncol()`** that let you know about the dimensions of your table.
+
+```{r}
+dim(mtcars)
+nrow(mtcars)
+ncol(mtcars)
+```
+
+Some functions work just as well (or even better) with data frames as they do
+with vectors. Remember the **`summary()`** function from last week? Let's give
+that a go on the `iris` data frame.
+
+```{r}
+summary(iris)
+```
+
+Wow, that's amazing! One simple command to compute all those useful summary
+statistics for our entire data set.
+
+### Viewing data frames
+
+One last aside before moving on the more user-friendly tidyverse version of the
+data frame (the tibble). Earlier we truncated the data frame when printing it
+out because it was really a bit too long to digest in one go. Although we hid
+this from view, we used the **`head()`** function.
+
+```{r}
+head(iris)
+```
+
+You can specify how many rows to return from the 'head' (top) of the data frame
+-- have a look at the help page to see how. Also, the help page lets you know
+about the equivalent function, **`tail()`**, for returning the last few rows.
+
+Another way of inspecting the contents of a data frame in RStudio is to bring up
+a spreadsheet-style data viewer using the `View()` function.
+
+```{r eval = FALSE}
+View(iris)
+```
+
+This will open a new tab pane in the top left-hand part of RStudio alongside
+any script or markdown files you have open.
+
+![](images/RStudio_data_viewer.png)
+
+This viewer has some handy filtering capabilities - try using the search box,
+e.g. by entering the search term 'versi', and see what happens.
+
+Another handy hint: you can look at one of a data frames listed in the
+Environment tab pane by double-clicking on it.
+
+## Tibbles
+
 TODO
 
 * need to explain that the starwars table is a data frame in the dplyr package in the tidyverse so need to load the tidyverse, library(tidyverse)
-* access columns in the data frame using $ notation just as we did for lists
-* selecting multiple columns using vectors or indices or names, e.g. starwars[c(1, 2, 3, 8, 10, 9)] or starwars[c("name", "height", "mass", "gender", "species", "homeworld")
-* colnames(), dim(), nrow() and ncol() functions
-* access individual elements in matrix-like notation, e.g. [2, 6]
-* access subsets of rows, e.g. starwars[1:5,] or rows and columns, e.g. starwars[1:5, c("name", "species")]
-* compute some summary statistics, e.g. summary(starwars[c("name", "height", "mass", "gender", "species", "homeworld")]) or create a starwars_selected_columns object first to make this it bit easier to read
-
-## Tibbles
+* printing to the console
+* viewing by double-clicking in the Environment pane
 
 # Packages
 
