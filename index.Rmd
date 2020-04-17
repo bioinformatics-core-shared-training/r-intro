@@ -15,7 +15,9 @@ April - June 2020
 * Matt Eldridge
 * Mark Fernandes
 * Kamal Kishore
+* Sergio Martinez Cuesta
 * Ashley Sawle
+* Rory Stark
 
 # Description
 
@@ -50,9 +52,9 @@ chats and calls within Teams.
 
 0. [Getting set up](week0.html) (6 April) - installing R and RStudio
 
-1. [Introduction to R](week1.html) (14 April) - Interacting with R using RStudio and introducing objects, data types, functions and reading in tabular data
+1. [Introduction to R](week1.html) (14 April) - Interacting with R using RStudio and introducing objects, data types and functions
 
-2. [Working with data](week2.html) (20 April) - Creating R projects in RStudio, working with tabular data and other types of objects in R
+2. [Working with data](week2.html) (20 April) - Creating R scripts, working with tabular data and other types of objects in R, reading data into R
 
 3. Visualizing tabular data with ggplot2 (27 April)
 

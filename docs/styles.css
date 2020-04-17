@@ -3,7 +3,8 @@ h1 {
 }
 h1.title {
   font-size: 28px;
-}h2 {
+}
+h2 {
   font-size: 20px;
 }
 h3 {
@@ -22,4 +23,11 @@ img {
   display: block;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+blockquote  {
+    background: #efefef;
+    border-left: 5px solid #ddd;
+}
+blockquote p,ul,ol {
+    font-size: .9em;
 }

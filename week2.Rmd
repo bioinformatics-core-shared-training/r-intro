@@ -2,5 +2,607 @@
 title: "Week 2 -- Getting started with data in R"
 ---
 
-Coming soon.
+> ### Learning objectives
+>
+> * Create and run a script file containing your R code
+> * More on vectors including extracting values or subsets and modifying their contents
+> * Vector arithmetic
+> * More sophisticated data structures but all built from vectors (lists and data frames)
+> * Learn how R deals with missing values
+> * Learn how to install and use packages that extend R's basic functionality
+> * Read data in tabular format from a spreadsheet
+> * Calculate summary statistics on your tabular data
+> * Introduce the **`tibble`**, arguably the most important data structure you will use in R
+
+# Introduction
+
+In this course, we'll be mostly focusing on a set of R packages specifically
+designed for the most useful and common operations for interacting with and
+visualizing data, and particularly data in a tabular form. This collection of
+packages is known as the **tidyverse**.
+
+Learning the **tidyverse** is more than just learning about some helpful
+functions to get certain tasks done. This collection of packages form a
+coherant system for data manipulation, exploration and visualization that
+share a common design philosophy. There is a certain elegance to code crafted
+using the tidyverse approach that is in stark contrast to the strange and
+often cryptic equivalent using traditional 'base R'. This author only really
+became a true R convert on being introduced to the tidyverse.
+
+Sadly, as much as we'd like, we can't just cover the tidyverse alone and
+ignore the fundamentals of the R language. So this week we will look at some
+aspects of R that are crucial to understanding how R is handling your data,
+even though we will come back to some of these concepts in later weeks to show
+you how those same operations are more easily and elegantly carried out in
+the tidyverse.
+
+We will also start to look at the most important data structure you'll use
+with your data, assuming it is in tabular form, the **data frame**, and its
+superior tidyverse derivative, the **tibble**.
+
+# Scripts
+
+Up to now, we were mostly typing code in the Console pane at the **`>`** prompt.
+This is a very interactive way of working with R but what if you want to save
+the commands you've typed for a future session working in R?
+
+Instead we can create a script file containing our R commands that we can come
+back to later. This is the way most R coding is done so let's have a go.
+
+From the RStudio '**File**' menu, select '**New File**' and then '**R Script**'.
+
+![](images/RStudio_new_file_menu.png){width=50%}
+
+You should now have a new file in the top left-hand side of RStudio for your new
+R script named 'Untitled1'. The Console window no longer occupies the whole of
+left-hand side.
+
+![](images/RStudio_new_script.png){width=100%}
+
+We can type code into this file just as we have done in the Console window at
+the command prompt.
+
+Type in some of the commands from last week's assignment. Do you notice that the
+file name on the tab for this pane is now highlighted in red and has an
+asterisk?
+
+![](images/RStudio_modified_script.png){width=50%}
+
+This tells us that we haven't yet saved our changes. There are various ways to
+do so just like in Word or Excel or other applications you're familiar with, for
+example using the '**Save**' option from the '**File**' menu or clicking on the
+'**Save**' button.
+
+My preference by far is to use a keyboard shortcut. On a Mac this would be
+<kbd>cmd</kbd> + <kbd>S</kbd> (press the <kbd>cmd</kbd> key first and, while
+keeping this depressed, click the <kbd>S</kbd> key); on Windows you would do the
+same thing using <kbd>Ctrl</kbd> + <kbd>S</kbd>.
+
+If the file already exists it will be saved without any further ado. As this is
+a new file, RStudio needs to know what you want to call it and in which folder
+on your computer you want it to be saved. You can choose these using the file
+dialog that appears. RStudio will add a '.R' suffix if you don't specify one.
+
+It is a good idea to keep your scripts and assignment files for this course
+together in one folder or directory.
+
+## Running scripts
+
+Having typed an R command and hit the return key you'll notice that the
+command isn't actually run like it was in the console window. That's because
+you're writing your R code in an editor. To run a single line of code within
+your script you can press the '**Run**' button at the top of the script.
+
+![](images/RStudio_run_script_command.png)
+
+This will run the line of code on which the cursor is flashing or the next line
+of code if the cursor is on a blank or empty line.
+
+The keyboard shortcut is more convenient in practice as you won't have to stop
+typing at the keyboard to use your mouse. This is <kbd>cmd</kbd> +
+<kbd>return</kbd> on a Mac and <kbd>Ctrl</kbd> + <kbd>enter</kbd> on Windows.
+
+Running a line in your script will automatically move the cursor onto the
+next command which can be very convenient as you'll be able to run successive
+commands just by repeatedly clicking '**Run**' or using the keyboard shortcut.
+
+You can also run the entire script by clicking on the '**Source**' button, a
+little to the right of the '**Run**' button. More useful though is to run 
+'**Source with Echo**' as this will also display your commands and the outputs
+from these in the Console window.
+
+## Adding comments to scripts
+
+It is a very good idea to add comments to your code to explain what it's doing
+or what you intended. This will help others to understand your code and more
+than likely even yourself when you come to revisit it a few weeks or months
+later.
+
+Anything following a **`#`** symbol is a comment that R will ignore. Here's an
+example of adding comments to our simple script.
+
+![](images/RStudio_script_comments.png)
+
+Comments usually appear at the beginning of lines but can appear at the end of
+an R statement.
+
+```{r}
+days <- c(1, 2, 4, 6, 8, 12, 16) # didn't manage to get a measurement on day 10
+```
+
+It is also quite common when looking at R code to see lines of code commented
+out, usually replaced by another line that does something similar or makes a
+small change.
+
+```{r}
+# random_numbers <- rnorm(100, mean = 0, sd = 1)
+random_numbers <- rnorm(100, mean = 0, sd = 0.5)
+```
+
+# Vectors
+
+In week 1 we introduced **vectors**, the simplest type of data structure in R.
+An atomic vector is a collection of values or things of the same type in a given
+order. We created some last week using **`c()`** and the **`:`** operator.
+
+```{r}
+some_numbers <- 1:10
+days_of_the_week <- c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+```
+
+In the first example, an integer vector was created with 10 values from 1 to 10.
+`some_numbers` is a name that refers to the vector and can be used in other R
+statements while `1:10` is the vector object itself.
+
+```{r}
+squares <- some_numbers ^ 2
+squares
+```
+
+A single value is known as a **scalar**. An example from last week was the
+number of samples in our experiment.
+
+```{r}
+samples <- 8
+samples
+```
+
+But as we saw last week, R doesn't treat this single value any differently;
+it is still a vector, just one that has a length of 1.
+
+Almost every object in R is a vector of one kind or another, or is constructed
+of vectors, so it's really important to understand these well.
+
+## Combining vectors
+
+The other way we've encountered for creating a vector is to use **`c()`**. This
+is actually a function and we can get help for it just as we can for any other
+function.
+
+```{r}
+?c
+```
+
+From the help page you can see that `c` stands for 'combine' (or perhaps also
+'concatenate', both terms are used in the documentation).
+
+One of the most useful things about the help pages for functions are the
+examples that are given -- you'll need to scroll down to the bottom of the page
+to see them. These can be really helpful in demonstrating how a function works.
+You can very easily cut and paste these examples and run these in the console
+window as a way of experimenting with and learning about the function.
+
+Let's have a look at the first example. It's slighly more complicated than
+what we did last week.
+
+```{r}
+c(1, 7:9)
+```
+
+This is actually combining two vectors, the first with a single value `1`
+and the second with values `7`, `8` and `9`. Here's another example:
+
+```{r}
+cats <- c("felix", "kitty", "tigger")
+dogs <- c("spot", "snoopy")
+cats_and_dogs <- c(cats, dogs)
+cats_and_dogs
+```
+
+## Coercion
+
+Atomic vectors must contain values that are all of the same type. A bit later
+on, we'll introduce another type of data structure that doesn't have this
+restriction -- lists. First though, a look at back at one of the exercises
+from last week's assignment in which we tried to create vectors of things
+that are of different types.
+
+```{r}
+integer_logical <- c(1:5, c(TRUE, FALSE, TRUE))
+integer_logical
+typeof(integer_logical)
+```
+
+Combining an integer vector, `1:5`, containing the numbers 1 through 5, with a
+logical vector results in an integer vector. The logical values have been
+*'coerced'* into integers. But why the logical values and not the integers to
+produce a logical vector?
+
+If you think about it, it makes more sense to convert logical values where
+`TRUE` and `FALSE` are usually represented in computers by the bits `1` and `0`
+respectively, i.e. `TRUE` and `FALSE` have natural and understandable
+equivalents in the world of integers. Which logical value would you give to the
+number 5 for example?
+
+Similarly, integers get converted to doubles in this example:
+
+```{r}
+integer_double <- c(3.4, 7, 2.3, 6:-3)
+integer_double
+typeof(integer_double)
+```
+
+Again, this makes more sense than converting doubles (numbers with a decimal
+point) to integers (whole numbers) and losing some of their precision.
+
+Finally, it is really not obvious how to convert most character strings into
+either logical or numeric values, so when combining vectors that contain
+characters everything else gets 'coerced' into becoming characters also.
+
+```{r}
+we_all_want_to_be_characters <- c(FALSE, 1:5, 23L, 3.23, 5.2e4, 1e-6, "matt")
+we_all_want_to_be_characters
+typeof(we_all_want_to_be_characters)
+```
+
+## Extracting subsets
+
+One of the operations we do frequently on our data is to select subsets that
+are of particular interest. For example, we may be interested in the top 50
+genes in a differential expression analysis for our RNA-seq experiment where
+those genes of interest are the ones with a log fold change above a certain
+value and with a p value below 0.01.
+
+Having a good understanding of how to select a subset of values from a vector
+is going to be invaluable when we come to do the same for more complicated
+data structures so let's take a look.
+
+The main subsetting operator we'll use is the square bracket, **`[]`**. Here's an
+example.
+
+```{r}
+log2fc <- c(2.3, -1, 0.48, 0.97, -0.02, 1.23)
+log2fc[3]
+```
+
+We have a vector of five log~2~ fold change values and we've chosen to select
+the third value.
+
+If you're familiar with other programming languages you will notice that the
+indexing scheme in R starts from 1, not 0. So the first element in the vector
+is referred to using the index 1, i.e. `log2fc[1]`.
+
+Multiple values can be extracted by providing a vector of indices, e.g.
+
+```{r}
+log2fc[c(2, 4, 5)]
+```
+
+You can also extract elements in a different order, e.g.
+
+```{r}
+log2fc[c(2, 5, 4)]
+```
+
+It is possible to exclude values instead by providing negative indices.
+
+```{r}
+log2fc[c(-2, -3)]
+```
+
+Which is usually more conveniently written using a vector of positive indices
+and negating these as follows.
+
+```{r}
+log2fc[-c(2, 3)]
+```
+
+Finally, we can also subset our vector using a vector of logical values.
+
+```{r}
+log2fc[c(TRUE, FALSE, TRUE, TRUE, FALSE, FALSE)]
+```
+
+### Conditional subsetting
+
+You may be thinking that this last one seems very abstract and why on earth it
+could possibly be useful, but actually, it is probably the most frequently used
+way of selecting values of interest. To understand why, we'll need to introduce
+the concept of logical operators.
+
+Let's say we're interested in just the log~2~ fold changes that are above a
+threshold of 0.5. We can test each of the values using the **`>`** logical
+operator.
+
+```{r}
+log2fc > 0.5
+```
+
+This results in a logical vector containing `TRUE` and `FALSE` values for each
+element. The values at positions 1, 4 and 6 in our vector are above the
+threshold so result in `TRUE`, the others result in `FALSE`.
+
+We can use this resulting vector to subset our original `log2fc` vector.
+
+```{r}
+log2fc_threshold <- 0.5
+above_threshold <- log2fc > log2fc_threshold
+above_threshold
+log2fc[above_threshold]
+```
+
+In practice, we wouldn't really create a variable containing our logical vector
+signifying whether values are of interest. Instead we'd do this in a single
+step.
+
+```{r}
+log2fc[log2fc > 0.5]
+```
+
+On the other hand, in a real R script, we might want to have a variable for the
+threshold that might be chosen by the user as an command-line argument and so
+could be different each time the script is run.
+
+```{r}
+log2fc_above_threshold <- log2fc[log2fc > log2fc_threshold]
+log2fc_above_threshold
+```
+
+You can combine two or more conditions using **`&`** if you want both conditions
+to be true or using **`|`** if either of the conditions is acceptable but not
+necessarily both.
+
+```{r}
+# small fold changes
+log2fc[log2fc < 0.5 & log2fc > -0.5]
+```
+
+```{r}
+# large fold changes
+log2fc[log2fc > 1 | log2fc < -1]
+```
+
+`&` and `|` are the R versions of the AND and OR operations in Boolean algebra
+but applied to vectors.
+
+### Logical operators
+
+The following table lists the logical operators you can use in R.
+
+| Operator | Description              |
+| -------- | ------------------------ |
+|   < 	   | less than                |
+|   <=     | less than or equal to    |
+|   > 	   | greater than             |
+|   >= 	   | greater than or equal to |
+|   == 	   | exactly equal to         |
+|   != 	   | not equal to             |
+|   !x     | NOT x                    |
+| x \| y 	 | x OR y                   |
+| x & y    | x AND y                  |
+
+`x` and `y` in the last 3 of these operators are intended for logical values; if
+you apply them to other types, those other types will be coerced to logicals in
+exactly the same way we saw earlier.
+
+## Modifying subsets
+
+All subsetting operations can be combined with assignment. So we can modify or
+overwrite the values at specified position in our vector.
+
+```{r}
+some_numbers <- 1:10
+some_numbers[c(2, 4, 8)] <- c(150, 34, -10)
+some_numbers
+```
+
+And, as before, we could use a condition to decide which values to change. For
+example, you may decide that log~2~ fold changes above 1 are somewhat unreliable
+with your detection method and so you'd like to put a cap on any values above
+this limit.
+
+```{r}
+log2fc[log2fc > 1] <- 1
+log2fc
+```
+
+# Vector arithmetic
+
+Many operations in R are **vectorized**, which means that the operation is
+applied to an entire set of values at once. We've already seen lots of examples
+of this, like the following:
+
+```{r}
+some_numbers <- 1:10
+squares <- some_numbers ^ 2
+squares
+```
+
+Here we used the **`^`** exponent operator to raise our numbers to the power of
+2. This happened in a single operation, i.e. just one line of code. In other
+computer languages we might have had to write what is known as a loop in order
+to iterate over and perform the calculation for each value in turn.
+
+Another way of writing the above statement to get the same result would be to
+multiply our numbers by themselves.
+
+```{r}
+squares <- some_numbers * some_numbers
+squares
+```
+
+What actually happened here was slightly different though. Two vectors
+(actually the same vector in this case) of the same length were multiplied
+together. R did this **_element-by-element_**, which means that the first
+element from the first vector was multiplied by the first element of the second
+vector. Likewise, the second elements from each vector were multiplied by each
+other and so on.
+
+Here's another example involving two different vectors, but again these are
+of the same length.
+
+```{r}
+1:10 + 10:1
+```
+
+Can you see why we get this result? (type `10:1` in the console if you're
+not sure about what that gives).
+
+Usually vector arithmetic involves two vectors of the same length or involves
+a vector and a scalar (a vector of length 1). One of the first examples from
+last week was the second scenario involving a vector and a single value.
+
+```{r}
+1:36 * 2
+```
+
+## Vector recycling (advanced)
+
+It is possible to perform calculations using two vectors of different sizes.
+When R runs out of values to use from the shorter of the two vectors, it wraps
+around to the beginning of that shorter one. For example, we can set alternate
+values in our set of numbers to be negative as follows:
+
+```{r}
+some_numbers * c(1, -1)
+```
+
+When R gets to the third element it has exhausted the shorter vector,
+`c(1, -1)`, so it goes back to the beginning, i.e. back to the first value,
+`1`. It uses the second vector five times in what is referred to as **_vector
+recycling_**.
+
+You will probably never have to do something like this (why would you?) but
+without you knowing it you will carry out vector arithmetic using recycling
+very frequently. This is because a very common operation is to carry out a
+calculation on a vector using a single scalar value. For example, multiplying
+all values by a constant.
+
+```{r}
+heights_in_metres <- c(1.86, 1.65, 1.72, 1.4, 1.79)
+heights_in_centimetres <- 100 * heights_in_metres
+heights_in_centimetres
+```
+
+The multiplier of 100 is effectively being recycled and so is equivalent
+to us having written the following:
+
+```{r}
+heights_in_centimetres <- c(100, 100, 100, 100, 100) * heights_in_metres
+```
+
+Vector recycling in R requires that the length of the longer vector is an exact
+multiple of the length of the shorter. If not, R will give a warning.
+
+```{r}
+1:7 * c(1, -1)
+```
+
+# Combining data of different types
+
+Vectors are all very well and good but your data are almost certainly more
+complicated than an ordered set of values all of the same type. You've probably
+been working with Excel spreadsheets that contain some columns that are
+numerical while others contain names or character strings, e.g. the following
+table of Star Wars characters.
+
+```{r echo = FALSE, message = FALSE}
+library(tidyverse)
+library(DT)
+starwars %>%
+  select(name, height, mass, gender, species, homeworld) %>%
+  datatable(rownames = FALSE)
+```
+
+Note that the first column contains character type data, the second and third
+columns contain numerical data (of type double) and the remaining columns
+contain the special type we briefly touched on last week, factors, that look
+like character types but have a limited set of values or categories.
+
+## Lists
+
+R's simplest structure that combines data of different types is a **list**.
+A list is a collection of vectors. It is also a vector itself but is a step up
+in complexity from the atomic vectors we've been looking at up till now. Vectors
+in a list can be of different types and different lengths.
+
+```{r}
+my_first_list <- list(1:10, c("a", "b", "c"), c(TRUE, FALSE), 100, c(1.3, 2.2, 0.75, 3.8))
+my_first_list
+```
+
+`my_first_list` has five elements and when printed out like this looks quite
+strange at first sight. Note how each of the elements of a list is referred to
+by an index within 2 sets of square brackets. This gives a clue to how you can
+access individual elements in the list.
+
+```{r}
+my_first_list[[2]]
+```
+
+Elements in lists are normally named, e.g.
+
+```{r}
+genomics_instruments <- list(sequencers = c("NovaSeq 6000", "HiSeq 4000", "NextSeq 500", "MiSeq"), liquid_handling_robots = c("Mosquito HV", "Bravo"))
+genomics_instruments
+```
+
+We can still access the elements using the double square brackets but now we
+can use either the index (position) or the name.
+
+```{r}
+genomics_instruments[[1]]
+genomics_instruments[["sequencers"]]
+```
+
+Even more conveniently we can use the `$` operator.
+
+```{r}
+genomics_instruments$sequencers
+```
+
+## Data frames
+
+A much more useful data structure and the one we will mostly be using for the
+rest of the course is the **data frame**. This is actually a special type of
+list in which all the elements are vectors of the same length. The data frame is
+how R represents tabular data like the Star Wars table.
+
+TODO
+
+* need to explain that the starwars table is a data frame in the dplyr package in the tidyverse so need to load the tidyverse, library(tidyverse)
+* access columns in the data frame using $ notation just as we did for lists
+* selecting multiple columns using vectors or indices or names, e.g. starwars[c(1, 2, 3, 8, 10, 9)] or starwars[c("name", "height", "mass", "gender", "species", "homeworld")
+* colnames(), dim(), nrow() and ncol() functions
+* access individual elements in matrix-like notation, e.g. [2, 6]
+* access subsets of rows, e.g. starwars[1:5,] or rows and columns, e.g. starwars[1:5, c("name", "species")]
+* compute some summary statistics, e.g. summary(starwars[c("name", "height", "mass", "gender", "species", "homeworld")]) or create a starwars_selected_columns object first to make this it bit easier to read
+
+## Tibbles
+
+# Packages
+
+# Reading data into R
+
+TODO
+
+* details about the working directory from which files are read or are written to, getwd() and how to change this using setwd() or navigating to the directory using RStudio
+
+# Missing values (NA)
+
+TODO
+
+* e.g. gender column in starwars table
+
+# Summary
 
