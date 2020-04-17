@@ -1,0 +1,265 @@
+---
+title: "Assignment_runthrough"
+author: "Mark Fernandes"
+date: "16/04/2020"
+output:
+  word_document: default
+  html_document: default
+---
+
+
+
+
+Now on with this week's exercises.
+
+# Using R as a calculator
+
+1. Convert the following temperatures given in degrees Fahrenheit to Celsius:
+45, 96, 451
+
+```{r}
+#
+#
+#
+#
+#
+(45 - 32) * 5/9 
+(96 - 32) * 5/9 
+(451 - 32) * 5/9 
+```
+
+Hint: just do what you'd normally do if you can't remember the formula for
+converting between Celsius and Fahrenheit (Google in my case).
+
+If you like, you can experiment with getting your R code right in the Console
+window first and then copy it into the code chunk above when you're happy with
+it. It's not crucial and getting it wrong in the R markdown is no big deal.
+You can always fix any problems (the most likely being forgetting to use
+parentheses or brackets in the right place) and re-run your code using the
+green arrow/triangle icon.
+
+Check you've got the right answer by finding a web page with a handy
+conversion tool.
+
+2. Similarly, convert the following temperatures in degrees Celsius to
+Fahrenheit: -65, 100, 20
+
+```{r}
+#
+#
+#
+#
+-65 * 9/5 + 32
+100 * 9/5 + 32
+20 * 9/5 + 32
+```
+
+
+
+
+
+
+
+
+
+
+# Generating sequence vectors
+
+3. Generate a sequence of numbers representing the days at which you take a
+measurement or a sample at 5-day intervals for about a year.
+
+
+
+
+
+```{r}
+1:73 * 5
+```
+
+
+
+Your friendly neighbourhood statistician has suggested that there should be an R
+function to do that. What is the function and how do you find out about it and
+what is the code you will use to create the sequence? Check the resulting vector.
+
+
+
+```{r}
+#
+#
+#
+#
+#
+#
+#
+#
+??sequence
+sample_days <- seq(5, 365, by = 5)
+sample_days
+```
+
+# Looking at types of objects
+
+4. Run the code below and use the typeof() and/or class() function (check it's
+help page) and see how R treats each newly-created vector?
+
+```{r}
+num_char <- c(1, 2, 3, "a")
+num_logical <- c(1, 2, 3, TRUE)
+char_logical <- c("a", "b", "c", TRUE)
+tricky <- c(1, 2, 3, "4")
+#
+#
+#
+#
+#
+# Answers to the type coercion question below
+#
+#
+#
+#
+#
+typeof(num_char)
+class(num_char)
+num_char
+typeof(num_logical)
+class(num_logical)
+num_logical
+typeof(char_logical)
+class(char_logical)
+char_logical
+typeof(tricky)
+class(tricky)
+tricky
+```
+
+Create a new code chunk to test each of the vectors in a separate block. You
+can do this by using the 'Insert' menu just at the top of the pane for this
+markdown file and selecting R for an R code chunk, or by using the keyboard
+shortcut (on a Mac this is cmd-alt-i).
+
+You should find that R coerces the data to a lowest common denominator - can you
+work out the hierarchy?
+```{r}
+# logical → numeric → character ← logical 
+```
+
+
+# Plotting data
+
+5. You have been asked to plot a graph of counts data measured over several
+days. The Principal Investigator has requested that certain symbols be used for
+each dataset being plotted (he's a bit like that!). What command would you use
+to find out the parameter which sets this for the plot.default command and what
+is the parameter's name?
+
+```{r}
+days <- c(1, 2, 4, 6, 8, 12, 16)
+counts <- days ^ 2 + rnorm(days, mean = days)
+
+#
+#
+#
+#
+#
+#
+#
+#
+# add your code here
+?rnorm
+rnorm(days, mean = days)
+#
+help("plot.default")
+?plot.default
+#
+plot.default(days,counts, pch=6)
+```
+
+Check out what we did in the above example for getting some example counts
+data points. Can you make sense of what is going on here? Look at the help
+page for the `rnorm` function.
+
+Our counts data don't really look like counts as they are not whole numbers.
+Find the function in R that can round these up or down to the closest whole
+number and apply it in the above code chunk.
+```{r}
+??round
+round_days <- round(counts)
+round_days
+plot.default(days,round(counts), pch=6)
+```
+
+
+# Exploring and summarizing data
+
+6. Your colleague has supplied you with the following table of data (number of
+cells per sample volume):
+
+| Day | LineA | LineB | LineC |
+| --- | ----- | ----- | ----- |
+|  1  |    4  |    5  |   14  |
+|  2  |    9  |   17  |   16  |
+|  3  |    7  |   22  |   10  |
+|  4  |   12  |   20  |   14  |
+|  5  |   23  |   24  |   20  |
+|  6  |    8  |   18  |   12  |
+
+Create some R vectors to hold this data and provide summary statisics for number
+of cells for each cell line. Plot some base R graphs if you like. Describe the
+data.
+
+```{r}
+day <- c(1,2,3,4,5,6)
+line_a <- c(4,9,7,12,23,8)
+line_b <- c(5,17,22,20,24,18)
+line_c <- c(14,16,10,14,20,12)
+summary(line_a)
+summary(line_b)
+summary(line_c)
+#
+```
+
+You are then provided with assay data that states that LineA had an activity of
+4.2 per cell, LineB an activity of 3.4 and LineC of 1.3.
+
+Use R to calculate the activities of each sample on each day and provide summary
+statistics of activity for each line.
+
+```{r}
+act_line_a <- line_a * 4.2
+act_line_b <- line_b * 3.4
+act_line_c <- line_c * 1.3
+act_line_a
+act_line_b
+act_line_c
+summary(act_line_a)
+summary(act_line_b)
+summary(act_line_c)
+plot.default(day,act_line_a,pch=6)
+plot.default(day,act_line_b,pch=7)
+plot.default(day,act_line_c,pch=8)
+#
+# Plot with multiple lines (Yes I had to look it up in help as I don't tend to use base R plot very often)
+
+# plot the first curve by calling plot() function
+# First curve is plotted
+ plot(day, act_line_a, type="o", col="blue", pch="o", lty=1 )
+
+# Add second curve to the same plot by calling points() and lines()
+# Use symbol '*' for points.
+ points(day, act_line_b, col="red", pch="*")
+ lines(day, act_line_b, col="red",lty=2)
+
+# Add Third curve to the same plot by calling points() and lines()
+# Use symbol '+' for points.
+ points(day, act_line_c, col="dark green",pch="+")
+ lines(day, act_line_c, col="dark green", lty=3)
+```
+
+# Creating a report for your assignment
+
+Click on the 'Knit' menu at the top of this file and select either whichever
+option you prefer to create an HTML, PDF or Word document version of your
+assignment. This will run all the code chunks and "knit" the resulting
+results with the surrounding text to produce a report.
+
