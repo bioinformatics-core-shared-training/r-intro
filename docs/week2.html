@@ -404,7 +404,7 @@ div.tocify {
 <li>Create and run a script file containing your R code</li>
 <li>More on vectors including manipulating their content and extracting values or subsets</li>
 <li>Vector arithmetic</li>
-<li>More sophisticated data structures but all built from vectors (lists, matrices, data frames)</li>
+<li>More sophisticated data structures but all built from vectors (lists and data frames)</li>
 <li>Learn how R deals with missing values</li>
 <li>Learn how to install and use packages that extend R’s basic functionality</li>
 <li>Read data in tabular format from a spreadsheet</li>
@@ -416,12 +416,12 @@ div.tocify {
 <h1>Introduction</h1>
 <p>In this course, we’ll be mostly focusing on a set of R packages specifically designed for the most useful and common operations for interacting with and visualizing data, and particularly data in a tabular form. This collection of packages is known as the <strong>tidyverse</strong>.</p>
 <p>Learning the <strong>tidyverse</strong> is more than just about learning some helpful functions to get certain tasks done. This collection of packages form a coherant system for data manipulation, exploration and visualization that share a common design philosophy. There is a certain elegance to code crafted using the tidyverse approach that is in stark contrast to the strange and often cryptic equivalent using traditional ‘base R’. This author only really became a true R convert on being introduced to the tidyverse.</p>
-<p>Sadly, as much as we’d like, we can’t just cover the tidyverse alone and ignore the fundamentals of the R language. So this week we will look at some aspects of R that are crucial to understanding how R is handling your data, even though we will come back to these same aspects in later weeks to show you how those same operations are more easily and elegantly carried out with the tidyverse.</p>
+<p>Sadly, as much as we’d like, we can’t just cover the tidyverse alone and ignore the fundamentals of the R language. So this week we will look at some aspects of R that are crucial to understanding how R is handling your data, even though we will come back to these same aspects in later weeks to show you how those same operations are more easily and elegantly carried out in the tidyverse.</p>
 <p>We will also start to look at the most important data structure you’ll use with your data, assuming it is in tabular form, the <strong>data frame</strong>, and its superior tidyverse derivative, the <strong>tibble</strong>.</p>
 </div>
 <div id="scripts" class="section level1">
 <h1>Scripts</h1>
-<p>Up to now, we were mostly typing code in the Console pane at the <code>&gt;</code> prompt. This is a very interactive way of working with R but what if you want to save the commands you’ve typed for a future session working in R?</p>
+<p>Up to now, we were mostly typing code in the Console pane at the <strong><code>&gt;</code></strong> prompt. This is a very interactive way of working with R but what if you want to save the commands you’ve typed for a future session working in R?</p>
 <p>Instead we can create a script file containing our R commands that we can come back to later. This is the way most R coding is done so let’s have a go.</p>
 <p>From the RStudio ‘<strong>File</strong>’ menu, select ‘<strong>New File</strong>’ and then ‘<strong>R Script</strong>’.</p>
 <div class="figure">
@@ -457,7 +457,7 @@ div.tocify {
 <div id="adding-comments-to-scripts" class="section level2">
 <h2>Adding comments to scripts</h2>
 <p>It is a very good idea to add comments to your code to explain what it’s doing or what you intended. This will help others to understand your code and more than likely even yourself when you come to revisit it a few weeks or months later.</p>
-<p>Anything following a <code>#</code> symbol is a comment that R will ignore. Here’s an example of adding comments to our simple script.</p>
+<p>Anything following a <strong><code>#</code></strong> symbol is a comment that R will ignore. Here’s an example of adding comments to our simple script.</p>
 <div class="figure">
 <img src="images/RStudio_script_comments.png" />
 
@@ -471,9 +471,7 @@ random_numbers &lt;- rnorm(100, mean = 0, sd = 0.5)</code></pre>
 </div>
 <div id="vectors" class="section level1">
 <h1>Vectors</h1>
-<div id="recap" class="section level2">
-<h2>Recap</h2>
-<p>In week 1 we introduced <strong>vectors</strong>, the simplest type of data structure in R. An atomic vector is a collection of values or things of the same type in a given order. We created some last week using <code>c()</code> and the <code>:</code> operator.</p>
+<p>In week 1 we introduced <strong>vectors</strong>, the simplest type of data structure in R. An atomic vector is a collection of values or things of the same type in a given order. We created some last week using <strong><code>c()</code></strong> and the <strong><code>:</code></strong> operator.</p>
 <pre class="r"><code>some_numbers &lt;- 1:10
 days_of_the_week &lt;- c(&quot;Sunday&quot;, &quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;, &quot;Saturday&quot;)</code></pre>
 <p>In the first example, an integer vector was created with 10 values from 1 to 10. <code>some_numbers</code> is a name that refers to the vector and can be used in other R statements while <code>1:10</code> is the vector object itself.</p>
@@ -486,10 +484,9 @@ samples</code></pre>
 <pre><code>## [1] 8</code></pre>
 <p>But as we saw last week, R doesn’t treat this single value any differently; it is still a vector, just one that has a length of 1.</p>
 <p>Almost every object in R is a vector of one kind or another, or is constructed of vectors, so it’s really important to understand these well.</p>
-</div>
 <div id="combining-vectors" class="section level2">
 <h2>Combining vectors</h2>
-<p>The other way we’ve encountered for creating a vector is to use <code>c()</code>. This is actually a function and we can get help for it just as we can for any other function.</p>
+<p>The other way we’ve encountered for creating a vector is to use <strong><code>c()</code></strong>. This is actually a function and we can get help for it just as we can for any other function.</p>
 <pre class="r"><code>?c</code></pre>
 <p>From the help page you can see that <code>c</code> stands for ‘combine’ (or perhaps also ‘concatenate’, both terms are used in the documentation).</p>
 <p>One of the most useful things about the help pages for functions are the examples that are given – you’ll need to scroll down to the bottom of the page to see them. These can be really helpful in demonstrating how a function works. You can very easily cut and paste these examples and run these in the console window as a way of experimenting with and learning about the function.</p>
@@ -512,7 +509,7 @@ integer_logical</code></pre>
 <pre class="r"><code>typeof(integer_logical)</code></pre>
 <pre><code>## [1] &quot;integer&quot;</code></pre>
 <p>Combining an integer vector, <code>1:5</code>, containing the numbers 1 through 5, with a logical vector results in an integer vector. The logical values have been <em>‘coerced’</em> into integers. But why the logical values and not the integers to produce a logical vector?</p>
-<p>If you think about it, it makes more sense to convert logical values where <code>TRUE</code> and <code>FALSE</code> are usually represented in computers by the bits <code>1</code> and <code>0</code> respectively, i.e. <code>TRUE</code> and <code>FALSE</code> have natural and understandable equivalents in the world of integers. Which logical value would you give to the number <code>5</code> for example?</p>
+<p>If you think about it, it makes more sense to convert logical values where <code>TRUE</code> and <code>FALSE</code> are usually represented in computers by the bits <code>1</code> and <code>0</code> respectively, i.e. <code>TRUE</code> and <code>FALSE</code> have natural and understandable equivalents in the world of integers. Which logical value would you give to the number 5 for example?</p>
 <p>Similarly, integers get converted to doubles in this example:</p>
 <pre class="r"><code>integer_double &lt;- c(3.4, 7, 2.3, 6:-3)
 integer_double</code></pre>
@@ -532,11 +529,11 @@ we_all_want_to_be_characters</code></pre>
 <h2>Extracting subsets</h2>
 <p>One of the operations we do frequently on our data is to select subsets that are of particular interest. For example, we may be interested in the top 50 genes in a differential expression analysis for our RNA-seq experiment where those genes of interest are the ones with a log fold change above a certain value and with a p value below 0.01.</p>
 <p>Having a good understanding of how to select a subset of values from a vector is going to be invaluable when we come to do the same for more complicated data structures so let’s take a look.</p>
-<p>The main subsetting operator we’ll use is the square bracket, <strong><code>[</code></strong>. Here’s an example.</p>
+<p>The main subsetting operator we’ll use is the square bracket, <strong><code>[]</code></strong>. Here’s an example.</p>
 <pre class="r"><code>log2fc &lt;- c(2.3, -1, 0.48, 0.97, -0.02, 1.23)
 log2fc[3]</code></pre>
 <pre><code>## [1] 0.48</code></pre>
-<p>We have a vector of 5 log<sub>2</sub> fold change values and we’ve chosen to select the third value.</p>
+<p>We have a vector of five log<sub>2</sub> fold change values and we’ve chosen to select the third value.</p>
 <p>If you’re familiar with other programming languages you will notice that the indexing scheme in R starts from 1, not 0. So the first element in the vector is referred to using the index 1, i.e. <code>log2fc[1]</code>.</p>
 <p>Multiple values can be extracted by providing a vector of indices, e.g.</p>
 <pre class="r"><code>log2fc[c(2, 4, 5)]</code></pre>
@@ -555,8 +552,8 @@ log2fc[3]</code></pre>
 <pre><code>## [1] 2.30 0.48 0.97</code></pre>
 <div id="conditional-subsetting" class="section level3">
 <h3>Conditional subsetting</h3>
-<p>You may be thinking that this last one seems very abstract and why on earth it could possibly be useful, but actually, it is probably the most useful way of selecting values of interest. To understand why, we’ll need to introduce the concept of logical operators.</p>
-<p>Let’s say we’re interested in just the log<sub>2</sub> fold changes that are above a threshold of 0.5. We can test each of the values using the <code>&gt;</code> logical operator.</p>
+<p>You may be thinking that this last one seems very abstract and why on earth it could possibly be useful, but actually, it is probably the most frequently used way of selecting values of interest. To understand why, we’ll need to introduce the concept of logical operators.</p>
+<p>Let’s say we’re interested in just the log<sub>2</sub> fold changes that are above a threshold of 0.5. We can test each of the values using the <strong><code>&gt;</code></strong> logical operator.</p>
 <pre class="r"><code>log2fc &gt; 0.5</code></pre>
 <pre><code>## [1]  TRUE FALSE FALSE  TRUE FALSE  TRUE</code></pre>
 <p>This results in a logical vector containing <code>TRUE</code> and <code>FALSE</code> values for each element. The values at positions 1, 4 and 6 in our vector are above the threshold so result in <code>TRUE</code>, the others result in <code>FALSE</code>.</p>
@@ -581,7 +578,7 @@ log2fc[log2fc &lt; 0.5 &amp; log2fc &gt; -0.5]</code></pre>
 <pre class="r"><code># large fold changes
 log2fc[log2fc &gt; 1 | log2fc &lt; -1]</code></pre>
 <pre><code>## [1] 2.30 1.23</code></pre>
-<p><code>&amp;</code> and <code>|</code> are the Boolean AND and OR operators.</p>
+<p><code>&amp;</code> and <code>|</code> are the R versions of the AND and OR operations in Boolean algebra but applied to vectors.</p>
 </div>
 <div id="logical-operators" class="section level3">
 <h3>Logical operators</h3>
@@ -620,11 +617,11 @@ log2fc[log2fc &gt; 1 | log2fc &lt; -1]</code></pre>
 </tr>
 <tr class="odd">
 <td>!x</td>
-<td>not x</td>
+<td>NOT x</td>
 </tr>
 <tr class="even">
-<td>x</td>
-<td>y</td>
+<td>x | y</td>
+<td>x OR y</td>
 </tr>
 <tr class="odd">
 <td>x &amp; y</td>
@@ -655,8 +652,8 @@ log2fc</code></pre>
 squares &lt;- some_numbers ^ 2
 squares</code></pre>
 <pre><code>##  [1]   1   4   9  16  25  36  49  64  81 100</code></pre>
-<p>Here we used the <strong><code>^</code></strong> exponent operator to raise our numbers to the power of 2. This happened in a single operation, i.e. just one line of code. In other computer languages we might have had to write what is known as a loop in order to iterate over and perform the calculation for each value in turn, but not in R.</p>
-<p>Another way of writing the above statement to get the same result would be to multiple our numbers by themselves.</p>
+<p>Here we used the <strong><code>^</code></strong> exponent operator to raise our numbers to the power of 2. This happened in a single operation, i.e. just one line of code. In other computer languages we might have had to write what is known as a loop in order to iterate over and perform the calculation for each value in turn.</p>
+<p>Another way of writing the above statement to get the same result would be to multiply our numbers by themselves.</p>
 <pre class="r"><code>squares &lt;- some_numbers * some_numbers
 squares</code></pre>
 <pre><code>##  [1]   1   4   9  16  25  36  49  64  81 100</code></pre>
@@ -664,7 +661,7 @@ squares</code></pre>
 <p>Here’s another example involving two different vectors, but again these are of the same length.</p>
 <pre class="r"><code>1:10 + 10:1</code></pre>
 <pre><code>##  [1] 11 11 11 11 11 11 11 11 11 11</code></pre>
-<p>Can you see why we get this result? (type <code>10:1</code> in the console if you’re sure about what that gives).</p>
+<p>Can you see why we get this result? (type <code>10:1</code> in the console if you’re not sure about what that gives).</p>
 <p>Usually vector arithmetic involves two vectors of the same length or involves a vector and a scalar (a vector of length 1). One of the first examples from last week was the second scenario involving a vector and a single value.</p>
 <pre class="r"><code>1:36 * 2</code></pre>
 <pre><code>##  [1]  2  4  6  8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46
@@ -674,7 +671,7 @@ squares</code></pre>
 <p>It is possible to perform calculations using two vectors of different sizes. When R runs out of values to use from the shorter of the two vectors, it wraps around to the beginning of that shorter one. For example, we can set alternate values in our set of numbers to be negative as follows:</p>
 <pre class="r"><code>some_numbers * c(1, -1)</code></pre>
 <pre><code>##  [1]   1  -2   3  -4   5  -6   7  -8   9 -10</code></pre>
-<p>When R gets to the third element it has exhausted the shorter vector, <code>c(1, -1)</code>, so it goes back to the beginning, i.e. back to the first value, <code>1</code>. It uses the second vector 5 times in what is referred to as <strong><em>vector recycling</em></strong>.</p>
+<p>When R gets to the third element it has exhausted the shorter vector, <code>c(1, -1)</code>, so it goes back to the beginning, i.e. back to the first value, <code>1</code>. It uses the second vector five times in what is referred to as <strong><em>vector recycling</em></strong>.</p>
 <p>You will probably never have to do something like this (why would you?) but without you knowing it you will carry out vector arithmetic using recycling very frequently. This is because a very common operation is to carry out a calculation on a vector using a single scalar value. For example, multiplying all values by a constant.</p>
 <pre class="r"><code>heights_in_metres &lt;- c(1.86, 1.65, 1.72, 1.4, 1.79)
 heights_in_centimetres &lt;- 100 * heights_in_metres
@@ -682,13 +679,18 @@ heights_in_centimetres</code></pre>
 <pre><code>## [1] 186 165 172 140 179</code></pre>
 <p>The multiplier of 100 is effectively being recycled and so is equivalent to us having written the following:</p>
 <pre class="r"><code>heights_in_centimetres &lt;- c(100, 100, 100, 100, 100) * heights_in_metres</code></pre>
+<p>Vector recycling in R requires that the length of the longer vector is an exact multiple of the length of the shorter. If not, R will give a warning.</p>
+<pre class="r"><code>1:7 * c(1, -1)</code></pre>
+<pre><code>## Warning in 1:7 * c(1, -1): longer object length is not a multiple of
+## shorter object length</code></pre>
+<pre><code>## [1]  1 -2  3 -4  5 -6  7</code></pre>
 </div>
 </div>
 <div id="combining-data-of-different-types" class="section level1">
 <h1>Combining data of different types</h1>
 <p>Vectors are all very well and good but your data are almost certainly more complicated than an ordered set of values all of the same type. You’ve probably been working with Excel spreadsheets that contain some columns that are numerical while others contain names or character strings, e.g. the following table of Star Wars characters.</p>
-<div id="htmlwidget-59a98f21927d2b81aa74" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-59a98f21927d2b81aa74">{"x":{"filter":"none","data":[["Luke Skywalker","C-3PO","R2-D2","Darth Vader","Leia Organa","Owen Lars","Beru Whitesun lars","R5-D4","Biggs Darklighter","Obi-Wan Kenobi","Anakin Skywalker","Wilhuff Tarkin","Chewbacca","Han Solo","Greedo","Jabba Desilijic Tiure","Wedge Antilles","Jek Tono Porkins","Yoda","Palpatine","Boba Fett","IG-88","Bossk","Lando Calrissian","Lobot","Ackbar","Mon Mothma","Arvel Crynyd","Wicket Systri Warrick","Nien Nunb","Qui-Gon Jinn","Nute Gunray","Finis Valorum","Jar Jar Binks","Roos Tarpals","Rugor Nass","Ric Olié","Watto","Sebulba","Quarsh Panaka","Shmi Skywalker","Darth Maul","Bib Fortuna","Ayla Secura","Dud Bolt","Gasgano","Ben Quadinaros","Mace Windu","Ki-Adi-Mundi","Kit Fisto","Eeth Koth","Adi Gallia","Saesee Tiin","Yarael Poof","Plo Koon","Mas Amedda","Gregar Typho","Cordé","Cliegg Lars","Poggle the Lesser","Luminara Unduli","Barriss Offee","Dormé","Dooku","Bail Prestor Organa","Jango Fett","Zam Wesell","Dexter Jettster","Lama Su","Taun We","Jocasta Nu","Ratts Tyerell","R4-P17","Wat Tambor","San Hill","Shaak Ti","Grievous","Tarfful","Raymus Antilles","Sly Moore","Tion Medon","Finn","Rey","Poe Dameron","BB8","Captain Phasma","Padmé Amidala"],[172,167,96,202,150,178,165,97,183,182,188,180,228,180,173,175,170,180,66,170,183,200,190,177,175,180,150,null,88,160,193,191,170,196,224,206,183,137,112,183,163,175,180,178,94,122,163,188,198,196,171,184,188,264,188,196,185,157,183,183,170,166,165,193,191,183,168,198,229,213,167,79,96,193,191,178,216,234,188,178,206,null,null,null,null,null,165],[77,75,32,136,49,120,75,32,84,77,84,null,112,80,74,1358,77,110,17,75,78.2,140,113,79,79,83,null,null,20,68,89,90,null,66,82,null,null,null,40,null,null,80,null,55,45,null,65,84,82,87,null,50,null,null,80,null,85,null,null,80,56.2,50,null,80,null,79,55,102,88,null,null,15,null,48,null,57,159,136,79,48,80,null,null,null,null,null,45],["male",null,null,"male","female","male","female",null,"male","male","male","male","male","male","male","hermaphrodite","male","male","male","male","male","none","male","male","male","male","female","male","male","male","male","male","male","male","male","male","male","male","male","male","female","male","male","female","male","male","male","male","male","male","male","female","male","male","male","male","male","female","male","male","female","female","female","male","male","male","female","male","male","female","female","male","female","male","male","female","male","male","male","female","male","male","female","male","none","female","female"],["Human","Droid","Droid","Human","Human","Human","Human","Droid","Human","Human","Human","Human","Wookiee","Human","Rodian","Hutt","Human","Human","Yoda's species","Human","Human","Droid","Trandoshan","Human","Human","Mon Calamari","Human","Human","Ewok","Sullustan","Human","Neimodian","Human","Gungan","Gungan","Gungan",null,"Toydarian","Dug",null,"Human","Zabrak","Twi'lek","Twi'lek","Vulptereen","Xexto","Toong","Human","Cerean","Nautolan","Zabrak","Tholothian","Iktotchi","Quermian","Kel Dor","Chagrian","Human","Human","Human","Geonosian","Mirialan","Mirialan","Human","Human","Human","Human","Clawdite","Besalisk","Kaminoan","Kaminoan","Human","Aleena",null,"Skakoan","Muun","Togruta","Kaleesh","Wookiee","Human",null,"Pau'an","Human","Human","Human","Droid",null,"Human"],["Tatooine","Tatooine","Naboo","Tatooine","Alderaan","Tatooine","Tatooine","Tatooine","Tatooine","Stewjon","Tatooine","Eriadu","Kashyyyk","Corellia","Rodia","Nal Hutta","Corellia","Bestine IV",null,"Naboo","Kamino",null,"Trandosha","Socorro","Bespin","Mon Cala","Chandrila",null,"Endor","Sullust",null,"Cato Neimoidia","Coruscant","Naboo","Naboo","Naboo","Naboo","Toydaria","Malastare","Naboo","Tatooine","Dathomir","Ryloth","Ryloth","Vulpter","Troiken","Tund","Haruun Kal","Cerea","Glee Anselm","Iridonia","Coruscant","Iktotch","Quermia","Dorin","Champala","Naboo","Naboo","Tatooine","Geonosis","Mirial","Mirial","Naboo","Serenno","Alderaan","Concord Dawn","Zolan","Ojom","Kamino","Kamino","Coruscant","Aleen Minor",null,"Skako","Muunilinst","Shili","Kalee","Kashyyyk","Alderaan","Umbara","Utapau",null,null,null,null,null,"Naboo"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>name<\/th>\n      <th>height<\/th>\n      <th>mass<\/th>\n      <th>gender<\/th>\n      <th>species<\/th>\n      <th>homeworld<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-14e2b69f94fbfa685751" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-14e2b69f94fbfa685751">{"x":{"filter":"none","data":[["Luke Skywalker","C-3PO","R2-D2","Darth Vader","Leia Organa","Owen Lars","Beru Whitesun lars","R5-D4","Biggs Darklighter","Obi-Wan Kenobi","Anakin Skywalker","Wilhuff Tarkin","Chewbacca","Han Solo","Greedo","Jabba Desilijic Tiure","Wedge Antilles","Jek Tono Porkins","Yoda","Palpatine","Boba Fett","IG-88","Bossk","Lando Calrissian","Lobot","Ackbar","Mon Mothma","Arvel Crynyd","Wicket Systri Warrick","Nien Nunb","Qui-Gon Jinn","Nute Gunray","Finis Valorum","Jar Jar Binks","Roos Tarpals","Rugor Nass","Ric Olié","Watto","Sebulba","Quarsh Panaka","Shmi Skywalker","Darth Maul","Bib Fortuna","Ayla Secura","Dud Bolt","Gasgano","Ben Quadinaros","Mace Windu","Ki-Adi-Mundi","Kit Fisto","Eeth Koth","Adi Gallia","Saesee Tiin","Yarael Poof","Plo Koon","Mas Amedda","Gregar Typho","Cordé","Cliegg Lars","Poggle the Lesser","Luminara Unduli","Barriss Offee","Dormé","Dooku","Bail Prestor Organa","Jango Fett","Zam Wesell","Dexter Jettster","Lama Su","Taun We","Jocasta Nu","Ratts Tyerell","R4-P17","Wat Tambor","San Hill","Shaak Ti","Grievous","Tarfful","Raymus Antilles","Sly Moore","Tion Medon","Finn","Rey","Poe Dameron","BB8","Captain Phasma","Padmé Amidala"],[172,167,96,202,150,178,165,97,183,182,188,180,228,180,173,175,170,180,66,170,183,200,190,177,175,180,150,null,88,160,193,191,170,196,224,206,183,137,112,183,163,175,180,178,94,122,163,188,198,196,171,184,188,264,188,196,185,157,183,183,170,166,165,193,191,183,168,198,229,213,167,79,96,193,191,178,216,234,188,178,206,null,null,null,null,null,165],[77,75,32,136,49,120,75,32,84,77,84,null,112,80,74,1358,77,110,17,75,78.2,140,113,79,79,83,null,null,20,68,89,90,null,66,82,null,null,null,40,null,null,80,null,55,45,null,65,84,82,87,null,50,null,null,80,null,85,null,null,80,56.2,50,null,80,null,79,55,102,88,null,null,15,null,48,null,57,159,136,79,48,80,null,null,null,null,null,45],["male",null,null,"male","female","male","female",null,"male","male","male","male","male","male","male","hermaphrodite","male","male","male","male","male","none","male","male","male","male","female","male","male","male","male","male","male","male","male","male","male","male","male","male","female","male","male","female","male","male","male","male","male","male","male","female","male","male","male","male","male","female","male","male","female","female","female","male","male","male","female","male","male","female","female","male","female","male","male","female","male","male","male","female","male","male","female","male","none","female","female"],["Human","Droid","Droid","Human","Human","Human","Human","Droid","Human","Human","Human","Human","Wookiee","Human","Rodian","Hutt","Human","Human","Yoda's species","Human","Human","Droid","Trandoshan","Human","Human","Mon Calamari","Human","Human","Ewok","Sullustan","Human","Neimodian","Human","Gungan","Gungan","Gungan",null,"Toydarian","Dug",null,"Human","Zabrak","Twi'lek","Twi'lek","Vulptereen","Xexto","Toong","Human","Cerean","Nautolan","Zabrak","Tholothian","Iktotchi","Quermian","Kel Dor","Chagrian","Human","Human","Human","Geonosian","Mirialan","Mirialan","Human","Human","Human","Human","Clawdite","Besalisk","Kaminoan","Kaminoan","Human","Aleena",null,"Skakoan","Muun","Togruta","Kaleesh","Wookiee","Human",null,"Pau'an","Human","Human","Human","Droid",null,"Human"],["Tatooine","Tatooine","Naboo","Tatooine","Alderaan","Tatooine","Tatooine","Tatooine","Tatooine","Stewjon","Tatooine","Eriadu","Kashyyyk","Corellia","Rodia","Nal Hutta","Corellia","Bestine IV",null,"Naboo","Kamino",null,"Trandosha","Socorro","Bespin","Mon Cala","Chandrila",null,"Endor","Sullust",null,"Cato Neimoidia","Coruscant","Naboo","Naboo","Naboo","Naboo","Toydaria","Malastare","Naboo","Tatooine","Dathomir","Ryloth","Ryloth","Vulpter","Troiken","Tund","Haruun Kal","Cerea","Glee Anselm","Iridonia","Coruscant","Iktotch","Quermia","Dorin","Champala","Naboo","Naboo","Tatooine","Geonosis","Mirial","Mirial","Naboo","Serenno","Alderaan","Concord Dawn","Zolan","Ojom","Kamino","Kamino","Coruscant","Aleen Minor",null,"Skako","Muunilinst","Shili","Kalee","Kashyyyk","Alderaan","Umbara","Utapau",null,null,null,null,null,"Naboo"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>name<\/th>\n      <th>height<\/th>\n      <th>mass<\/th>\n      <th>gender<\/th>\n      <th>species<\/th>\n      <th>homeworld<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p>Note that the first column contains character type data, the second and third columns contain numerical data (of type double) and the remaining columns contain the special type we briefly touched on last week, factors, that look like character types but have a limited set of values or categories.</p>
 <div id="lists" class="section level2">
 <h2>Lists</h2>
@@ -709,7 +711,7 @@ my_first_list</code></pre>
 ## 
 ## [[5]]
 ## [1] 1.30 2.20 0.75 3.80</code></pre>
-<p><code>my_first_list</code> has 5 elements and when printed out like this looks quite strange at first sight. Note how each of the elements of a list is referred to by an index within 2 sets of square brackets. This gives a clue to how you can access individual elements in the list.</p>
+<p><code>my_first_list</code> has five elements and when printed out like this looks quite strange at first sight. Note how each of the elements of a list is referred to by an index within 2 sets of square brackets. This gives a clue to how you can access individual elements in the list.</p>
 <pre class="r"><code>my_first_list[[2]]</code></pre>
 <pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
 <p>Elements in lists are normally named, e.g.</p>
@@ -728,9 +730,6 @@ genomics_instruments</code></pre>
 <p>Even more conveniently we can use the <code>$</code> operator.</p>
 <pre class="r"><code>genomics_instruments$sequencers</code></pre>
 <pre><code>## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;</code></pre>
-<pre class="r"><code>genomics_instruments[1]</code></pre>
-<pre><code>## $sequencers
-## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;</code></pre>
 </div>
 <div id="data-frames" class="section level2">
 <h2>Data frames</h2>
