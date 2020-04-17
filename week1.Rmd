@@ -374,4 +374,9 @@ week's assignment.
 
 ----
 
-Over to you for the assignment (assignment1.Rmd) - see you again at the end of the week!
+Over to you for the assignment - see you again at the end of the week!
+
+Assignment: [assignment1.Rmd](assignments/assignment1.Rmd)
+
+Solutions: [assignment1_walkthrough.Rmd](assignments/assignment1_walkthrough.Rmd)
+
