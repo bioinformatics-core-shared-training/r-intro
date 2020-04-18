@@ -31,3 +31,8 @@ blockquote  {
 blockquote p,ul,ol {
     font-size: .9em;
 }
+.rmdblock {
+  padding: 0.5em 0.25em 0.25em 0.5em;
+  margin-bottom: 10px;
+  background: #cce6ff;
+}
