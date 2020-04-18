@@ -1030,6 +1030,9 @@ class(iris)
 class(iris_tibble)
 ```
 
+Because tibbles are data frames, almost everything we learned about data frames,
+including subsetting, also applies to tibbles.
+
 ## Tibbles vs data frames
 
 So let's now have a look at what capabilities and behaviours these additional
@@ -1205,7 +1208,7 @@ as an absolute path.
 You can explicitly set your working directory using **`setwd()`**.
 
 ```{r eval = FALSE}
-setwd("/Users/freddy/projects/20200119_JB_amplicon_sequencing")
+setwd("/Users/matt/projects/20200119_JB_amplicon_sequencing")
 ```
 
 If you're running an R script from a terminal window (by typing something like
@@ -1219,11 +1222,52 @@ navigate to the directory of your choosing in the Files tab pane and set this to
 be the working directory by clicking on the **More** menu button and selecting
 **Set As Working Directory**.
 
-# Missing values (NA)
+# Missing values
 
-TODO
+The METABRIC clinical dataset has some missing values. If you look back to the
+table you can see 2 missing values for mutation counts within the first 10 rows.
 
-* e.g. gender column in starwars table
+```{block type = "rmdblock"}
+**Missing values** (**`NA`**)
+
+Missing values in R are represented as **`NA`**, which stands for 'not available'.
+```
+
+The `summary()` function reported that there are 152 missing mutation counts.
+`summary()` reports the mean and median values for the remaining observations,
+i.e. those for which a mutation count *is* available. Not all functions do this
+though.
+
+```{r}
+mean(metabric$`Mutation Count`)
+```
+
+The `mean()` function, for example, takes a different approach in how it treats
+missing values. It returns `NA`, i.e. a missing value, because it takes the view
+that it cannot compute a mean for a set of values where some are not available.
+You can specify the argument `na.rm = TRUE` when calling `mean()` to instruct it
+to ignore the missing values and calculate the mean of the remaining values.
+
+```{r}
+mean(metabric$`Mutation Count`, na.rm = TRUE)
+```
+
+There are many such functions in R that would be similarly affected by missing
+values and which offer the `na.rm` argument.
+
+You can test for missing values using the `is.na()` function.
+
+```{r}
+first_ten_mutation_counts <- metabric$`Mutation Count`[1:10]
+is.na(first_ten_mutation_counts)
+```
+
+One final handy tip: summing the result of `is.na()` will count the number of
+missing values in a vector. Can you see why this works?
+
+```{r}
+sum(is.na(metabric$`Mutation Count`))
+```
 
 # Summary
 
