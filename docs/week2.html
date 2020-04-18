@@ -476,18 +476,41 @@ random_numbers &lt;- rnorm(100, mean = 0, sd = 0.5)</code></pre>
 <pre class="r"><code>some_numbers &lt;- 1:10
 days_of_the_week &lt;- c(&quot;Sunday&quot;, &quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;, &quot;Saturday&quot;)</code></pre>
 <p>In the first example, an integer vector was created with 10 values from 1 to 10. <code>some_numbers</code> is a name that refers to the vector and can be used in other R statements while <code>1:10</code> is the vector object itself.</p>
-<pre class="r"><code>squares &lt;- some_numbers ^ 2
-squares</code></pre>
-<pre><code>##  [1]   1   4   9  16  25  36  49  64  81 100</code></pre>
+<div class="rmdblock">
+<p>
+<strong><code>:</code> operator</strong>
+</p>
+<p>
+The colon operator (<strong><code>:</code></strong>) returns every integer between two integers. These can be in ascending or descending order.
+</p>
+<p>
+<code>countdown &lt;- 10:1</code>
+</p>
+<p>
+<code>including_some_negative_numbers &lt;- -4:3</code>
+</p>
+</div>
 <p>A single value is known as a <strong>scalar</strong>. An example from last week was the number of samples in our experiment.</p>
 <pre class="r"><code>samples &lt;- 8
 samples</code></pre>
 <pre><code>## [1] 8</code></pre>
 <p>But as we saw last week, R doesn’t treat this single value any differently; it is still a vector, just one that has a length of 1.</p>
-<p>And talking of lengths, one function you’re likely to use is the <code>length()</code> function, which unsurprisingly returns the numbers of elements in a vector.</p>
 <pre class="r"><code>length(some_numbers)</code></pre>
 <pre><code>## [1] 10</code></pre>
+<pre class="r"><code>length(samples)</code></pre>
+<pre><code>## [1] 1</code></pre>
 <p>Almost every object in R is a vector of one kind or another, or is constructed of vectors, so it’s really important to understand these well.</p>
+<div class="rmdblock">
+<p>
+<strong><code>length()</code></strong>
+</p>
+<p>
+The <code>length()</code> function returns the number of elements in a vector.
+</p>
+<p>
+<code>length(-2:4)</code>
+</p>
+</div>
 <div id="combining-vectors" class="section level2">
 <h2>Combining vectors</h2>
 <p>The other way we’ve encountered for creating a vector is to use <strong><code>c()</code></strong>. This is actually a function and we can get help for it just as we can for any other function.</p>
@@ -503,6 +526,20 @@ dogs &lt;- c(&quot;spot&quot;, &quot;snoopy&quot;)
 cats_and_dogs &lt;- c(cats, dogs)
 cats_and_dogs</code></pre>
 <pre><code>## [1] &quot;felix&quot;  &quot;kitty&quot;  &quot;tigger&quot; &quot;spot&quot;   &quot;snoopy&quot;</code></pre>
+<div class="rmdblock">
+<p>
+<strong><code>c()</code></strong>
+</p>
+<p>
+The <code>c()</code> function is a generic function that combines its arguments, i.e. the things you pass to the function by including these within the parentheses, <code>()</code>. You can pass as many vectors as you like to <code>c()</code> and it will concatenate these into a single vector.
+</p>
+<p>
+Arguments will be coerced to a common type.
+</p>
+<p>
+<code>c(1:5, 10.5, “next”)</code>
+</p>
+</div>
 </div>
 <div id="coercion" class="section level2">
 <h2>Coercion</h2>
@@ -554,29 +591,42 @@ log2fc[3]</code></pre>
 <p>Finally, we can also subset our vector using a vector of logical values.</p>
 <pre class="r"><code>log2fc[c(TRUE, FALSE, TRUE, TRUE, FALSE, FALSE)]</code></pre>
 <pre><code>## [1] 2.30 0.48 0.97</code></pre>
+<div class="rmdblock">
+<p>
+Note: use <strong><code>()</code></strong> for functions and <strong><code>[]</code></strong> for subsetting
+</p>
+<p>
+<code>my_vector &lt;- c(1, 7:9)</code>
+</p>
+<p>
+<code>my_vector[2]</code>
+</p>
+</div>
 <div id="conditional-subsetting" class="section level3">
 <h3>Conditional subsetting</h3>
-<p>You may be thinking that this last one seems very abstract and why on earth it could possibly be useful, but actually, it is probably the most frequently used way of selecting values of interest. To understand why, we’ll need to introduce the concept of logical operators.</p>
+<p>You may be thinking that that last example extracting a subset using logical values seems very abstract and why on earth it could possibly be useful. But actually, it is probably the most frequently used way of selecting values of interest. To understand why, we’ll need to introduce the concept of logical operators.</p>
 <p>Let’s say we’re interested in just the log<sub>2</sub> fold changes that are above a threshold of 0.5. We can test each of the values using the <strong><code>&gt;</code></strong> logical operator.</p>
 <pre class="r"><code>log2fc &gt; 0.5</code></pre>
 <pre><code>## [1]  TRUE FALSE FALSE  TRUE FALSE  TRUE</code></pre>
 <p>This results in a logical vector containing <code>TRUE</code> and <code>FALSE</code> values for each element. The values at positions 1, 4 and 6 in our vector are above the threshold so result in <code>TRUE</code>, the others result in <code>FALSE</code>.</p>
 <p>We can use this resulting vector to subset our original <code>log2fc</code> vector.</p>
-<pre class="r"><code>log2fc_threshold &lt;- 0.5
-above_threshold &lt;- log2fc &gt; log2fc_threshold
-above_threshold</code></pre>
-<pre><code>## [1]  TRUE FALSE FALSE  TRUE FALSE  TRUE</code></pre>
-<pre class="r"><code>log2fc[above_threshold]</code></pre>
+<pre class="r"><code>above_threshold &lt;- log2fc &gt; 0.5
+log2fc[above_threshold]</code></pre>
 <pre><code>## [1] 2.30 0.97 1.23</code></pre>
 <p>In practice, we wouldn’t really create a variable containing our logical vector signifying whether values are of interest. Instead we’d do this in a single step.</p>
 <pre class="r"><code>log2fc[log2fc &gt; 0.5]</code></pre>
 <pre><code>## [1] 2.30 0.97 1.23</code></pre>
-<p>On the other hand, in a real R script, we might want to have a variable for the threshold that might be chosen by the user as an command-line argument and so could be different each time the script is run.</p>
-<pre class="r"><code>log2fc_above_threshold &lt;- log2fc[log2fc &gt; log2fc_threshold]
+<p>However, in a real Rscript, we might not want to hard-wire the threshold of 0.5 but instead to let the user specify this each time the script is run, e.g. by passing in the value as a command-line argument. If we have a variable storing the desired threshold value, e.g. <code>log2fc_threshold</code>, then we would write the above as follows.</p>
+<pre class="r"><code>log2fc_threshold &lt;- 0.5
+log2fc_above_threshold &lt;- log2fc[log2fc &gt; log2fc_threshold]
 log2fc_above_threshold</code></pre>
 <pre><code>## [1] 2.30 0.97 1.23</code></pre>
+<p>We also captured the result in another vector called <code>log2fc_above_threshold</code> although we could have overwritten our original log2fc if we wanted to by assigning the result back to log2fc.</p>
+<pre class="r"><code>log2fc &lt;- log2fc[log2fc &gt; log2fc_threshold]</code></pre>
 <p>You can combine two or more conditions using <strong><code>&amp;</code></strong> if you want both conditions to be true or using <strong><code>|</code></strong> if either of the conditions is acceptable but not necessarily both.</p>
-<pre class="r"><code># small fold changes
+<pre class="r"><code># reset our log2fc vector to how it was originally
+log2fc &lt;- c(2.3, -1, 0.48, 0.97, -0.02, 1.23)
+# small fold changes
 log2fc[log2fc &lt; 0.5 &amp; log2fc &gt; -0.5]</code></pre>
 <pre><code>## [1]  0.48 -0.02</code></pre>
 <pre class="r"><code># large fold changes
@@ -693,8 +743,8 @@ heights_in_centimetres</code></pre>
 <div id="combining-data-of-different-types" class="section level1">
 <h1>Combining data of different types</h1>
 <p>Vectors are all very well and good but your data are almost certainly more complicated than an ordered set of values all of the same type. You’ve probably been working with Excel spreadsheets that contain some columns that are numerical while others contain names or character strings, e.g. the following table of Star Wars characters.</p>
-<div id="htmlwidget-0dca071ab66a26246198" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0dca071ab66a26246198">{"x":{"filter":"none","data":[["Luke Skywalker","C-3PO","R2-D2","Darth Vader","Leia Organa","Owen Lars","Beru Whitesun lars","R5-D4","Biggs Darklighter","Obi-Wan Kenobi","Anakin Skywalker","Wilhuff Tarkin","Chewbacca","Han Solo","Greedo","Jabba Desilijic Tiure","Wedge Antilles","Jek Tono Porkins","Yoda","Palpatine","Boba Fett","IG-88","Bossk","Lando Calrissian","Lobot","Ackbar","Mon Mothma","Arvel Crynyd","Wicket Systri Warrick","Nien Nunb","Qui-Gon Jinn","Nute Gunray","Finis Valorum","Jar Jar Binks","Roos Tarpals","Rugor Nass","Ric Olié","Watto","Sebulba","Quarsh Panaka","Shmi Skywalker","Darth Maul","Bib Fortuna","Ayla Secura","Dud Bolt","Gasgano","Ben Quadinaros","Mace Windu","Ki-Adi-Mundi","Kit Fisto","Eeth Koth","Adi Gallia","Saesee Tiin","Yarael Poof","Plo Koon","Mas Amedda","Gregar Typho","Cordé","Cliegg Lars","Poggle the Lesser","Luminara Unduli","Barriss Offee","Dormé","Dooku","Bail Prestor Organa","Jango Fett","Zam Wesell","Dexter Jettster","Lama Su","Taun We","Jocasta Nu","Ratts Tyerell","R4-P17","Wat Tambor","San Hill","Shaak Ti","Grievous","Tarfful","Raymus Antilles","Sly Moore","Tion Medon","Finn","Rey","Poe Dameron","BB8","Captain Phasma","Padmé Amidala"],[172,167,96,202,150,178,165,97,183,182,188,180,228,180,173,175,170,180,66,170,183,200,190,177,175,180,150,null,88,160,193,191,170,196,224,206,183,137,112,183,163,175,180,178,94,122,163,188,198,196,171,184,188,264,188,196,185,157,183,183,170,166,165,193,191,183,168,198,229,213,167,79,96,193,191,178,216,234,188,178,206,null,null,null,null,null,165],[77,75,32,136,49,120,75,32,84,77,84,null,112,80,74,1358,77,110,17,75,78.2,140,113,79,79,83,null,null,20,68,89,90,null,66,82,null,null,null,40,null,null,80,null,55,45,null,65,84,82,87,null,50,null,null,80,null,85,null,null,80,56.2,50,null,80,null,79,55,102,88,null,null,15,null,48,null,57,159,136,79,48,80,null,null,null,null,null,45],["male",null,null,"male","female","male","female",null,"male","male","male","male","male","male","male","hermaphrodite","male","male","male","male","male","none","male","male","male","male","female","male","male","male","male","male","male","male","male","male","male","male","male","male","female","male","male","female","male","male","male","male","male","male","male","female","male","male","male","male","male","female","male","male","female","female","female","male","male","male","female","male","male","female","female","male","female","male","male","female","male","male","male","female","male","male","female","male","none","female","female"],["Human","Droid","Droid","Human","Human","Human","Human","Droid","Human","Human","Human","Human","Wookiee","Human","Rodian","Hutt","Human","Human","Yoda's species","Human","Human","Droid","Trandoshan","Human","Human","Mon Calamari","Human","Human","Ewok","Sullustan","Human","Neimodian","Human","Gungan","Gungan","Gungan",null,"Toydarian","Dug",null,"Human","Zabrak","Twi'lek","Twi'lek","Vulptereen","Xexto","Toong","Human","Cerean","Nautolan","Zabrak","Tholothian","Iktotchi","Quermian","Kel Dor","Chagrian","Human","Human","Human","Geonosian","Mirialan","Mirialan","Human","Human","Human","Human","Clawdite","Besalisk","Kaminoan","Kaminoan","Human","Aleena",null,"Skakoan","Muun","Togruta","Kaleesh","Wookiee","Human",null,"Pau'an","Human","Human","Human","Droid",null,"Human"],["Tatooine","Tatooine","Naboo","Tatooine","Alderaan","Tatooine","Tatooine","Tatooine","Tatooine","Stewjon","Tatooine","Eriadu","Kashyyyk","Corellia","Rodia","Nal Hutta","Corellia","Bestine IV",null,"Naboo","Kamino",null,"Trandosha","Socorro","Bespin","Mon Cala","Chandrila",null,"Endor","Sullust",null,"Cato Neimoidia","Coruscant","Naboo","Naboo","Naboo","Naboo","Toydaria","Malastare","Naboo","Tatooine","Dathomir","Ryloth","Ryloth","Vulpter","Troiken","Tund","Haruun Kal","Cerea","Glee Anselm","Iridonia","Coruscant","Iktotch","Quermia","Dorin","Champala","Naboo","Naboo","Tatooine","Geonosis","Mirial","Mirial","Naboo","Serenno","Alderaan","Concord Dawn","Zolan","Ojom","Kamino","Kamino","Coruscant","Aleen Minor",null,"Skako","Muunilinst","Shili","Kalee","Kashyyyk","Alderaan","Umbara","Utapau",null,null,null,null,null,"Naboo"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>name<\/th>\n      <th>height<\/th>\n      <th>mass<\/th>\n      <th>gender<\/th>\n      <th>species<\/th>\n      <th>homeworld<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e01085aaa4a1c3fa9f77" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e01085aaa4a1c3fa9f77">{"x":{"filter":"none","data":[["Luke Skywalker","C-3PO","R2-D2","Darth Vader","Leia Organa","Owen Lars","Beru Whitesun lars","R5-D4","Biggs Darklighter","Obi-Wan Kenobi","Anakin Skywalker","Wilhuff Tarkin","Chewbacca","Han Solo","Greedo","Jabba Desilijic Tiure","Wedge Antilles","Jek Tono Porkins","Yoda","Palpatine","Boba Fett","IG-88","Bossk","Lando Calrissian","Lobot","Ackbar","Mon Mothma","Arvel Crynyd","Wicket Systri Warrick","Nien Nunb","Qui-Gon Jinn","Nute Gunray","Finis Valorum","Jar Jar Binks","Roos Tarpals","Rugor Nass","Ric Olié","Watto","Sebulba","Quarsh Panaka","Shmi Skywalker","Darth Maul","Bib Fortuna","Ayla Secura","Dud Bolt","Gasgano","Ben Quadinaros","Mace Windu","Ki-Adi-Mundi","Kit Fisto","Eeth Koth","Adi Gallia","Saesee Tiin","Yarael Poof","Plo Koon","Mas Amedda","Gregar Typho","Cordé","Cliegg Lars","Poggle the Lesser","Luminara Unduli","Barriss Offee","Dormé","Dooku","Bail Prestor Organa","Jango Fett","Zam Wesell","Dexter Jettster","Lama Su","Taun We","Jocasta Nu","Ratts Tyerell","R4-P17","Wat Tambor","San Hill","Shaak Ti","Grievous","Tarfful","Raymus Antilles","Sly Moore","Tion Medon","Finn","Rey","Poe Dameron","BB8","Captain Phasma","Padmé Amidala"],[172,167,96,202,150,178,165,97,183,182,188,180,228,180,173,175,170,180,66,170,183,200,190,177,175,180,150,null,88,160,193,191,170,196,224,206,183,137,112,183,163,175,180,178,94,122,163,188,198,196,171,184,188,264,188,196,185,157,183,183,170,166,165,193,191,183,168,198,229,213,167,79,96,193,191,178,216,234,188,178,206,null,null,null,null,null,165],[77,75,32,136,49,120,75,32,84,77,84,null,112,80,74,1358,77,110,17,75,78.2,140,113,79,79,83,null,null,20,68,89,90,null,66,82,null,null,null,40,null,null,80,null,55,45,null,65,84,82,87,null,50,null,null,80,null,85,null,null,80,56.2,50,null,80,null,79,55,102,88,null,null,15,null,48,null,57,159,136,79,48,80,null,null,null,null,null,45],["male",null,null,"male","female","male","female",null,"male","male","male","male","male","male","male","hermaphrodite","male","male","male","male","male","none","male","male","male","male","female","male","male","male","male","male","male","male","male","male","male","male","male","male","female","male","male","female","male","male","male","male","male","male","male","female","male","male","male","male","male","female","male","male","female","female","female","male","male","male","female","male","male","female","female","male","female","male","male","female","male","male","male","female","male","male","female","male","none","female","female"],["Human","Droid","Droid","Human","Human","Human","Human","Droid","Human","Human","Human","Human","Wookiee","Human","Rodian","Hutt","Human","Human","Yoda's species","Human","Human","Droid","Trandoshan","Human","Human","Mon Calamari","Human","Human","Ewok","Sullustan","Human","Neimodian","Human","Gungan","Gungan","Gungan",null,"Toydarian","Dug",null,"Human","Zabrak","Twi'lek","Twi'lek","Vulptereen","Xexto","Toong","Human","Cerean","Nautolan","Zabrak","Tholothian","Iktotchi","Quermian","Kel Dor","Chagrian","Human","Human","Human","Geonosian","Mirialan","Mirialan","Human","Human","Human","Human","Clawdite","Besalisk","Kaminoan","Kaminoan","Human","Aleena",null,"Skakoan","Muun","Togruta","Kaleesh","Wookiee","Human",null,"Pau'an","Human","Human","Human","Droid",null,"Human"],["Tatooine","Tatooine","Naboo","Tatooine","Alderaan","Tatooine","Tatooine","Tatooine","Tatooine","Stewjon","Tatooine","Eriadu","Kashyyyk","Corellia","Rodia","Nal Hutta","Corellia","Bestine IV",null,"Naboo","Kamino",null,"Trandosha","Socorro","Bespin","Mon Cala","Chandrila",null,"Endor","Sullust",null,"Cato Neimoidia","Coruscant","Naboo","Naboo","Naboo","Naboo","Toydaria","Malastare","Naboo","Tatooine","Dathomir","Ryloth","Ryloth","Vulpter","Troiken","Tund","Haruun Kal","Cerea","Glee Anselm","Iridonia","Coruscant","Iktotch","Quermia","Dorin","Champala","Naboo","Naboo","Tatooine","Geonosis","Mirial","Mirial","Naboo","Serenno","Alderaan","Concord Dawn","Zolan","Ojom","Kamino","Kamino","Coruscant","Aleen Minor",null,"Skako","Muunilinst","Shili","Kalee","Kashyyyk","Alderaan","Umbara","Utapau",null,null,null,null,null,"Naboo"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>name<\/th>\n      <th>height<\/th>\n      <th>mass<\/th>\n      <th>gender<\/th>\n      <th>species<\/th>\n      <th>homeworld<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p>Note that the first column contains character type data, the second and third columns contain numerical data (of type double) and the remaining columns contain the special type we briefly touched on last week, factors, that look like character types but have a limited set of values or categories.</p>
 <div id="lists" class="section level2">
 <h2>Lists</h2>
@@ -718,8 +768,19 @@ my_first_list</code></pre>
 <p><code>my_first_list</code> has five elements and when printed out like this looks quite strange at first sight. Note how each of the elements of a list is referred to by an index within 2 sets of square brackets. This gives a clue to how you can access individual elements in the list.</p>
 <pre class="r"><code>my_first_list[[2]]</code></pre>
 <pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+<p>The line of code in which we created this list is a little difficult to read and might be better written split across several lines.</p>
+<pre class="r"><code>my_first_list &lt;- list(
+  1:10,
+  c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;),
+  c(TRUE, FALSE), 100,
+  c(1.3, 2.2, 0.75, 3.8)
+)</code></pre>
+<p>The editor in RStudio will indent code to help this look clearer. The R interpretor is fully able to cope with code split across multiple lines; it will assume this is what you’re doing if it doesn’t think the current line of code is complete.</p>
 <p>Elements in lists are normally named, e.g.</p>
-<pre class="r"><code>genomics_instruments &lt;- list(sequencers = c(&quot;NovaSeq 6000&quot;, &quot;HiSeq 4000&quot;, &quot;NextSeq 500&quot;, &quot;MiSeq&quot;), liquid_handling_robots = c(&quot;Mosquito HV&quot;, &quot;Bravo&quot;))
+<pre class="r"><code>genomics_instruments &lt;- list(
+  sequencers = c(&quot;NovaSeq 6000&quot;, &quot;HiSeq 4000&quot;, &quot;NextSeq 500&quot;, &quot;MiSeq&quot;),
+  liquid_handling_robots = c(&quot;Mosquito HV&quot;, &quot;Bravo&quot;)
+)
 genomics_instruments</code></pre>
 <pre><code>## $sequencers
 ## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;       
@@ -731,17 +792,18 @@ genomics_instruments</code></pre>
 <pre><code>## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;</code></pre>
 <pre class="r"><code>genomics_instruments[[&quot;sequencers&quot;]]</code></pre>
 <pre><code>## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;</code></pre>
-<p>Even more conveniently we can use the <code>$</code> operator.</p>
+<p>Even more conveniently we can use the <strong><code>$</code></strong> operator.</p>
 <pre class="r"><code>genomics_instruments$sequencers</code></pre>
 <pre><code>## [1] &quot;NovaSeq 6000&quot; &quot;HiSeq 4000&quot;   &quot;NextSeq 500&quot;  &quot;MiSeq&quot;</code></pre>
-<p>You can see what the names of elements in your list are using the <code>names()</code> function.</p>
+<p>You can see what the names of elements in your list are using the <strong><code>names()</code></strong> function.</p>
 <pre class="r"><code>names(genomics_instruments)</code></pre>
 <pre><code>## [1] &quot;sequencers&quot;             &quot;liquid_handling_robots&quot;</code></pre>
 </div>
 <div id="data-frames" class="section level2">
 <h2>Data frames</h2>
 <p>A much more useful data structure and the one we will mostly be using for the rest of the course is the <strong>data frame</strong>. This is actually a special type of list in which all the elements are vectors of the same length. The data frame is how R represents tabular data like the Star Wars table.</p>
-<p>There are a number of example data frames lurking in the background just waiting for you to call on them. Many of the examples for functions given in the help pages for those functions make use of these. Two such data frames that are often used in example code snippets are <strong><code>iris</code></strong> and <strong><code>mtcars</code></strong>. To bring them to the foreground, you can just start using them by name.</p>
+<p>There are a number of example data frames lurking in the background just waiting for you to call on them. Many of the examples for functions given in the help pages make use of these. Two such data frames that are often used in example code snippets are <strong><code>iris</code></strong> and <strong><code>mtcars</code></strong>. See, for example, the help page for the <code>unique()</code> function in which <code>iris</code> appears in the last code example without any explanation of what the mysterious <code>iris</code> is and potentially causing some confusion to the uninitiated.</p>
+<p>To bring one of these internal data sets to the fore, you can just start using it by name.</p>
 <pre class="r"><code>iris</code></pre>
 <pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 ## 1          5.1         3.5          1.4         0.2  setosa
@@ -754,8 +816,6 @@ genomics_instruments</code></pre>
 <p>You can also get help for a data set such as <code>iris</code> in the usual way.</p>
 <pre class="r"><code>?iris</code></pre>
 <p>This reveals that <code>iris</code> is a rather famous old data set from measurements taken by the esteemed British statistician and geneticist, Ronald Fisher (he of Fisher’s exact test fame).</p>
-<p>And just for completeness, here’s an example of a help page that uses <code>iris</code> in one of its examples (look at the very last line where the mysterious <code>iris</code> appears, potentially causing a lot of confusion to the uninitiated).</p>
-<pre class="r"><code>?unique</code></pre>
 <p>A data frame is a special type of list so you can access its elements in the same way as we saw previously for lists.</p>
 <pre class="r"><code>names(iris)</code></pre>
 <pre><code>## [1] &quot;Sepal.Length&quot; &quot;Sepal.Width&quot;  &quot;Petal.Length&quot; &quot;Petal.Width&quot; 
@@ -770,6 +830,17 @@ genomics_instruments</code></pre>
 ## [103] 2.1 1.8 2.2 2.1 1.7 1.8 1.8 2.5 2.0 1.9 2.1 2.0 2.4 2.3 1.8 2.2 2.3
 ## [120] 1.5 2.3 2.0 2.0 1.8 2.1 1.8 1.8 1.8 2.1 1.6 1.9 2.0 2.2 1.5 1.4 2.3
 ## [137] 2.4 1.8 1.8 2.1 2.4 2.3 1.9 2.3 2.5 2.3 1.9 2.0 2.3 1.8</code></pre>
+<div class="rmdblock">
+<p>
+<strong><code>$</code> operator</strong>
+</p>
+<p>
+Use <code>$</code> to extract an element from a list or a column from a data frame by name.
+</p>
+<p>
+<code>iris$Species</code>
+</p>
+</div>
 <p>In that last example we extracted the <code>Petal.Width</code> column which itself is a vector. We can further subset the values in that column to, say, return the first 10 values only.</p>
 <pre class="r"><code>iris$Petal.Length[1:10]</code></pre>
 <pre><code>##  [1] 1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5</code></pre>
@@ -827,7 +898,7 @@ genomics_instruments</code></pre>
 <pre><code>##                mpg cyl disp  hp drat   wt qsec vs am gear carb
 ## Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
 ## Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8</code></pre>
-<p>This was of accessing the data frame makes more sense when we look at how we can access subsets of rows and columns at the same time, for example selecting the first five rows and the first five columns.</p>
+<p>This way of accessing the data frame makes more sense when we look at how we can access subsets of rows and columns at the same time, for example selecting the first five rows and the first five columns.</p>
 <pre class="r"><code>mtcars[1:5, 1:5] # equivalent to mtcars[c(&quot;Mazda RX4&quot;, &quot;Mazda RX4 Wag&quot;, &quot;Datsun 710&quot;, &quot;Hornet 4 Drive&quot;, &quot;Hornet Sportabout&quot;), c(&quot;mpg&quot;, &quot;cyl&quot;, &quot;disp&quot;, &quot;hp&quot;, &quot;drat&quot;)]</code></pre>
 <pre><code>##                    mpg cyl disp  hp drat
 ## Mazda RX4         21.0   6  160 110 3.90
