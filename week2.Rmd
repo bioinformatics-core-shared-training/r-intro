@@ -1164,7 +1164,7 @@ summary(metabric$`Mutation Count`)
 Note that several of the column names have multiple words separated by spaces.
 We have to use backticks (**`\``**) to refer to column names such as these.
 
-```{r}
+```{r metabric_plot}
 plot(metabric$`Age at Diagnosis`, metabric$`Nottingham prognostic index`,
      xlab = "Age at diagnosis", ylab = "Nottingham prognostic index")
 ```
