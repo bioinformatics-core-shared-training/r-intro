@@ -177,7 +177,7 @@ But as we saw last week, R doesn't treat this single value any differently;
 it is still a vector, just one that has a length of 1.
 
 ```{r}
-length(some_numbers)
+length(days_of_the_week)
 length(samples)
 ```
 
@@ -293,7 +293,7 @@ One of the operations we do frequently on our data is to select subsets that
 are of particular interest. For example, we may be interested in the top 50
 genes in a differential expression analysis for our RNA-seq experiment where
 those genes of interest are the ones with a log fold change above a certain
-value and with a p value below 0.01.
+value and with a *p*-value below 0.01.
 
 Having a good understanding of how to select a subset of values from a vector
 is going to be invaluable when we come to do the same for more complicated
@@ -326,14 +326,14 @@ You can also extract elements in a different order, e.g.
 log2fc[c(2, 5, 4)]
 ```
 
-It is possible to exclude values instead by providing negative indices.
+It is possible to exclude values instead by providing negative indices, e.g. to
+exclude the second element:
 
 ```{r}
-log2fc[c(-2, -3)]
+log2fc[-2]
 ```
 
-Which is usually more conveniently written using a vector of positive indices
-and negating these as follows.
+Or to exclude multiple elements:
 
 ```{r}
 log2fc[-c(2, 3)]
@@ -346,7 +346,9 @@ log2fc[c(TRUE, FALSE, TRUE, TRUE, FALSE, FALSE)]
 ```
 
 ```{block type = "rmdblock"}
-Note: use **`()`** for functions and **`[]`** for subsetting
+**Parentheses `()` and brackets `[]`**
+
+Remember to use **`()`** for **functions** and **`[]`** for **subsetting**.
 
 `my_vector <- c(1, 7:9)`
 
@@ -388,8 +390,8 @@ step.
 log2fc[log2fc > 0.5]
 ```
 
-However, in a real Rscript, we might not want to hard-wire the threshold of 0.5
-but instead to let the user specify this each time the script is run, e.g. by
+However, in a real R script, we might not want to hard-wire the threshold of 0.5
+but instead let the user specify this each time the script is run, e.g. by
 passing in the value as a command-line argument. If we have a variable storing
 the desired threshold value, e.g. `log2fc_threshold`, then we would write the
 above as follows.
@@ -415,12 +417,12 @@ necessarily both.
 ```{r}
 # reset our log2fc vector to how it was originally
 log2fc <- c(2.3, -1, 0.48, 0.97, -0.02, 1.23)
-# small fold changes
+# find small fold changes
 log2fc[log2fc < 0.5 & log2fc > -0.5]
 ```
 
 ```{r}
-# large fold changes
+# find large fold changes
 log2fc[log2fc > 1 | log2fc < -1]
 ```
 
@@ -476,8 +478,8 @@ of this, like the following:
 
 ```{r}
 some_numbers <- 1:10
-squares <- some_numbers ^ 2
-squares
+square_numbers <- some_numbers ^ 2
+square_numbers
 ```
 
 Here we used the **`^`** exponent operator to raise our numbers to the power of
@@ -489,8 +491,8 @@ Another way of writing the above statement to get the same result would be to
 multiply our numbers by themselves.
 
 ```{r}
-squares <- some_numbers * some_numbers
-squares
+square_numbers <- some_numbers * some_numbers
+square_numbers
 ```
 
 What actually happened here was slightly different though. Two vectors
@@ -569,11 +571,7 @@ numerical while others contain names or character strings, e.g. the following
 table of Star Wars characters.
 
 ```{r echo = FALSE, message = FALSE}
-library(tidyverse)
-library(DT)
-starwars %>%
-  select(name, height, mass, gender, species, homeworld) %>%
-  datatable(rownames = FALSE)
+DT::datatable(dplyr::select(dplyr::starwars, name, height, mass, gender, species, homeworld), rownames = FALSE)
 ```
 
 Note that the first column contains character type data, the second and third
@@ -799,6 +797,55 @@ summary(iris)
 Wow, that's amazing! One simple command to compute all those useful summary
 statistics for our entire data set.
 
+The summary for numerical columns contains the minimum and maximum values, the
+median and mean, and the interquartile range. The `Species` column contains
+categorical data (stored as a special `factor` type in R) and `summary()` shows
+how many observations there are for each type of iris.
+
+```{block type = "rmdblock"}
+**Subsetting data frames**
+
+Get the first element in the first column.
+
+`iris[1, 1]`
+
+Get the first element from the fifth column.
+
+`iris[1, 5]`
+
+Get the fourth column as a vector.
+
+`iris[, 4]`
+
+Get the fourth column as a data frame.
+
+`iris[4]`
+
+Get the first 10 elements from the fourth column.
+
+`iris[1:10, 4]`
+
+Get the third row as a data frame.
+
+`iris[3, ]`
+
+Get the first 6 rows (equivalent to `head(iris)`).
+
+`iris[1:6, ]`
+
+Get a column by name as a vector.
+
+`iris$Petal.Length`
+
+Get several columns by name as a data frame.
+
+`iris[c("Petal.Length", "Petal.Width", "Species")]`
+
+Get specific rows and columns.
+
+`mtcars[c("Ferrari Dino", "Maserati Bora"), c("mpg", "cyl", "hp")]`
+```
+
 ### Viewing data frames
 
 One last aside before moving on the more user-friendly tidyverse version of the
@@ -829,19 +876,108 @@ any script or markdown files you have open.
 This viewer has some handy filtering capabilities - try using the search box,
 e.g. by entering the search term 'versi', and see what happens.
 
-Another handy hint: you can look at one of a data frames listed in the
-Environment tab pane by double-clicking on it.
+All the data objects you've created are listed in the Environment tab pane (top
+right-hand side in RStudio) -- double-clicking on a data frame in this pane will
+also open your object in the viewer.
 
+# Data semantics
 
-## Tibbles
+From "Tidy Data" by Hadley Wickham, *The Journal of Statistical Software*, vol.
+59, 2014.
+
+> *A data set is a collection of **values**, usually either numbers (if*
+> *quantitative) or character strings (if qualitative). Values are organised in*
+> *two ways. Every value belongs to a **variable** and an **observation**.*
+>
+> *A variable contains all values that measure the same underlying attribute*
+> *(like height, temperature, duration) across units.*
+>
+> *An observation contains all values measured on the same unit (like a person,*
+> *or a day, or a race) across attributes.*
+
+The data frame represents observations as rows and variables or attributes as
+columns.
+
+The `iris` data set has 150 observations (i.e. 150 rows), one for each iris
+plant from which measurements were recorded. The variables are the petal width
+and length, sepal width and length and species, each of which is an underlying
+attribute of an iris plant. An observation is the set of measurements or
+attributes recorded for a single iris plant.
+
+# Packages
+
+Before we move on to the tidyverse version of a data frame, the tibble, we have
+to load the tidyverse package that provides the tibble functionality. It doesn't
+come with the set of packages loaded when you first start R.
+
+There are thousands of R packages that extend R's core functionality to provide
+specialized functions for doing all kinds of things. There are R packages that
+provide various kinds of visualizations and plotting functions, others that let
+us manipulate data in interesting and useful ways, and still others that give us
+access to cutting-edge machine learning algorithms. Several packages have been
+developed by statisticians and bioinformaticians at CRUK CI, mainly focusing on
+genomic and transcriptomic analysis methods.
+
+You need to load a package using the **`library()`** function in order to be
+able to use the functions and data sets it provides. The tibble data structure
+is part of the **`tibble`** package so to make this available you would run the
+following command:
+
+```{r eval = FALSE}
+library(tibble)
+```
+
+The package also contains various useful functions for converting other data
+structures, e.g. data frames, to tibbles and for working with tibble objects.
+
+The `tibble` package is one of a collection of packages that make up the
+tidyverse. It is usually more convenient to load the core tidyverse packages
+in one go as follows.
+
+```{r}
+library(tidyverse)
+```
+
+The output from this command tells us which packages were loaded, one of which
+is the `tibble` package. Another of these is `ggplot2` that provides excellent
+plotting functions for visualizing our data and will be the main focus next
+week.
+
+## Installing packages
+
+If you got the following error message when trying to load the tidyverse, then
+you haven't yet installed it.
+
+```
+> library(tidyverse)
+Error in library(tidyverse) : there is no package called ‘tidyverse’
+```
+
+Installing packages should be relatively straightforward using the
+`install.packages()` function.
+
+```{r eval = FALSE}
+install.packages("tidyverse")
+```
+
+If you're using R at a regular console within a terminal window, i.e. not
+RStudio, you may be asked to select one of several mirrors of the CRAN R package
+repository hosted at different locations around the world (in the UK these are
+in Bristol and London).
+
+For some packages you may be asked to choose between a binary and a source
+package, particularly if the latest version of the package is only available in
+source form and that package contains code written in another language such as
+C. This could be a problem if you don't have a C compiler installed on your
+computer.
+
+# Tibbles
 
 TODO
 
 * need to explain that the starwars table is a data frame in the dplyr package in the tidyverse so need to load the tidyverse, library(tidyverse)
 * printing to the console
 * viewing by double-clicking in the Environment pane
-
-# Packages
 
 # Reading data into R
 
