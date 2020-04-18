@@ -959,6 +959,13 @@ is the `tibble` package. Another of these is `ggplot2` that provides excellent
 plotting functions for visualizing our data and will be the main focus next
 week.
 
+There is also a warning message about some conflicts. These are functions
+loaded as part of the `dplyr` package that have the same name as functions that
+we were previously able to access from the `stats` package that is automatically
+loaded when R starts. Those functions from the `stats` package are now masked;
+to use these instead of their `dplyr` namesakes you need to specify them by
+adding the package name and `::` as shown in the warning message.
+
 ## Installing packages
 
 If you got the following error message when trying to load the tidyverse, then
@@ -1106,7 +1113,7 @@ Tibbles also prevent another shortcut that can lead to very unclear code, i.e.
 the ability to refer to a column using a truncated form of its name.
 
 ```{r}
-beatles$n
+beatles$i
 ```
 
 We'll be mostly using tibbles in this course but almost all the functions we'll
@@ -1115,9 +1122,102 @@ frames in the same way they do for tibbles.
 
 # Reading data into R
 
-TODO
+Another of the tidyverse packages loaded when we ran `library(tidyverse)` is the
+`readr` package, which provides functions for reading tabular data into a tibble
+and writing tibbles to tab-delmited and comma-separated value (CSV) files.
 
-* details about the working directory from which files are read or are written to, getwd() and how to change this using setwd() or navigating to the directory using RStudio
+For example, the clinical data for the METABRIC breast cancer dataset generated
+at CRUK CI can be downloaded as a tab-delimited file from
+[cBioPortal](https://www.cbioportal.org/study/clinicalData?id=brca_metabric).
+
+This file contains information in tabular form in which values are separated by
+tab characters so we'll use the **`read_tsv()`** to read these data.
+
+```{r}
+metabric <- read_tsv("data/brca_metabric_clinical_data.tsv")
+```
+
+`read_tsv()` prints a message telling us which types it has assigned to each of
+the columns it has read, although in this case the table has quite a lot of
+columns and it only outputs details about the first few.
+
+If we print the clinical data set we can see that `read_tsv()` created a tibble.
+
+```{r}
+metabric
+```
+
+We are now in a position to explore these data. For example, we can use the
+`table()` function to count the number of patients in this cohort that had
+chemotherapy and those that did not.
+
+```{r}
+table(metabric$Chemotherapy)
+```
+
+We can summarize the numbers of mutations found per patient.
+
+```{r}
+summary(metabric$`Mutation Count`)
+```
+
+Note that several of the column names have multiple words separated by spaces.
+We have to use backticks (**`\``**) to refer to column names such as these.
+
+```{r}
+plot(metabric$`Age at Diagnosis`, metabric$`Nottingham prognostic index`,
+     xlab = "Age at diagnosis", ylab = "Nottingham prognostic index")
+```
+
+Hmm, what a horrible looking plot. Thank goodness we're moving on to
+**`ggplot2`** next week.
+
+```{block type = "rmdblock"}
+**`read_csv()`** and **`read_tsv()`**
+  
+`read_csv()` reads data from a comma-separated value (CSV) file into a tibble.
+`read_tsv()` is the equivalent function that works on tab-delmited files.
+
+These functions expect the first line to contain column names and try to make
+sensible guesses at the type of data in each column. You can change this by
+specifying various arguments, e.g. to skip comment lines beginning with a
+specific character (e.g. "#") or to tell the function what the column types
+are.
+
+patients <- read_csv("patients.csv")
+```
+
+## Working directory
+
+When reading in the METABRIC dataset we specified the file using a relative
+path, `data/brca_metabric_clinical_data.tsv`. This is relative to the current
+working directory and which you can get by running the **`getwd()`** function.
+
+```{r eval = FALSE}
+getwd()
+```
+
+It is quite likely your working directory is your home folder.
+
+You can specify a full path for the file you want to read, which is also known
+as an absolute path.
+
+You can explicitly set your working directory using **`setwd()`**.
+
+```{r eval = FALSE}
+setwd("/Users/freddy/projects/20200119_JB_amplicon_sequencing")
+```
+
+If you're running an R script from a terminal window (by typing something like
+`Rscript my_script.R` at the command prompt) you will most likely want to read
+files from locations relative to the directory in which you run the script.
+
+If you're writing an R script in RStudio you can set the working directory to be
+the same directory as that which contains your script file using the menu:
+**Session > Set Working Directory > To Source File Location**. You can also
+navigate to the directory of your choosing in the Files tab pane and set this to
+be the working directory by clicking on the **More** menu button and selecting
+**Set As Working Directory**.
 
 # Missing values (NA)
 
