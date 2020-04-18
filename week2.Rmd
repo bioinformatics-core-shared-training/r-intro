@@ -688,6 +688,22 @@ This reveals that `iris` is a rather famous old data set from measurements taken
 by the esteemed British statistician and geneticist, Ronald Fisher (he of
 Fisher's exact test fame).
 
+### Creating a data frame
+
+A data frame can be created in a similar way to how we created a list. The only
+restriction is that each of the vectors should be named and all must have the
+same length.
+
+```{r}
+beatles <- data.frame(
+  name = c("John", "Paul", "Ringo", "George"),
+  instrument = c("guitar", "bass", "drums", "guitar")
+)
+beatles
+```
+
+### Extracting values from a data frame
+
 A data frame is a special type of list so you can access its elements in the
 same way as we saw previously for lists.
 
@@ -973,11 +989,129 @@ computer.
 
 # Tibbles
 
-TODO
+The tidyverse brings us a special type of data frame called the **`tibble`**.
 
-* need to explain that the starwars table is a data frame in the dplyr package in the tidyverse so need to load the tidyverse, library(tidyverse)
-* printing to the console
-* viewing by double-clicking in the Environment pane
+Data frames have some rather quirky and annoying behaviours and the `tibble`
+addresses some of these issues to make life a little easier. We'll first look at
+how we can create a tibble and then will have a quick look at some of the
+advantages of the tibble over the data frame.
+
+## Creating a tibble
+
+Tibbles can be created using the `tibble()` function in a similar manner to how
+we created a data frame earlier.
+
+```{r}
+beatles <- tibble(
+  name = c("John", "Paul", "Ringo", "George"),
+  instrument = c("guitar", "bass", "drums", "guitar")
+)
+beatles
+```
+
+A data frame can be converted into a tibble using the `as_tibble()` function.
+
+```{r}
+iris_tibble <- as_tibble(iris)
+```
+
+Our iris tibble is still a data frame but it also has acquired some additional
+types.
+
+```{r}
+class(iris)
+class(iris_tibble)
+```
+
+## Tibbles vs data frames
+
+So let's now have a look at what capabilities and behaviours these additional
+types confer.
+
+### Printing
+
+If you typed `iris` at the command prompt to list its contents it will have
+printed all 150 lines. At times this can feel a bit unwieldy, as we may just
+want a quick look at the first few rows to get an idea of what our data frame
+looks like. Hence the need for the `head()` function.
+
+Tibbles print in a much more user-friendly way. Only the first 10 rows are
+displayed and only as many columns as can fit comfortably on the screen. This is
+best demonstrated with a table with many columns such as the `starwars` table we
+came across earlier. `starwars` is in fact one of those hidden data sets but it
+is part of the `dplyr` package so can only be accessed if you load `dplyr` using
+`library(dplyr)` or as part of loading the tidyverse collection of packages
+using `library(tidyverse)`.
+
+```{r}
+starwars
+```
+
+The dimensions of the tibble are shown on the first line of output and the types
+of each of the columns (variables) are also displayed in shorthand form. So we
+easily see that the name column is a character vector and the height column
+contains integer values, while the mass column contains doubles.
+
+Values in some columns have been shortened with `...` in order to fit as many
+columns on the screen as possible. Those columns that it couldn't fit on are
+listed after the first 10 rows.
+
+### Not trying to be too clever
+
+The other main thing that tibbles do is to curb some strange behaviours that the
+developers of R thought were a good idea at the time but which can cause some
+confusion.
+
+Let's reconsider how we created the `beatles` data frame.
+
+```{r}
+beatles <- data.frame(
+  name = c("John", "Paul", "Ringo", "George"),
+  instrument = c("guitar", "bass", "drums", "guitar")
+)
+```
+
+What type do you think the name and instrument columns are?
+
+If you think these should be characters, think again. Or inspect these using
+`str()` or `class()`.
+
+```{r}
+str(beatles)
+```
+
+```{r}
+class(beatles$name)
+```
+
+The `data.frame()` function automatically converts character vectors into
+factors. Factors are categorical variables, i.e. have a restricted set of
+values, a controlled vocabulary if you like.
+
+Why did it do this? I never asked it to. Those vectors started as character
+vectors, why does `data.frame()` think I want these to be factors?
+
+To be fair, the instruments variable probably should be a factor but it's
+hard to see why the name would be.
+
+If you look at the help page for the `data.frame()` function, you'll see that
+you can prevent this behaviour by setting the argument `stringsAsFactors =
+FALSE`. Likewise, it is very common to see code in which this same argument is
+set to `FALSE` in the base R functions for reading tabular data from a
+tab-delimited or comma-separated value (CSV) file.
+
+Tibbles do not automatically convert character string variables to factors.
+
+Tibbles also prevent another shortcut that can lead to very unclear code, i.e.
+the ability to refer to a column using a truncated form of its name.
+
+```{r}
+beatles$n
+```
+
+We'll be mostly using tibbles in this course but almost all the functions we'll
+be using, from the various tidyverse packages, can work with ordinary data
+frames in the same way they do for tibbles.
 
 # Reading data into R
 
