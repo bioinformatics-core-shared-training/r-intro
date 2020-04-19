@@ -2,6 +2,10 @@
 title: "Assignment 2"
 ---
 
+---
+
+### Working with vectors, data frames and tibbles
+
 **1. How many cars in the `mtcars` data set have 8 cylinders?**
 
 Write an R instruction to calculate this.
@@ -10,13 +14,32 @@ Write an R instruction to calculate this.
 
 ```
 
-**2. Print out a subset of the `starwars` data frame containing just the characters with blond hair and blue eyes**
+**2. Print out a subset of the `starwars` tibble containing just the characters with blond hair and blue eyes**
 
 ```{r}
 
 ```
 
-**3. Use the `sample()` function to simulate the rolling of a 6-sided die**
+**3. Convert the values for the heights of characters in the `starwars` tibble from centimetres to metres**
+
+```{r}
+
+```
+
+What happened to the type of the height column?
+
+Convert the height column back to metres again and see if you can work out how
+to change it back to its original type.
+
+```{r}
+
+```
+
+---
+
+### Simulation: rolling 6-sided dice
+
+**4. Use the `sample()` function to simulate the rolling of a 6-sided die**
 
 If you look at the help page for `sample` you'll find there are two functions
 with the same name, one in the `base` package and the other in the `dplyr`
@@ -45,7 +68,7 @@ sixes you obtain is much closer to the expected value.
 
 ```
 
-**4. Simulate the rolling of a weighted six-sided die?**
+**5. Simulate the rolling of a weighted six-sided die**
 
 Imagine we're running a casino and we have some weighted dice in which the
 probability of throwing a six is a bit lower than it should be if all is fair
@@ -62,7 +85,11 @@ these probabilities. See how many sixes you get.
 
 *Hint:* use the `rep()` function to save some typing.
 
-**5. How many samples in the METABRIC dataset have high cellularity but have no recorded classification with the 3-gene classifier?**
+---
+
+### Clinical cancer data
+
+**6. How many samples in the METABRIC dataset have high cellularity but have no recorded classification with the 3-gene classifier?**
 
 ```{r}
 
@@ -72,7 +99,11 @@ these probabilities. See how many sixes you get.
 values in the cellularity column as well as the column for the 3-gene
 classifier.
 
-**6. Read into R one of your own Excel spreadsheets and explore the data using `summary()`, `table()` and/or `plot()`**
+---
+
+### Working with data from an Excel spreadsheet
+
+**7. Read into R one of your own Excel spreadsheets and explore the data using `summary()`, `table()` and/or `plot()`**
 
 We haven't yet showed how to read Excel spreadsheets into R. There are more than
 package providing this capability but for this exercise use the `readxl` package
@@ -91,3 +122,57 @@ annotation data for the NCI-60 cell line data set (https://bioinformatics-core-s
 
 ```
 
+---
+
+### Create a report for your assignment
+
+Click on the 'Knit' menu at the top of this file and select either whichever
+option you prefer to create an HTML, PDF or Word document version of your
+assignment. This will run all the code chunks and "knit" the resulting
+results with the surrounding text to produce a report.
+
+#### Additional markdown features
+
+**_Emphasis_**
+
+Can use either underscores or asterisks and combination of both for both bold
+and italic emphasis.
+
+```
+*italic*   **bold**
+_italic_   __bold__
+```
+
+**_Inline Code_**
+
+Use of backticks (`).
+
+```
+`mean(starwar$height)`
+```
+
+**_Horizontal Rule_**
+
+Three of more astisks or dashes.
+
+```
+*******
+
+-------
+```
+
+**_Plain Code Blocks_**
+
+Plain code blocks are displayed in a fixed-width font but not evaluated.
+
+```
+This text is displayed verbatim / preformatted
+```
+
+Have a look at examples of these in the text parts of this R markdown document
+and how these are rendered when you run the knit operation.
+
+For more features, see the help page in RStudio that can be accessed from the
+the help menu: **Help > Markdown Quick Reference**
+
+---
