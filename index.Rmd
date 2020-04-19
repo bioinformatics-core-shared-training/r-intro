@@ -7,7 +7,7 @@ title: "Introduction to R"
 This site contains the materials for an R course run by the Bioinformatics Core
 at the Cancer Research UK Cambridge Institute.
 
-April - June 2020
+April -- June 2020
 
 ### Instructors
 
