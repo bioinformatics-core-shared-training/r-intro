@@ -4,15 +4,13 @@ title: "Assignment 2"
 
 **1. How many cars in the `mtcars` data set have 8 cylinders?**
 
-Write an R instruction to calculate this -- note there are several ways of doing
-so.
+Write an R instruction to calculate this (there are several ways of doing so).
 
 ```{r}
 
 ```
 
-**2. Print out a subset of the `starwars` data frame containing just the
-characters with blond hair and blue eyes**
+**2. Print out a subset of the `starwars` data frame containing just the characters with blond hair and blue eyes**
 
 ```{r}
 
@@ -20,18 +18,18 @@ characters with blond hair and blue eyes**
 
 **3. Use the `sample()` function to simulate the rolling of a 6-sided die**
 
-Count the number of sixes you get for 1000 rolls?
-
 If you look at the help page for `sample` you'll find there are two functions
 with the same name, one in the `base` package and the other in the `dplyr`
 package. The `sample` function in the `base` package is the one you need for
 this exercise.
 
+Count the number of sixes you get for 1000 rolls?
+
 ```{r}
 
 ```
 
-What number would you expect to get? (calculate this in R)
+What number would you expect to get? Calculate this in R.
 
 ```{r}
 
@@ -41,7 +39,7 @@ Re-run the simulation a few times by clicking on the green 'Run current chunk'
 button for the code you've written. What do you notice?
 
 Re-run the simulation with a much larger sample size. Check that the number of
-sixes you throw is much closer to the expected value.
+sixes you obtain is much closer to the expected value.
 
 ```{r}
 
@@ -55,14 +53,14 @@ and square. Let's say the probability of a throwing a six is 0.1 while the
 other 5 numbers all have equal probability.
 
 Calculate the probability for throwing each of the other numbers and then,
-looking again at the help page for `sample()`, re-run the simulation and see
-how many sixes you get.
+referring again at the help page for `sample()`, re-run the simulation using
+these probabilities. See how many sixes you get.
 
 ```{r}
 
 ```
 
-**_Hint:_** use the `rep()` function to save some typing.
+*Hint:* use the `rep()` function to save some typing.
 
 **5. How many samples in the METABRIC dataset have high cellularity but have no recorded classification with the 3-gene classifier?**
 
@@ -70,7 +68,7 @@ how many sixes you get.
 
 ```
 
-**_Hint:_** this is actually quite tricky -- you may want to check for missing
+*Hint:* this is actually quite tricky -- you may want to check for missing
 values in the cellularity column as well as the column for the 3-gene
 classifier.
 
@@ -86,9 +84,8 @@ that's not the case, you will have to install it separately.
 `readxl` is not loaded as one of the core tidyverse packages when you run
 `library(tidyverse)` so you'll have to load this separately.
 
-If you don't have an Excel spreadsheet to hand you can use the clinical
-annotation data for the
-[NCI-60 cell line data set](data/cellline_nci60_clinical_data.xlsx).
+If you don't have an Excel spreadsheet to hand, you can use the clinical
+annotation data for the NCI-60 cell line data set (https://bioinformatics-core-shared-training.github.io/r-intro/data/cellline_nci60_clinical_data.xlsx).
 
 ```{r}
 
