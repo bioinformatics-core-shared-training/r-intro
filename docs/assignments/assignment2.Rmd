@@ -1,0 +1,96 @@
+---
+title: "Assignment 2"
+---
+
+**1. How many cars in the `mtcars` data set have 8 cylinders?**
+
+Write an R instruction to calculate this -- note there are several ways of doing
+so.
+
+```{r}
+
+```
+
+**2. Print out a subset of the `starwars` data frame containing just the
+characters with blond hair and blue eyes**
+
+```{r}
+
+```
+
+**3. Use the `sample()` function to simulate the rolling of a 6-sided die**
+
+Count the number of sixes you get for 1000 rolls?
+
+If you look at the help page for `sample` you'll find there are two functions
+with the same name, one in the `base` package and the other in the `dplyr`
+package. The `sample` function in the `base` package is the one you need for
+this exercise.
+
+```{r}
+
+```
+
+What number would you expect to get? (calculate this in R)
+
+```{r}
+
+```
+
+Re-run the simulation a few times by clicking on the green 'Run current chunk'
+button for the code you've written. What do you notice?
+
+Re-run the simulation with a much larger sample size. Check that the number of
+sixes you throw is much closer to the expected value.
+
+```{r}
+
+```
+
+**4. Simulate the rolling of a weighted six-sided die?**
+
+Imagine we're running a casino and we have some weighted dice in which the
+probability of throwing a six is a bit lower than it should be if all is fair
+and square. Let's say the probability of a throwing a six is 0.1 while the
+other 5 numbers all have equal probability.
+
+Calculate the probability for throwing each of the other numbers and then,
+looking again at the help page for `sample()`, re-run the simulation and see
+how many sixes you get.
+
+```{r}
+
+```
+
+**_Hint:_** use the `rep()` function to save some typing.
+
+**5. How many samples in the METABRIC dataset have high cellularity but have no recorded classification with the 3-gene classifier?**
+
+```{r}
+
+```
+
+**_Hint:_** this is actually quite tricky -- you may want to check for missing
+values in the cellularity column as well as the column for the 3-gene
+classifier.
+
+**6. Read into R one of your own Excel spreadsheets and explore the data using `summary()`, `table()` and/or `plot()`**
+
+We haven't yet showed how to read Excel spreadsheets into R. There are more than
+package providing this capability but for this exercise use the `readxl` package
+from the tidyverse.
+
+`readxl` should have been installed as part of the tidyverse but if you find
+that's not the case, you will have to install it separately.
+
+`readxl` is not loaded as one of the core tidyverse packages when you run
+`library(tidyverse)` so you'll have to load this separately.
+
+If you don't have an Excel spreadsheet to hand you can use the clinical
+annotation data for the
+[NCI-60 cell line data set](data/cellline_nci60_clinical_data.xlsx).
+
+```{r}
+
+```
+
