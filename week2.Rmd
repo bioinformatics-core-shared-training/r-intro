@@ -656,6 +656,21 @@ function.
 names(genomics_instruments)
 ```
 
+### Modifying lists
+
+You can modify lists either by adding addition elements or modifying existing
+ones.
+
+```{r}
+genomics_instruments$dna_rna_quality_control <- c("Bioanalyzer 2100", "Tapestation 4200")
+genomics_instruments
+```
+
+```{r}
+genomics_instruments$sequencers[3] <- "NextSeq 550 (upgraded)"
+genomics_instruments
+```
+
 ## Data frames
 
 A much more useful data structure and the one we will mostly be using for the
@@ -793,8 +808,7 @@ we can access subsets of rows and columns at the same time, for example
 selecting the first three rows and the first five columns.
 
 ```{r}
-mtcars[1:3, 1:5]
-# equivalent to mtcars[c("Mazda RX4", "Mazda RX4 Wag", "Datsun 710"), c("mpg", "cyl", "disp", "hp", "drat")]
+mtcars[1:3, 1:5] # equivalent to mtcars[c("Mazda RX4", "Mazda RX4 Wag", "Datsun 710"), c("mpg", "cyl", "disp", "hp", "drat")]
 ```
 
 We can extract just a single element in our table.
@@ -870,6 +884,45 @@ Get several columns by name as a data frame.
 Get specific rows and columns.
 
 `mtcars[c("Ferrari Dino", "Maserati Bora"), c("mpg", "cyl", "hp")]`
+```
+
+### Modifying data frames
+
+We can use the subsetting operations for assigning values in order to modify or
+update a data frame in a very similar way to what we saw earlier for vectors.
+
+We can change a single value, such as the number of cylinders of the Ferrari
+Dino.
+
+```{r}
+mtcars["Ferrari Dino", "cyl"] <- 8
+mtcars["Ferrari Dino", ]
+```
+
+We can change multiple values, for example:
+
+```{r}
+mtcars[c(1, 4, 5), "gear"] <- c(6, 5, 5)
+head(mtcars)
+```
+
+We could set these multiple values to a single value.
+
+```{r}
+mtcars[c(1, 4, 5), "gear"] <- 6
+head(mtcars)
+```
+
+We can also create new columns, just like we did to create new elements in a
+list, although with the additional constraint that the new column must have the
+same length as all the other columns.
+
+In the following, we add a column for kilometres per litre by mutliplying the
+miles per gallon column (`mpg`) by the appropriate scaling factor.
+
+```{r}
+mtcars$kpl <- mtcars$mpg * 0.354006
+mtcars[1:6, c("cyl", "mpg", "kpl")]
 ```
 
 ### Viewing data frames
