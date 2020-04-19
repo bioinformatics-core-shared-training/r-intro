@@ -720,6 +720,7 @@ same length.
 ```{r}
 beatles <- data.frame(
   name = c("John", "Paul", "Ringo", "George"),
+  birth_year = c(1940, 1942, 1940, 1943),
   instrument = c("guitar", "bass", "drums", "guitar")
 )
 beatles
@@ -817,6 +818,20 @@ We can extract just a single element in our table.
 mtcars[4, 3]
 ```
 
+We can also use conditional subsetting to extract the rows that meet certain
+conditions, e.g. all the cars with automatic transmission (those with `am` value
+of 0).
+
+```{r}
+mtcars[mtcars$am == 0, ]
+```
+
+Here we have used the equality operator, **`==`**, which is not to be mistaken
+for the assignment operator, **`=`**, used to specify arguments to functions.
+`mtcars$am ==0` returns a logical vector with `TRUE` values for each car that
+has automatic transmission (`am` equal to 0). We then use this to subset rows
+(note the comma after the logical condition).
+
 Other useful functions for data frames are **`dim()`**, **`nrow()`** and
 **`ncol()`** that let you know about the dimensions of your table.
 
@@ -825,22 +840,6 @@ dim(mtcars)
 nrow(mtcars)
 ncol(mtcars)
 ```
-
-Some functions work just as well (or even better) with data frames as they do
-with vectors. Remember the **`summary()`** function from last week? Let's give
-that a go on the `iris` data frame.
-
-```{r}
-summary(iris)
-```
-
-Wow, that's amazing! One simple command to compute all those useful summary
-statistics for our entire data set.
-
-The summary for numerical columns contains the minimum and maximum values, the
-median and mean, and the interquartile range. The `Species` column contains
-categorical data (stored as a special `factor` type in R) and `summary()` shows
-how many observations there are for each type of iris.
 
 ```{block type = "rmdblock"}
 **Subsetting data frames**
@@ -886,6 +885,22 @@ Get specific rows and columns.
 `mtcars[c("Ferrari Dino", "Maserati Bora"), c("mpg", "cyl", "hp")]`
 ```
 
+Some functions work just as well (or even better) with data frames as they do
+with vectors. Remember the **`summary()`** function from last week? Let's give
+that a go on the `iris` data frame.
+
+```{r}
+summary(iris)
+```
+
+Wow, that's amazing! One simple command to compute all those useful summary
+statistics for our entire data set.
+
+The summary for numerical columns contains the minimum and maximum values, the
+median and mean, and the interquartile range. The `Species` column contains
+categorical data (stored as a special `factor` type in R) and `summary()` shows
+how many observations there are for each type of iris.
+
 ### Modifying data frames
 
 We can use the subsetting operations for assigning values in order to modify or
@@ -921,7 +936,7 @@ In the following, we add a column for kilometres per litre by mutliplying the
 miles per gallon column (`mpg`) by the appropriate scaling factor.
 
 ```{r}
-mtcars$kpl <- mtcars$mpg * 0.354006
+mtcars$kpl <- mtcars$mpg * 0.425144
 mtcars[1:6, c("cyl", "mpg", "kpl")]
 ```
 
@@ -1082,6 +1097,7 @@ we created a data frame earlier.
 ```{r}
 beatles <- tibble(
   name = c("John", "Paul", "Ringo", "George"),
+  birth_year = c(1940, 1942, 1940, 1943),
   instrument = c("guitar", "bass", "drums", "guitar")
 )
 beatles
@@ -1148,6 +1164,7 @@ Let's reconsider how we created the `beatles` data frame.
 ```{r}
 beatles <- data.frame(
   name = c("John", "Paul", "Ringo", "George"),
+  birth_year = c(1940, 1942, 1940, 1943),
   instrument = c("guitar", "bass", "drums", "guitar")
 )
 ```
