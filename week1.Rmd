@@ -2,27 +2,23 @@
 title: "Week 1 -- Introduction to R and RStudio"
 ---
 
-# Introduction
+> **Aims**
+>
+> * To introduce Rstudio that we will be using, to write R scripts, in this course
+> * To demonstrate the ways in which R can store data
+> * To show how R functions can operate on such data
+>
+> **Learning objectives**
+>
+> * Learn about the functions of the various panes in Rstudio
+> * Introduce the concept of vectors and the types of data that they can hold
+> * Present the different ways that a user can access documentation in R and when to use them
+> * Demonstrate the basic format for using an R function
+> * Teach some simple but useful functions in R
 
-## Aims and Objectives of this lesson
+# Introduction to R and RStudio
 
-### Aim
-
-* To introduce the Rstudio program that we will be using, to write R scripts, in this course.
-* Demonstrate the ways in which R can store data.
-* Show how R functions can operate on such data.
-
-### Objectives
-
-* Explain the functions of the various panes in Rstudio.
-* Introduce the concept of vectors and the types of data that they can hold.
-* Present the different ways that a user can access documentation in R and when to use them.
-* Demonstrate the basic format for using an R function.
-* Teach some simple but useful functions in R.
-
----
-
-## Why learn R?
+# Why learn R?
 
 * R involves creating & using scripts which makes the steps you used in your analysis clear and can be inspected by someone else for feedback and error-checking.
 
@@ -128,6 +124,8 @@ The Plots tab is where any graphs that we create in R will appear. We can move t
 The Packages tab shows which R packages are installed (These expand R's functionallity and again will be covered later) and can also install new packages.
 
 The Help tab is a _massively useful_ tab which enables you to search R help index to get help pages on R functions and provide example code to help you use them in your R scripts.
+
+---
 
 # Our first look at the R language
 
@@ -355,6 +353,8 @@ __A point to note here__ - In the help you will notice that parameters are usual
 You can do this by using a parameter name e.g. the plot character is called 'pch' and we can put `pch = N` anywhere between the brackets.
 However, just because you can is not a good reason. Doing things out of order for no reason can make your code less readable.
 
+---
+
 # Summary
 
 In this session we have covered the following concepts:
@@ -372,7 +372,7 @@ In this session we have covered the following concepts:
 We also cover how to work within an R markdown document and run code therein in this
 week's assignment.
 
-----
+---
 
 Over to you for the assignment - see you again at the end of the week!
 
