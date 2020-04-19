@@ -15,6 +15,8 @@ title: "Week 2 -- Getting started with data in R"
 > * Introduce the **`tibble`**, arguably the most important data structure you will use in R
 > * Learn how R deals with missing values
 
+# Getting started with data in R
+
 # Introduction
 
 In this course, we'll be mostly focusing on a set of R packages specifically
@@ -902,8 +904,8 @@ also open it in the viewer.
 
 # Data semantics
 
-From "Tidy Data" by Hadley Wickham, *The Journal of Statistical Software*, vol.
-59, 2014.
+From "Tidy Data" by Hadley Wickham, [*The Journal of Statistical Software*, vol.
+59, 2014](https://www.jstatsoft.org/index.php/jss/article/view/v059i10/v59i10.pdf).
 
 > *A data set is a collection of **values**, usually either numbers (if*
 > *quantitative) or character strings (if qualitative). Values are organised in*
@@ -1125,6 +1127,64 @@ the ability to refer to a column using a truncated form of its name.
 beatles$i
 ```
 
+### Subsetting
+
+Extracting subsets of values from a tibble can be achieved using the single
+square bracket (`[ ]`) operator in the same way as for data frames. You may have
+noticed from the blue summary box above that sometimes these operations return
+another data frame and sometimes a vector when run on a data frame. A vector is
+preferentially returned if the subset of values can take the form of an atomic
+vector. This does not happen with tibbles. Using `[ ]` on a tibble will always
+return another tibble.
+
+```{r}
+iris[1:5, 3]
+iris_tibble[1:5, 3]
+```
+
+It's another example of tibbles not trying to be too clever but instead
+favouring a more consistent set of expectations for their behaviour. There are
+good reasons for this. Many of the most powerful operations in the tidyverse
+work on data frames and we shall see in future weeks how these operations can
+be 'chained' together to form workflows in a very elegant fashion. This would
+not be possible if the return value from any one of the steps in the workflow
+returned a vector or table depending on whether it could be a vector. But that's
+getting ahead of ourselves, so let's park it there for now.
+
+### Row names
+
+The final difference we'll briefly note here is that setting row names on
+tibbles is allowed but deprecated (and future versions of the tidyverse may not
+allow you to set row names at all). If you try to set row names on a tibble you
+will get a warning message about this and if you convert a data frame such as
+`mtcars` with meaningful row names then these get removed and you end up with
+character version of row numbers much like we saw for the `iris` data set.
+
+```{r}
+as_tibble(mtcars)
+```
+
+Being able to access data through row name identifiers might seem like a very
+useful thing but in most cases this information would be better included in a
+separate column where you can apply exactly the same filtering and faceting
+operations as you can for any other column or variable.
+
+The `tibble` package does provide a useful way of converting row names into a
+column, so we can recover those car models on converting `mtcars` into a tibble.
+
+```{r}
+as_tibble(rownames_to_column(mtcars, var = "model"))
+```
+
+Note that the `$` and `[[]]` subsetting operators are actually operators
+designed to work on lists and to return vectors. Tibbles, like data frames, are
+special kinds of lists and so tibbles respect the clear expectation that these
+should return vectors.
+
+```{r}
+starwars[[1]] # same as starwars$name
+```
+
 We'll be mostly using tibbles in this course but almost all the functions we'll
 be using, from the various tidyverse packages, can work with ordinary data
 frames in the same way they do for tibbles.
@@ -1138,9 +1198,9 @@ and writing tibbles to tab-delmited and comma-separated value (CSV) files.
 For example, the clinical data for the METABRIC breast cancer dataset generated
 at CRUK CI can be downloaded as a tab-delimited file from
 [cBioPortal](https://www.cbioportal.org/study/clinicalData?id=brca_metabric).
-As part of the METABRIC project, targeted sequencing was performed for 2509
-primary breast tumours and 548 matched normals (Pereira *et al.*, *Nature
-Communications* 7:11479, 2016).
+Targeted sequencing was performed for 2509 primary breast tumours, along with
+548 matched normals, using a panel of 40 driver-mutation genes as part of the
+METABRIC study ([Pereira *et al.*, Nature Communications 7:11479, 2016](https://www.ncbi.nlm.nih.gov/pubmed/27161491)).
 
 This file contains information in tabular form in which values are separated by
 tab characters so we'll use the **`read_tsv()`** to read these data.
@@ -1293,6 +1353,6 @@ sum(is.na(metabric$`Mutation Count`))
 ```
 
 Can you see why this works? *(hint: look at what kind of vector `sum()` expects
-and how a logical vector will be coerced into such a type)*.
+and think about how a logical vector will be coerced into such a type)*.
 
 # Summary
