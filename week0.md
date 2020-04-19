@@ -2,6 +2,13 @@
 title: 'Getting Ready'
 ---
 
+> **Learning objectives**
+>
+> * Install R and RStudio
+> * Install the tidyverse collection of R packages
+
+# Installing software you will need
+
 Before starting this course you will need to ensure that your computer is set
 up with the required software.
 
@@ -14,7 +21,7 @@ one of the trainers for help.
 
 <div style="line-height: 100%;"><br/></div>
 
-# Installing R and RStudio
+# R and RStudio
 
 **R** and **RStudio** are separate downloads and installations.
 
@@ -113,7 +120,7 @@ recent version is available. If so, please download and install it.
 
 <div style="line-height: 100%;"><br/></div>
 
-# Installing the tidyverse
+# Tidyverse
 
 After installing R and RStudio, please install the `tidyverse` packages.
 
