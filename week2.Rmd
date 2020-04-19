@@ -1453,3 +1453,9 @@ In this session we have covered the following concepts:
 * How to read tabular data into R
 * The tibble, a superior version of the data frame
 * Missing values and how R handles these
+
+---
+
+# Assignment
+
+Assignment: [assignment1.Rmd](assignments/assignment2.Rmd)
