@@ -399,7 +399,7 @@ div.tocify {
 
 
 <blockquote>
-<h3 id="learning-objectives">Learning objectives</h3>
+<p><strong>Learning objectives</strong></p>
 <ul>
 <li>Create and run a script file containing your R code</li>
 <li>Extract values or subsets from vectors</li>
@@ -415,13 +415,11 @@ div.tocify {
 </blockquote>
 <div id="getting-started-with-data-in-r" class="section level1">
 <h1>Getting started with data in R</h1>
-</div>
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
 <p>In this course, we’ll be mostly focusing on a set of R packages specifically designed for the most useful and common operations for interacting with and visualizing data, and particularly data in a tabular form. This collection of packages is known as the <strong>tidyverse</strong>.</p>
 <p>Learning the <strong>tidyverse</strong> is more than just learning about some helpful functions to get certain tasks done. The tidyverse packages form a coherant system for data manipulation, exploration and visualization that share a common design philosophy. There is a certain elegance to code crafted using the tidyverse approach that is in stark contrast to the strange and often cryptic equivalent using traditional ‘base R’. This old-timer only really became a true R convert on being introduced to the tidyverse.</p>
 <p>Sadly, as much as we’d like, we can’t just cover the tidyverse alone and ignore the fundamentals of the R language. So this week we will look at some aspects of R that are crucial to understanding how R is handling your data, even though we will come back to some of these concepts in later weeks to show you how those same operations are more easily and elegantly carried out in the tidyverse.</p>
 <p>We will also start to look at the most important data structure you’ll use with your data, assuming it is in tabular form, the <strong>data frame</strong>, and its superior tidyverse derivative, the <strong>tibble</strong>.</p>
+<hr />
 </div>
 <div id="scripts" class="section level1">
 <h1>Scripts</h1>
@@ -472,6 +470,7 @@ div.tocify {
 <p>It is also quite common when looking at R code to see lines of code commented out, usually replaced by another line that does something similar or makes a small change.</p>
 <pre class="r"><code># random_numbers &lt;- rnorm(100, mean = 0, sd = 1)
 random_numbers &lt;- rnorm(100, mean = 0, sd = 0.5)</code></pre>
+<hr />
 </div>
 </div>
 <div id="vectors" class="section level1">
@@ -705,9 +704,8 @@ some_numbers</code></pre>
 log2fc</code></pre>
 <pre><code>## [1]  1.00 -1.00  0.48  0.97 -0.02  1.00</code></pre>
 </div>
-</div>
-<div id="vector-arithmetic" class="section level1">
-<h1>Vector arithmetic</h1>
+<div id="vector-arithmetic" class="section level2">
+<h2>Vector arithmetic</h2>
 <p>Many operations in R are <strong>vectorized</strong>, which means that the operation is applied to an entire set of values at once. We’ve already seen lots of examples of this, like the following:</p>
 <pre class="r"><code>some_numbers &lt;- 1:10
 square_numbers &lt;- some_numbers ^ 2
@@ -727,8 +725,8 @@ square_numbers</code></pre>
 <pre class="r"><code>1:36 * 2</code></pre>
 <pre><code>##  [1]  2  4  6  8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46
 ## [24] 48 50 52 54 56 58 60 62 64 66 68 70 72</code></pre>
-<div id="vector-recycling-advanced" class="section level2">
-<h2>Vector recycling (advanced)</h2>
+<div id="vector-recycling-advanced" class="section level3">
+<h3>Vector recycling (advanced)</h3>
 <p>It is possible to perform calculations using two vectors of different sizes. When R runs out of values to use from the shorter of the two vectors, it wraps around to the beginning of that shorter one. For example, we can set every other value in our set of numbers to be negative as follows:</p>
 <pre class="r"><code>some_numbers * c(1, -1)</code></pre>
 <pre><code>##  [1]   1  -2   3  -4   5  -6   7  -8   9 -10</code></pre>
@@ -745,13 +743,15 @@ heights_in_centimetres</code></pre>
 <pre><code>## Warning in 1:7 * c(1, -1): longer object length is not a multiple of
 ## shorter object length</code></pre>
 <pre><code>## [1]  1 -2  3 -4  5 -6  7</code></pre>
+<hr />
+</div>
 </div>
 </div>
 <div id="combining-data-of-different-types" class="section level1">
 <h1>Combining data of different types</h1>
 <p>Vectors are all very well and good but your data are almost certainly more complicated than an ordered set of values all of the same type. You’ve probably been working with Excel spreadsheets that contain some columns that are numerical while others contain names or character strings, e.g. the following table of Star Wars characters.</p>
-<div id="htmlwidget-06559172f52bcb70415d" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-06559172f52bcb70415d">{"x":{"filter":"none","data":[["Luke Skywalker","C-3PO","R2-D2","Darth Vader","Leia Organa","Owen Lars","Beru Whitesun lars","R5-D4","Biggs Darklighter","Obi-Wan Kenobi","Anakin Skywalker","Wilhuff Tarkin","Chewbacca","Han Solo","Greedo","Jabba Desilijic Tiure","Wedge Antilles","Jek Tono Porkins","Yoda","Palpatine","Boba Fett","IG-88","Bossk","Lando Calrissian","Lobot","Ackbar","Mon Mothma","Arvel Crynyd","Wicket Systri Warrick","Nien Nunb","Qui-Gon Jinn","Nute Gunray","Finis Valorum","Jar Jar Binks","Roos Tarpals","Rugor Nass","Ric Olié","Watto","Sebulba","Quarsh Panaka","Shmi Skywalker","Darth Maul","Bib Fortuna","Ayla Secura","Dud Bolt","Gasgano","Ben Quadinaros","Mace Windu","Ki-Adi-Mundi","Kit Fisto","Eeth Koth","Adi Gallia","Saesee Tiin","Yarael Poof","Plo Koon","Mas Amedda","Gregar Typho","Cordé","Cliegg Lars","Poggle the Lesser","Luminara Unduli","Barriss Offee","Dormé","Dooku","Bail Prestor Organa","Jango Fett","Zam Wesell","Dexter Jettster","Lama Su","Taun We","Jocasta Nu","Ratts Tyerell","R4-P17","Wat Tambor","San Hill","Shaak Ti","Grievous","Tarfful","Raymus Antilles","Sly Moore","Tion Medon","Finn","Rey","Poe Dameron","BB8","Captain Phasma","Padmé Amidala"],[172,167,96,202,150,178,165,97,183,182,188,180,228,180,173,175,170,180,66,170,183,200,190,177,175,180,150,null,88,160,193,191,170,196,224,206,183,137,112,183,163,175,180,178,94,122,163,188,198,196,171,184,188,264,188,196,185,157,183,183,170,166,165,193,191,183,168,198,229,213,167,79,96,193,191,178,216,234,188,178,206,null,null,null,null,null,165],[77,75,32,136,49,120,75,32,84,77,84,null,112,80,74,1358,77,110,17,75,78.2,140,113,79,79,83,null,null,20,68,89,90,null,66,82,null,null,null,40,null,null,80,null,55,45,null,65,84,82,87,null,50,null,null,80,null,85,null,null,80,56.2,50,null,80,null,79,55,102,88,null,null,15,null,48,null,57,159,136,79,48,80,null,null,null,null,null,45],["male",null,null,"male","female","male","female",null,"male","male","male","male","male","male","male","hermaphrodite","male","male","male","male","male","none","male","male","male","male","female","male","male","male","male","male","male","male","male","male","male","male","male","male","female","male","male","female","male","male","male","male","male","male","male","female","male","male","male","male","male","female","male","male","female","female","female","male","male","male","female","male","male","female","female","male","female","male","male","female","male","male","male","female","male","male","female","male","none","female","female"],["Human","Droid","Droid","Human","Human","Human","Human","Droid","Human","Human","Human","Human","Wookiee","Human","Rodian","Hutt","Human","Human","Yoda's species","Human","Human","Droid","Trandoshan","Human","Human","Mon Calamari","Human","Human","Ewok","Sullustan","Human","Neimodian","Human","Gungan","Gungan","Gungan",null,"Toydarian","Dug",null,"Human","Zabrak","Twi'lek","Twi'lek","Vulptereen","Xexto","Toong","Human","Cerean","Nautolan","Zabrak","Tholothian","Iktotchi","Quermian","Kel Dor","Chagrian","Human","Human","Human","Geonosian","Mirialan","Mirialan","Human","Human","Human","Human","Clawdite","Besalisk","Kaminoan","Kaminoan","Human","Aleena",null,"Skakoan","Muun","Togruta","Kaleesh","Wookiee","Human",null,"Pau'an","Human","Human","Human","Droid",null,"Human"],["Tatooine","Tatooine","Naboo","Tatooine","Alderaan","Tatooine","Tatooine","Tatooine","Tatooine","Stewjon","Tatooine","Eriadu","Kashyyyk","Corellia","Rodia","Nal Hutta","Corellia","Bestine IV",null,"Naboo","Kamino",null,"Trandosha","Socorro","Bespin","Mon Cala","Chandrila",null,"Endor","Sullust",null,"Cato Neimoidia","Coruscant","Naboo","Naboo","Naboo","Naboo","Toydaria","Malastare","Naboo","Tatooine","Dathomir","Ryloth","Ryloth","Vulpter","Troiken","Tund","Haruun Kal","Cerea","Glee Anselm","Iridonia","Coruscant","Iktotch","Quermia","Dorin","Champala","Naboo","Naboo","Tatooine","Geonosis","Mirial","Mirial","Naboo","Serenno","Alderaan","Concord Dawn","Zolan","Ojom","Kamino","Kamino","Coruscant","Aleen Minor",null,"Skako","Muunilinst","Shili","Kalee","Kashyyyk","Alderaan","Umbara","Utapau",null,null,null,null,null,"Naboo"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>name<\/th>\n      <th>height<\/th>\n      <th>mass<\/th>\n      <th>gender<\/th>\n      <th>species<\/th>\n      <th>homeworld<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-5eed3b996774ed5b9712" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5eed3b996774ed5b9712">{"x":{"filter":"none","data":[["Luke Skywalker","C-3PO","R2-D2","Darth Vader","Leia Organa","Owen Lars","Beru Whitesun lars","R5-D4","Biggs Darklighter","Obi-Wan Kenobi","Anakin Skywalker","Wilhuff Tarkin","Chewbacca","Han Solo","Greedo","Jabba Desilijic Tiure","Wedge Antilles","Jek Tono Porkins","Yoda","Palpatine","Boba Fett","IG-88","Bossk","Lando Calrissian","Lobot","Ackbar","Mon Mothma","Arvel Crynyd","Wicket Systri Warrick","Nien Nunb","Qui-Gon Jinn","Nute Gunray","Finis Valorum","Jar Jar Binks","Roos Tarpals","Rugor Nass","Ric Olié","Watto","Sebulba","Quarsh Panaka","Shmi Skywalker","Darth Maul","Bib Fortuna","Ayla Secura","Dud Bolt","Gasgano","Ben Quadinaros","Mace Windu","Ki-Adi-Mundi","Kit Fisto","Eeth Koth","Adi Gallia","Saesee Tiin","Yarael Poof","Plo Koon","Mas Amedda","Gregar Typho","Cordé","Cliegg Lars","Poggle the Lesser","Luminara Unduli","Barriss Offee","Dormé","Dooku","Bail Prestor Organa","Jango Fett","Zam Wesell","Dexter Jettster","Lama Su","Taun We","Jocasta Nu","Ratts Tyerell","R4-P17","Wat Tambor","San Hill","Shaak Ti","Grievous","Tarfful","Raymus Antilles","Sly Moore","Tion Medon","Finn","Rey","Poe Dameron","BB8","Captain Phasma","Padmé Amidala"],[172,167,96,202,150,178,165,97,183,182,188,180,228,180,173,175,170,180,66,170,183,200,190,177,175,180,150,null,88,160,193,191,170,196,224,206,183,137,112,183,163,175,180,178,94,122,163,188,198,196,171,184,188,264,188,196,185,157,183,183,170,166,165,193,191,183,168,198,229,213,167,79,96,193,191,178,216,234,188,178,206,null,null,null,null,null,165],[77,75,32,136,49,120,75,32,84,77,84,null,112,80,74,1358,77,110,17,75,78.2,140,113,79,79,83,null,null,20,68,89,90,null,66,82,null,null,null,40,null,null,80,null,55,45,null,65,84,82,87,null,50,null,null,80,null,85,null,null,80,56.2,50,null,80,null,79,55,102,88,null,null,15,null,48,null,57,159,136,79,48,80,null,null,null,null,null,45],["male",null,null,"male","female","male","female",null,"male","male","male","male","male","male","male","hermaphrodite","male","male","male","male","male","none","male","male","male","male","female","male","male","male","male","male","male","male","male","male","male","male","male","male","female","male","male","female","male","male","male","male","male","male","male","female","male","male","male","male","male","female","male","male","female","female","female","male","male","male","female","male","male","female","female","male","female","male","male","female","male","male","male","female","male","male","female","male","none","female","female"],["Human","Droid","Droid","Human","Human","Human","Human","Droid","Human","Human","Human","Human","Wookiee","Human","Rodian","Hutt","Human","Human","Yoda's species","Human","Human","Droid","Trandoshan","Human","Human","Mon Calamari","Human","Human","Ewok","Sullustan","Human","Neimodian","Human","Gungan","Gungan","Gungan",null,"Toydarian","Dug",null,"Human","Zabrak","Twi'lek","Twi'lek","Vulptereen","Xexto","Toong","Human","Cerean","Nautolan","Zabrak","Tholothian","Iktotchi","Quermian","Kel Dor","Chagrian","Human","Human","Human","Geonosian","Mirialan","Mirialan","Human","Human","Human","Human","Clawdite","Besalisk","Kaminoan","Kaminoan","Human","Aleena",null,"Skakoan","Muun","Togruta","Kaleesh","Wookiee","Human",null,"Pau'an","Human","Human","Human","Droid",null,"Human"],["Tatooine","Tatooine","Naboo","Tatooine","Alderaan","Tatooine","Tatooine","Tatooine","Tatooine","Stewjon","Tatooine","Eriadu","Kashyyyk","Corellia","Rodia","Nal Hutta","Corellia","Bestine IV",null,"Naboo","Kamino",null,"Trandosha","Socorro","Bespin","Mon Cala","Chandrila",null,"Endor","Sullust",null,"Cato Neimoidia","Coruscant","Naboo","Naboo","Naboo","Naboo","Toydaria","Malastare","Naboo","Tatooine","Dathomir","Ryloth","Ryloth","Vulpter","Troiken","Tund","Haruun Kal","Cerea","Glee Anselm","Iridonia","Coruscant","Iktotch","Quermia","Dorin","Champala","Naboo","Naboo","Tatooine","Geonosis","Mirial","Mirial","Naboo","Serenno","Alderaan","Concord Dawn","Zolan","Ojom","Kamino","Kamino","Coruscant","Aleen Minor",null,"Skako","Muunilinst","Shili","Kalee","Kashyyyk","Alderaan","Umbara","Utapau",null,null,null,null,null,"Naboo"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>name<\/th>\n      <th>height<\/th>\n      <th>mass<\/th>\n      <th>gender<\/th>\n      <th>species<\/th>\n      <th>homeworld<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p>Note that the first column contains character type data, the second and third columns contain numerical data (of type double) and the remaining columns contain the special type we briefly touched on last week, factors, that look like character types but have a limited set of values or categories.</p>
 <div id="lists" class="section level2">
 <h2>Lists</h2>
@@ -1043,6 +1043,7 @@ Get specific rows and columns.
 </div>
 <p>This viewer has some handy filtering capabilities - try using the search box, e.g. by entering the search term ‘versi’, and see what happens.</p>
 <p>All the data objects you’ve created are listed in the Environment tab pane (top right-hand side in RStudio) – double-clicking on an object in this pane will also open it in the viewer.</p>
+<hr />
 </div>
 </div>
 </div>
@@ -1056,6 +1057,7 @@ Get specific rows and columns.
 </blockquote>
 <p>The data frame represents observations as rows and variables or attributes as columns.</p>
 <p>The <code>iris</code> data set has 150 observations (i.e. 150 rows), one for each iris plant from which measurements were recorded. The variables are the petal width and length, sepal width and length and species, each of which is an underlying attribute of an iris plant. An observation is the set of measurements or attributes recorded for a single iris plant.</p>
+<hr />
 </div>
 <div id="packages" class="section level1">
 <h1>Packages</h1>
@@ -1085,6 +1087,7 @@ Error in library(tidyverse) : there is no package called ‘tidyverse’</code><
 <pre class="r"><code>install.packages(&quot;tidyverse&quot;)</code></pre>
 <p>If you’re using R at a regular console within a terminal window, i.e. not RStudio, you may be asked to select one of several mirrors of the CRAN R package repository hosted at different locations around the world (in the UK these are in Bristol and London).</p>
 <p>For some packages you may be asked to choose between a binary and a source package, particularly if the latest version of the package is only available in source form and that package contains code written in another language such as C. This could be a problem if you don’t have a C compiler installed on your computer.</p>
+<hr />
 </div>
 </div>
 <div id="tibbles" class="section level1">
@@ -1265,6 +1268,7 @@ beatles</code></pre>
 ## [85] &quot;BB8&quot;                   &quot;Captain Phasma&quot;       
 ## [87] &quot;Padmé Amidala&quot;</code></pre>
 <p>We’ll be mostly using tibbles in this course but almost all the functions we’ll be using, from the various tidyverse packages, can work with ordinary data frames in the same way they do for tibbles.</p>
+<hr />
 </div>
 </div>
 </div>
@@ -1348,6 +1352,7 @@ patients &lt;- read_csv(“patients.csv”)
 <pre class="r"><code>setwd(&quot;/Users/matt/projects/20200116_JB_amplicon_sequencing&quot;)</code></pre>
 <p>If you’re running an R script from a terminal window (by typing something like <code>Rscript my_script.R</code> at the command prompt) your working directory will be the directory in which you run the script (i.e. the one in which you issue the Rscript command). In this case you will probably want to read files from locations that are relative to the directory in which you run the script.</p>
 <p>If you’re writing an R script in RStudio you can set the working directory to be the same directory as that which contains your script file using the menu: <strong>Session &gt; Set Working Directory &gt; To Source File Location</strong>. You can also navigate to the directory of your choosing in the Files tab pane and set this to be the working directory by clicking on the <strong>More</strong> menu button and selecting <strong>Set As Working Directory</strong>.</p>
+<hr />
 </div>
 </div>
 <div id="missing-values" class="section level1">
@@ -1378,9 +1383,21 @@ is.na(first_ten_mutation_counts)</code></pre>
 <pre class="r"><code>sum(is.na(metabric$`Mutation Count`))</code></pre>
 <pre><code>## [1] 152</code></pre>
 <p>Can you see why this works? <em>(hint: look at what kind of vector <code>sum()</code> expects and think about how a logical vector will be coerced into such a type)</em>.</p>
+<hr />
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
+<p>In this session we have covered the following concepts:</p>
+<ul>
+<li>How to write R code in scripts that can saved and re-run at a later date</li>
+<li>How to extract subsets of values from vectors and how to modify values within a vector</li>
+<li>Vector arithmetic</li>
+<li>How R stores more complicated data structures in lists and data frames</li>
+<li>How to install and use packages that extend R’s basic functionality</li>
+<li>How to read tabular data into R</li>
+<li>The tibble, a superior version of the data frame</li>
+<li>Missing values and how R handles these</li>
+</ul>
 </div>
 
 

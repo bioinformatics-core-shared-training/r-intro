@@ -2,7 +2,7 @@
 title: "Week 2 -- Getting started with data in R"
 ---
 
-> ### Learning objectives
+> **Learning objectives**
 >
 > * Create and run a script file containing your R code
 > * Extract values or subsets from vectors
@@ -16,8 +16,6 @@ title: "Week 2 -- Getting started with data in R"
 > * Learn how R deals with missing values
 
 # Getting started with data in R
-
-# Introduction
 
 In this course, we'll be mostly focusing on a set of R packages specifically
 designed for the most useful and common operations for interacting with and
@@ -42,6 +40,8 @@ the tidyverse.
 We will also start to look at the most important data structure you'll use
 with your data, assuming it is in tabular form, the **data frame**, and its
 superior tidyverse derivative, the **tibble**.
+
+---
 
 # Scripts
 
@@ -142,6 +142,8 @@ small change.
 # random_numbers <- rnorm(100, mean = 0, sd = 1)
 random_numbers <- rnorm(100, mean = 0, sd = 0.5)
 ```
+
+---
 
 # Vectors
 
@@ -473,7 +475,7 @@ log2fc[log2fc > 1] <- 1
 log2fc
 ```
 
-# Vector arithmetic
+## Vector arithmetic
 
 Many operations in R are **vectorized**, which means that the operation is
 applied to an entire set of values at once. We've already seen lots of examples
@@ -523,7 +525,7 @@ last week was the second scenario involving a vector and a single value.
 1:36 * 2
 ```
 
-## Vector recycling (advanced)
+### Vector recycling (advanced)
 
 It is possible to perform calculations using two vectors of different sizes.
 When R runs out of values to use from the shorter of the two vectors, it wraps
@@ -565,6 +567,8 @@ other.
 ```{r}
 1:7 * c(1, -1)
 ```
+
+---
 
 # Combining data of different types
 
@@ -902,6 +906,8 @@ All the data objects you've created are listed in the Environment tab pane (top
 right-hand side in RStudio) -- double-clicking on an object in this pane will
 also open it in the viewer.
 
+---
+
 # Data semantics
 
 From "Tidy Data" by Hadley Wickham, [*The Journal of Statistical Software*, vol.
@@ -925,6 +931,8 @@ plant from which measurements were recorded. The variables are the petal width
 and length, sepal width and length and species, each of which is an underlying
 attribute of an iris plant. An observation is the set of measurements or
 attributes recorded for a single iris plant.
+
+---
 
 # Packages
 
@@ -1001,6 +1009,8 @@ package, particularly if the latest version of the package is only available in
 source form and that package contains code written in another language such as
 C. This could be a problem if you don't have a C compiler installed on your
 computer.
+
+---
 
 # Tibbles
 
@@ -1189,6 +1199,8 @@ We'll be mostly using tibbles in this course but almost all the functions we'll
 be using, from the various tidyverse packages, can work with ordinary data
 frames in the same way they do for tibbles.
 
+---
+
 # Reading data into R
 
 Another of the tidyverse packages loaded when we ran `library(tidyverse)` is the
@@ -1300,6 +1312,8 @@ navigate to the directory of your choosing in the Files tab pane and set this to
 be the working directory by clicking on the **More** menu button and selecting
 **Set As Working Directory**.
 
+---
+
 # Missing values
 
 The METABRIC clinical dataset has some missing values. If you look back to the
@@ -1355,4 +1369,17 @@ sum(is.na(metabric$`Mutation Count`))
 Can you see why this works? *(hint: look at what kind of vector `sum()` expects
 and think about how a logical vector will be coerced into such a type)*.
 
+---
+
 # Summary
+
+In this session we have covered the following concepts:
+
+* How to write R code in scripts that can saved and re-run at a later date
+* How to extract subsets of values from vectors and how to modify values within a vector
+* Vector arithmetic
+* How R stores more complicated data structures in lists and data frames
+* How to install and use packages that extend R's basic functionality
+* How to read tabular data into R
+* The tibble, a superior version of the data frame
+* Missing values and how R handles these
