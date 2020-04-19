@@ -4,7 +4,7 @@ title: "Assignment 2"
 
 **1. How many cars in the `mtcars` data set have 8 cylinders?**
 
-Write an R instruction to calculate this (there are several ways of doing so).
+Write an R instruction to calculate this.
 
 ```{r}
 
