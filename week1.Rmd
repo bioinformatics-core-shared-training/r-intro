@@ -2,13 +2,13 @@
 title: "Week 1 -- Introduction to R and RStudio"
 ---
 
-> **Aims**
+> #### Aims
 >
 > * To introduce Rstudio that we will be using, to write R scripts, in this course
 > * To demonstrate the ways in which R can store data
 > * To show how R functions can operate on such data
 >
-> **Learning objectives**
+> #### Learning objectives
 >
 > * Learn about the functions of the various panes in Rstudio
 > * Introduce the concept of vectors and the types of data that they can hold

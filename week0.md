@@ -2,7 +2,7 @@
 title: 'Getting Ready'
 ---
 
-> **Learning objectives**
+> #### Learning objectives
 >
 > * Install R and RStudio
 > * Install the tidyverse collection of R packages
