@@ -1,5 +1,10 @@
 # Week 2 live coding session
 
+# ------------------------------------------------------------------------------
+
+# Scripts (11.05am)
+# -----------------
+
 # up till now we've been mainly using R interactively at the command prompt in
 # the Console window
 
@@ -21,7 +26,10 @@ random_numbers
 
 # show how to add a comment
 
-# Vectors
+# ------------------------------------------------------------------------------
+
+# Vectors (11.10am)
+# -----------------
 
 # so far we've come across the simplest data structure in R - the atomic vector
 # recap what an atomic vector is - ordered set of values of same type
@@ -177,11 +185,13 @@ a * b
 # different sizes but where one vector has only 1 value, i.e. is a scalar
 1:10 * 2
 
-# beyond vectors
+# ------------------------------------------------------------------------------
 
-# lists
+# Lists (11.23am)
+# ---------------
 
 # lists allow us to combine different types of data
+
 my_list <- list(1:10, c("a", "b", "c"), c(TRUE, FALSE), 150L, c(0.2, 1.6, 0.34, 1.47))
 my_list
 
@@ -235,7 +245,10 @@ result$p.value
 result$method
 result$conf.int
 
-# data frames
+# ------------------------------------------------------------------------------
+
+# Data frames (11.28am)
+# ---------------------
 
 # data frames are a special type of list in which each vector element
 # has the same length
@@ -314,7 +327,10 @@ View(iris)
 
 # double click on our modified mtcars in the Environment pane
 
-# tibbles
+# ------------------------------------------------------------------------------
+
+# Tibbles (11.35am)
+# -----------------
 
 # a better version of the data frame provided by the tidyverse
 
@@ -358,7 +374,10 @@ starwars
 
 # other differences are discussed in the online materials
 
-# reading data into R
+# ------------------------------------------------------------------------------
+
+# Reading data into R (11.40am)
+# -----------------------------
 
 metabric <- read_tsv("data/brca_metabric_clinical_data.tsv")
 metabric

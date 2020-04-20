@@ -1,5 +1,10 @@
 # Week 2 live coding session
 
+# ------------------------------------------------------------------------------
+
+# Scripts (11.05am)
+# -----------------
+
 # up till now we've been mainly using R interactively at the command prompt in
 # the Console window
 
@@ -21,7 +26,10 @@ random_numbers
 
 # show how to add a comment
 
-# Vectors
+# ------------------------------------------------------------------------------
+
+# Vectors (11.10am)
+# -----------------
 
 # so far we've come across the simplest data structure in R - the atomic vector
 # recap what an atomic vector is - ordered set of values of same type
@@ -177,11 +185,13 @@ a * b
 # different sizes but where one vector has only 1 value, i.e. is a scalar
 1:10 * 2
 
-# beyond vectors
+# ------------------------------------------------------------------------------
 
-# lists
+# Lists (11.23am)
+# ---------------
 
 # lists allow us to combine different types of data
+
 my_list <- list(1:10, c("a", "b", "c"), c(TRUE, FALSE), 150L, c(0.2, 1.6, 0.34, 1.47))
 my_list
 
@@ -232,6 +242,13 @@ is.list(result)
 names(result)
 result[[3]]
 result$p.value
+result$method
+result$conf.int
+
+# ------------------------------------------------------------------------------
+
+# Data frames (11.28am)
+# ---------------------
 
 # data frames are a special type of list in which each vector element
 # has the same length
@@ -244,3 +261,155 @@ beatles
 
 # data frames are how tabular data is represented in R
 
+# example data frames provided by R
+
+iris
+?iris
+
+head(iris)
+
+# example data sets used in example code in help pages
+# e.g. look at last example in help for unique function
+?unique
+
+class(iris)
+typeof(iris)
+
+names(iris)
+
+iris$Petal.Length
+
+iris$Petal.Length[1:10]
+
+# can select a subset of columns (list operation)
+iris[c("Petal.Width", "Petal.Length", "Species")]
+
+colnames(iris)
+rownames(iris)
+
+mtcars
+rownames(mtcars)
+
+# select rows by id
+mtcars["Ferrari Dino", ]
+mtcars[c("Ferrari Dino", "Fiat 128"), ]
+
+# the comma is important - otherwise R thinks you're trying to select columns
+mtcars[c("Ferrari Dino", "Fiat 128")]
+
+# can select individual element
+head(mtcars)
+mtcars[4, 3]
+
+# can also use conditional subsetting, similar to what we did with vectors
+# e.g. cars with automatic transmission
+mtcars$am
+mtcars$am == 0
+mtcars[mtcars$am == 0, ]
+
+# other useful functions for data frames
+dim(mtcars)
+nrow(mtcars)
+ncol(mtcars)
+
+# modifying data frames
+mtcars["Ferrari Dino", ]
+mtcars["Ferrari Dino", "cyl"] <- 8
+mtcars["Ferrari Dino", ]
+
+# use head to only show the top few lines
+head(iris)
+
+# open a data frame in the viewer
+View(iris)
+
+# search for 'versi'
+
+# double click on our modified mtcars in the Environment pane
+
+# ------------------------------------------------------------------------------
+
+# Tibbles (11.35am)
+# -----------------
+
+# a better version of the data frame provided by the tidyverse
+
+library(tidyverse)
+
+# explain about the tidyverse being a collection of packages that form a
+# coherent system for exploring, manipulating and visualizing your data
+
+# briefly highlight some of these packages (ggplot2, tidyr, dplyr) that we'll
+# be covering in future weeks and readr that we'll be using to read in the a
+# clinical cancer data set shortly
+
+# briefly comment on the conflicts
+
+# cut and paste beatles code from before and change data.frame to tibble
+
+beatles <- tibble(
+  names = c("John", "Paul", "Ringo", "George"),
+  birth_year = c(1940L, 1942L, 1940L, 1943L),
+  instrument = c("guitar", "bass", "drums", "guitar")
+)
+beatles
+
+# draw attention to the differences in how this is printed
+# dimensions and column types
+
+iris_tibble <- as_tibble(iris)
+iris_tibble
+
+# only first 10 rows
+
+class(iris)
+class(iris_tibble)
+
+# another data frame that comes with the dplyr package - going to use this
+# in one of the assignment exercises
+starwars
+
+# note how the names are truncated to try to fit as many columns on the screen
+# as possible, additional columns are listed at the end
+
+# other differences are discussed in the online materials
+
+# ------------------------------------------------------------------------------
+
+# Reading data into R (11.40am)
+# -----------------------------
+
+metabric <- read_tsv("data/brca_metabric_clinical_data.tsv")
+metabric
+
+# draw attention to spaces in the column names and how these have backticks
+# RStudio auto-complete feature includes automatically adding backticks
+metabric$`3-Gene classifier subtype`[1:10]
+
+# also read_csv for CSV files
+?read_tsv
+
+# data exploration
+
+colnames(metabric)
+
+table(metabric$Chemotherapy)
+
+summary(metabric$`Mutation Count`)
+
+plot(metabric$`Age at Diagnosis`, metabric$`Nottingham prognostic index`)
+
+# mention file paths and the working directory but again point to course
+# materials for more details
+
+# missing values
+
+# draw attention to the red 'NA's in the metabric data set
+metabric
+
+# why do we need to worry about these?
+mean(metabric$`Mutation Count`)
+
+?mean
+
+mean(metabric$`Mutation Count`, na.rm = TRUE)
