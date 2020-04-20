@@ -673,18 +673,18 @@ genomics_instruments
 
 ## Statistical test results
 
-Lists can be thought of as a ragbag collection of things and not very well
-structured. You probably won't find yourself creating list objects of the sort
+Lists can be thought of as a ragbag collection of things without a very clear
+structure. You probably won't find yourself creating list objects of the kind
 we've seen above when analysing your own data. However, the list provides the
-basic underlying structure to the data frame that we'll be using all the time
-so understanding how it works is a good thing.
+basic underlying structure to the data frame that we'll be using throughout the
+rest of this course.
 
 The other area where you'll come across lists is as the return value for many
 of the statistical tests and procedures such as linear regression that you can
 carry out in R.
 
 To demonstrate, we'll run a t-test comparing two sets of samples drawn from
-subtly differenet normal distributions. We've already come across the `rnorm()`
+subtly different normal distributions. We've already come across the `rnorm()`
 function for creating random numbers based on a normal distribution.
 
 ```{r}
