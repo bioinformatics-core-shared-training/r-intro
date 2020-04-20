@@ -671,6 +671,46 @@ genomics_instruments$sequencers[3] <- "NextSeq 550 (upgraded)"
 genomics_instruments
 ```
 
+## Statistical test results
+
+Lists can be thought of as a ragbag collection of things and not very well
+structured. You probably won't find yourself creating list objects of the sort
+we've seen above when analysing your own data. However, the list provides the
+basic underlying structure to the data frame that we'll be using all the time
+so understanding how it works is a good thing.
+
+The other area where you'll come across lists is as the return value for many
+of the statistical tests and procedures such as linear regression that you can
+carry out in R.
+
+To demonstrate, we'll run a t-test comparing two sets of samples drawn from
+subtly differenet normal distributions. We've already come across the `rnorm()`
+function for creating random numbers based on a normal distribution.
+
+```{r}
+sample1 <- rnorm(n = 50, mean = 1.0, sd = 0.1)
+sample2 <- rnorm(n = 50, mean = 1.1, sd = 0.1)
+t.test(sample1, sample2)
+```
+
+The output from running the `t.test()` function doesn't much look like a list.
+That's because it is a special type of list with some additional behaviours
+including knowing how to print itself in a human-friendly way. But we can check
+it is a list and use some of the list operations we've just looked at.
+
+```{r}
+result <- t.test(sample1, sample2)
+is.list(result)
+```
+
+```{r}
+names(result)
+```
+
+```{r}
+result$p.value
+```
+
 ## Data frames
 
 A much more useful data structure and the one we will mostly be using for the
