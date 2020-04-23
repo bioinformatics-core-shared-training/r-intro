@@ -56,7 +56,7 @@ chats and calls within Teams.
 
 2. [Working with data](week2.html) (20 April) - Creating R scripts, working with tabular data and other types of objects in R, reading data into R
 
-3. Visualizing tabular data with ggplot2 (27 April)
+3. [Visualizing tabular data with ggplot2](week3.html) (27 April)
 
 4. The concept of “tidy” data, manipulating and transforming data (4 May)
 
