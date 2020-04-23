@@ -4,21 +4,38 @@ title: "Week 3 -- Visualizing tabular data with ggplot2"
 
 > #### Learning objectives
 >
-> * Introduce ggplot2 for visualizing your data
-> * Learn ggplot2's grammar of graphics, a coherent system for describing and creating plots
-> * Learn just one system and use this to create many different types of plot
+> * Understand ggplot2's grammar of graphics
+> * Apply the grammar to create a variety of plots including scatter plots, box plots and histograms
 > * Learn about how R handles categorical data
 
 # Visualizing data with ggplot2
 
-In this session we will mostly focus our attention on the popular **ggplot2**
-package for visualizing tabular data by creating various kinds of plot.
+In this session we will focus our attention on the popular **ggplot2** package
+for visualizing tabular data by creating various kinds of plot.
 
-We'll be using an expanded version of the METABRIC data set in which columns
-have been added for the mRNA expression values for some selected genes but
-which contains observations only for those patient samples for which we have
-expression data. We've also replaced spaces in column names with underscores
-so we don't have to use backticks.
+## METABRIC data set
+
+We'll be using an extended version of the METABRIC data set in which columns
+have been added for the mRNA expression values for selected genes, including
+estrogen receptor alpha (ESR1), progesterone receptor (PGR), GATA3 and FOXA1.
+
+The METABRIC study characterized the genomic mutations and gene expression
+profiles for over 2000 primary breast tumours. In addition to the gene
+expression obtained using microarrays, genome-wide copy number profiles were
+obtained using SNP microarrays and targeted sequencing was performed using a
+panel of 40 driver-mutation genes.
+
+[Curtis *et al.*, Nature 486:346-52, 2012](https://pubmed.ncbi.nlm.nih.gov/22522925)
+
+[Pereira *et al.*, Nature Communications 7:11479, 2016](https://www.ncbi.nlm.nih.gov/pubmed/27161491)
+
+Both the clinical data and the gene expression values were downloaded from
+[cBioPortal](https://www.cbioportal.org/study/summary?id=brca_metabric).
+
+These have been combined into a single table using techniques we will cover
+later in the course. We've removed observations for patient tumour samples for
+which expression data are not available and have replaced spaces in column names
+so we don't have to refer to these using backticks ( **`** ).
 
 ```{r message = FALSE}
 library(tidyverse)
@@ -29,7 +46,8 @@ metabric
 # Our first ggplot - a scatter plot
 
 First we'll create a simple scatter plot much like the ones we've created in
-previous sessions using R's `plot()` function.
+previous sessions using R's `plot()` function. We'll plot the expression of
+estrogen receptor alpha (ESR1) against that of the transcription factor, GATA3.
 
 ```{r scatter_plot_1}
 ggplot(data = metabric) +
@@ -47,7 +65,9 @@ scatter plot, and the expression of the genes GATA3 and ESR1 (estrogen receptor
 alpha) are mapped to the x and y coordinates, i.e. the positions of points on
 the scatter plot.
 
-Other aesthetics could include the size, shape and colour of those points.
+Perhaps the x and y coordinates of the points plotted aren't quite what we
+imagine as having aesthetic qualities. Other aesthetics that you might expect to
+be referred to in this way include the size, shape and colour of the points.
 
 # Aesthetic mappings
 
@@ -61,7 +81,8 @@ available for this geom.
 The help page lists all the aesthetics you can set for this particular type of
 scatter plot. If you scroll down to the aesthetics section you'll see that the
 **`x`** and **`y`** aesthetics are in bold face which tells us that these are
-required.
+required, i.e. you have to supply them, otherwise you'll get an error message
+from ggplot.
 
 Other aesthetics such as size, shape, colour and transparency (alpha) are
 optional.
@@ -82,22 +103,30 @@ ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index))
 ```
 
-Size is not usually a good aesthetic to map to a variable. However it would be
-useful to be able to decrease the size of the points for this dataset as it
-contains 2509 observations. We can do this by setting size to a single value
-but we must now do so outside of the aesthetic mappings.
+Do you see the difference between using a colour aesthetic for a discrete
+variable compared with a continuous variable?
+
+Size is not usually a good aesthetic to map to a variable. This is particularly
+the case where we have such a large number of observations.
 
 ```{r scatter_plot_4}
 ggplot(data = metabric) +
-  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index), size = 0.5)
+  geom_point(mapping = aes(x = GATA3, y = ESR1, size = ER_status))
 ```
 
-If you use an aesthetic designed for a continuous variable with a discrete
-variable, ggplot2 will warn you about this not being a good idea.
+Some aesthetics, such as size, are designed to be used with continuous
+variables. If you map these to a discrete variable as we have done here, then
+ggplot warns you that this isn't such a good idea.
+
+It would however by useful to be able to decrease the size of the points given
+that there are around 2000 in this data set. We can do so by setting the size
+to a single value rather than mapping it to one of the variables in the data
+set - we can do so by setting it outside the aesthetic mappings, i.e. outside
+the `aes()` bit.
 
 ```{r scatter_plot_5}
 ggplot(data = metabric) +
-  geom_point(mapping = aes(x = GATA3, y = ESR1, size = ER_status))
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index), size = 0.5)
 ```
 
 Some aesthetics can only be used with categorical variables, e.g. shape.
@@ -110,6 +139,8 @@ ggplot(data = metabric) +
 ```
 Error: A continuous variable can not be mapped to shape
 ```
+
+Here we set the shape based on the 3-gene classifier.
 
 ```{r scatter_plot_6}
 ggplot(data = metabric) +
@@ -128,8 +159,9 @@ ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = PAM50, shape = `3_gene_classifier`), size = 0.9)
 ```
 
-Transparency can be useful when we have a large number of points but is not
-usually mapped to a variable so sits outside the `aes()`.
+Transparency can be useful when we have a large number of points as we can more
+easily tell when points are overlaid, but like size, it is not usually mapped to
+a variable and sits outside the `aes()`.
 
 ```{r scatter_plot_8}
 ggplot(data = metabric) +
@@ -147,15 +179,19 @@ in the course.
 The "gg" in ggplot2 stands for "grammar of graphics". This grammar is a coherent
 system for describing and building graphs.
 
-The basic template is:
+The basic template is given in the summary box below. This template can be used
+to create any of the different types of graph possible with ggplot2.
 
-```
-ggplot(data = <DATA>) +
-  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
-```
+```{block type = "rmdblock"}
+**ggplot2 grammar**
 
-This template can be used to create any of the different types of graph possible
-with ggplot2.
+**`ggplot(data = <DATA>) + <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))`**
+
+`ggplot()` creates the plot object.
+
+Layers can be added by adding geoms such as `geom_point()` using the `+`
+operator that ggplot2 has overridden for this purpose.
+```
 
 # Another plot type - bar chart
 
@@ -236,7 +272,7 @@ ggplot(data = <DATA>) +
 
 Why do we have the ggplot part and geom part joined by a "+" symbol?
 
-The '+' operator has been overridden by ggplot2 to add layers and other
+The **'+'** operator has been overridden by ggplot2 to add layers and other
 components (scales, themes, etc.) to the plot.
 
 We can have multiple geoms in the same plot. Each is a different layer.
@@ -249,13 +285,18 @@ ggplot(data = metabric) +
   geom_smooth(mapping = aes(x = GATA3, y = ESR1))
 ```
 
-What is geom_smooth doing? Look up the help page.
+What is **`geom_smooth()`** doing? Look up the help page.
 
 Note that the shaded area represents the standard error bounds on the fitted
 model.
 
-There is some annoying duplication of code here. We can avoid this by putting
-the mappings in the `ggplot` function instead.
+It is important when breaking these ggplot statments across multiple lines to
+ensure that the `+` is at the end of lines so that R knows you haven't finished
+constructing your plot.
+
+There is some annoying duplication of code in the code above. We've repeated the
+exact same aesthetic mapping for both geoms. We can avoid this by putting the
+mappings in the `ggplot()` function instead.
 
 ```{r scatter_line_plot_2}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
