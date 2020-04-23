@@ -1,0 +1,310 @@
+---
+title: "Week 3 -- Visualizing tabular data with ggplot2"
+---
+
+> #### Learning objectives
+>
+> * Introduce ggplot2 for visualizing your data
+> * Learn ggplot2's grammar of graphics, a coherent system for describing and creating plots
+> * Learn just one system and use this to create many different types of plot
+> * Learn about how R handles categorical data
+
+# Visualizing data with ggplot2
+
+In this session we will mostly focus our attention on the popular **ggplot2**
+package for visualizing tabular data by creating various kinds of plot.
+
+We'll be using an expanded version of the METABRIC data set in which columns
+have been added for the mRNA expression values for some selected genes but
+which contains observations only for those patient samples for which we have
+expression data. We've also replaced spaces in column names with underscores
+so we don't have to use backticks.
+
+```{r message = FALSE}
+library(tidyverse)
+metabric <- read_csv("data/metabric_clinical_and_expression_data.csv")
+metabric
+```
+
+# Our first ggplot - a scatter plot
+
+First we'll create a simple scatter plot much like the ones we've created in
+previous sessions using R's `plot()` function.
+
+```{r scatter_plot_1}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1))
+```
+
+We specified 3 things to create this plot.
+
+1. The **data** -- needs to be a data frame (or a tibble)
+2. The type of plot -- this is called a **geom** in ggplot2 terminology
+3. The mapping of variables in the data to visual properties (called **aesthetics** in ggplot2) of objects in the plot
+
+In this case the type of plot is a **`geom_point`**, ggplot2's function for a
+scatter plot, and the expression of the genes GATA3 and ESR1 (estrogen receptor
+alpha) are mapped to the x and y coordinates, i.e. the positions of points on
+the scatter plot.
+
+Other aesthetics could include the size, shape and colour of those points.
+
+# Aesthetic mappings
+
+Look up the `geom_point` help page to see the list of aesthetics that are
+available for this geom.
+
+```{r eval = FALSE}
+?geom_point
+```
+
+The help page lists all the aesthetics you can set for this particular type of
+scatter plot. If you scroll down to the aesthetics section you'll see that the
+**`x`** and **`y`** aesthetics are in bold face which tells us that these are
+required.
+
+Other aesthetics such as size, shape, colour and transparency (alpha) are
+optional.
+
+So what about those other aesthetics? Colours are usually fun -- let's try to
+use a colour aesthetic. We need to set a mapping of a variable to colour just
+like we did for x and y.
+
+```{r scatter_plot_2}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = ER_status))
+```
+
+What about colouring based on a continuous variable?
+
+```{r scatter_plot_3}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index))
+```
+
+Size is not usually a good aesthetic to map to a variable. However it would be
+useful to be able to decrease the size of the points for this dataset as it
+contains 2509 observations. We can do this by setting size to a single value
+but we must now do so outside of the aesthetic mappings.
+
+```{r scatter_plot_4}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index), size = 0.5)
+```
+
+If you use an aesthetic designed for a continuous variable with a discrete
+variable, ggplot2 will warn you about this not being a good idea.
+
+```{r scatter_plot_5}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, size = ER_status))
+```
+
+Some aesthetics can only be used with categorical variables, e.g. shape.
+
+```{r eval = FALSE}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, shape = Survival_time))
+```
+
+```
+Error: A continuous variable can not be mapped to shape
+```
+
+```{r scatter_plot_6}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, shape = `3_gene_classifier`), size = 0.9)
+```
+
+Note that some of the patient samples have not been classified and ggplot has
+removed those points with missing values for the 3-gene classifier.
+
+It is usually preferable to use colours to distinguish between different
+categories but sometimes these are used together where we want to show which
+group a data point belongs to in two different categorical variables.
+
+```{r scatter_plot_7}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = PAM50, shape = `3_gene_classifier`), size = 0.9)
+```
+
+Transparency can be useful when we have a large number of points but is not
+usually mapped to a variable so sits outside the `aes()`.
+
+```{r scatter_plot_8}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = `3_gene_classifier`), size = 0.75, alpha = 0.5)
+```
+
+Colours are more commonly used than shapes, sizes or transparency.
+
+Virtually every aspect of the plots we've created can be customized. We will
+learn how to change the colours used as well as other display parameters later
+in the course.
+
+# ggplot2 grammar
+
+The "gg" in ggplot2 stands for "grammar of graphics". This grammar is a coherent
+system for describing and building graphs.
+
+The basic template is:
+
+```
+ggplot(data = <DATA>) +
+  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```
+
+This template can be used to create any of the different types of graph possible
+with ggplot2.
+
+# Another plot type - bar chart
+
+Look up ggplot2 package help in RStudio to see what other geoms are available
+(find the ggplot2 package in the Packages tab normally found in the bottom right
+hand corner).
+
+The METABRIC study redefined how we think about breast cancer by identifying and
+characterizing several new subtypes, referred to as *integrative clusters*.
+Let's create a bar chart of the number of patients whose cancers fall within
+each subtype in the METABRIC cohort.
+
+`geom_bar` is the geom we need and it requires a single aesthetic mapping of the
+categorical variable of interest to `x`.
+
+```{r bar_plot_1}
+ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster))
+```
+
+The dark grey bars are a big ugly - what if we want each bar to be a different
+colour?
+
+```{r bar_plot_2}
+ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, colour = Integrative_cluster))
+```
+
+Colouring the edges wasn't quite what we had in mind. Look at the help for
+`geom_bar` to see what other aesthetic we should have used.
+
+```{r bar_plot_3}
+ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = Integrative_cluster))
+```
+
+What happens if we fill with something other than the integrative cluster?
+
+```{r bar_plot_4}
+ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = ER_status))
+```
+
+We get a stacked bar plot.
+
+Note the similarity in what we did here to what we did with the scatter plot
+- there is a common grammar.
+
+What if want all the bars to be the same colour but not dark grey, e.g. blue?
+
+```{r bar_plot_5}
+ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = "blue"))
+```
+
+That doesn't look right - why not?
+
+You can set the aesthetics to a fixed value but this needs to be outside the
+mapping, just like we did before for size and transparency in the scatter plots.
+
+```{r bar_plot_6}
+ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster), fill = "blue")
+```
+
+Setting this inside the `aes()` mapping told ggplot2 to map the colour aesthetic
+to some variable in the data frame, one that doesn't really exist but which is
+created on-the-fly with a value of "blue" for every observation (patient).
+
+# Multiple layers
+
+Consider again the ggplot2 grammar:
+
+```
+ggplot(data = <DATA>) +
+  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```
+
+Why do we have the ggplot part and geom part joined by a "+" symbol?
+
+The '+' operator has been overridden by ggplot2 to add layers and other
+components (scales, themes, etc.) to the plot.
+
+We can have multiple geoms in the same plot. Each is a different layer.
+
+Let's create a plot with two geoms.
+
+```{r scatter_line_plot_1}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1)) +
+  geom_smooth(mapping = aes(x = GATA3, y = ESR1))
+```
+
+What is geom_smooth doing? Look up the help page.
+
+Note that the shaded area represents the standard error bounds on the fitted
+model.
+
+There is some annoying duplication of code here. We can avoid this by putting
+the mappings in the `ggplot` function instead.
+
+```{r scatter_line_plot_2}
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point() +
+  geom_smooth()
+```
+
+Let's make the plot look a bit prettier by reducing the size of the points and
+making them transparent. We're not mapping `size` or `alpha` to any variables,
+just setting them to constant values, and we only want these settings to apply
+to the points, so we set them inside `geom_point()`.
+
+```{r scatter_line_plot_3}
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth()
+```
+
+Aesthetics set in the `ggplot` function are treated as global mappings for the
+plot and are inherited by all geoms added to the plot.
+
+Let's say we still want to colour the points by ER status.
+
+```{r scatter_line_plot_4}
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth()
+```
+
+Well, that wasn't expected, although it's pretty neat. We only wanted to apply
+the colour aesthetic to the points.
+
+We can add to the aesthetics in the geom function to apply them just to that
+geom.
+
+```{r scatter_line_plot_5}
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(mapping = aes(colour = ER_status), size = 0.5, alpha = 0.5) +
+  geom_smooth()
+```
+
+Or if you have got your scatter plot just right, and you'd rather not interfere
+with it while trying out adding another layer, you can use set the `inherit.aes`
+option to `FALSE`.
+
+```{r scatter_line_plot_6}
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(mapping = aes(x = GATA3, y = ESR1), inherit.aes = FALSE)
+```
+
+

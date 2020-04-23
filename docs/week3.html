@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Week 3 – Visualizing tabular data with ggplot2</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img style="width: 120px; float: left; margin-top: 0px; margin-right: 20px;" src="images/CRUK_CI_logo.png"/>Introduction to R&nbsp;&nbsp;&nbsp;</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Contents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="week0.html">Week 0 - Getting ready</a>
+    </li>
+    <li>
+      <a href="week1.html">Week 1 - Introduction to R and RStudio</a>
+    </li>
+    <li>
+      <a href="week2.html">Week 2 - Working with data in R</a>
+    </li>
+    <li>
+      <a href="week3.html">Week 3 - Visualizing tabular data in R</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/bioinformatics-core-shared-training/r-intro">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Week 3 – Visualizing tabular data with ggplot2</h1>
+
+</div>
+
+
+<blockquote>
+<h4 id="learning-objectives">Learning objectives</h4>
+<ul>
+<li>Introduce ggplot2 for visualizing your data</li>
+<li>Learn ggplot2’s grammar of graphics, a coherent system for describing and creating plots</li>
+<li>Learn just one system and use this to create many different types of plot</li>
+<li>Learn about how R handles categorical data</li>
+</ul>
+</blockquote>
+<div id="visualizing-data-with-ggplot2" class="section level1">
+<h1>Visualizing data with ggplot2</h1>
+<p>In this session we will mostly focus our attention on the popular <strong>ggplot2</strong> package for visualizing tabular data by creating various kinds of plot.</p>
+<p>We’ll be using an expanded version of the METABRIC data set in which columns have been added for the mRNA expression values for some selected genes but which contains observations only for those patient samples for which we have expression data. We’ve also replaced spaces in column names with underscores so we don’t have to use backticks.</p>
+<pre class="r"><code>library(tidyverse)
+metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)
+metabric</code></pre>
+<pre><code>## # A tibble: 1,904 x 30
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0000         1             75.6         140.  LIVING         
+##  2 MB-0002         1             43.2          84.6 LIVING         
+##  3 MB-0005         1             48.9         164.  DECEASED       
+##  4 MB-0006         1             47.7         165.  LIVING         
+##  5 MB-0008         1             77.0          41.4 DECEASED       
+##  6 MB-0010         1             78.8           7.8 DECEASED       
+##  7 MB-0014         1             56.4         164.  LIVING         
+##  8 MB-0022         1             89.1          99.5 DECEASED       
+##  9 MB-0028         1             86.4          36.6 DECEASED       
+## 10 MB-0035         1             84.2          36.3 DECEASED       
+## # … with 1,894 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3_gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
+</div>
+<div id="our-first-ggplot---a-scatter-plot" class="section level1">
+<h1>Our first ggplot - a scatter plot</h1>
+<p>First we’ll create a simple scatter plot much like the ones we’ve created in previous sessions using R’s <code>plot()</code> function.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1))</code></pre>
+<p><img src="week3_files/figure-html/scatter_plot_1-1.png" width="672" /></p>
+<p>We specified 3 things to create this plot.</p>
+<ol style="list-style-type: decimal">
+<li>The <strong>data</strong> – needs to be a data frame (or a tibble)</li>
+<li>The type of plot – this is called a <strong>geom</strong> in ggplot2 terminology</li>
+<li>The mapping of variables in the data to visual properties (called <strong>aesthetics</strong> in ggplot2) of objects in the plot</li>
+</ol>
+<p>In this case the type of plot is a <strong><code>geom_point</code></strong>, ggplot2’s function for a scatter plot, and the expression of the genes GATA3 and ESR1 (estrogen receptor alpha) are mapped to the x and y coordinates, i.e. the positions of points on the scatter plot.</p>
+<p>Other aesthetics could include the size, shape and colour of those points.</p>
+</div>
+<div id="aesthetic-mappings" class="section level1">
+<h1>Aesthetic mappings</h1>
+<p>Look up the <code>geom_point</code> help page to see the list of aesthetics that are available for this geom.</p>
+<pre class="r"><code>?geom_point</code></pre>
+<p>The help page lists all the aesthetics you can set for this particular type of scatter plot. If you scroll down to the aesthetics section you’ll see that the <strong><code>x</code></strong> and <strong><code>y</code></strong> aesthetics are in bold face which tells us that these are required.</p>
+<p>Other aesthetics such as size, shape, colour and transparency (alpha) are optional.</p>
+<p>So what about those other aesthetics? Colours are usually fun – let’s try to use a colour aesthetic. We need to set a mapping of a variable to colour just like we did for x and y.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = ER_status))</code></pre>
+<p><img src="week3_files/figure-html/scatter_plot_2-1.png" width="672" /></p>
+<p>What about colouring based on a continuous variable?</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index))</code></pre>
+<p><img src="week3_files/figure-html/scatter_plot_3-1.png" width="672" /></p>
+<p>Size is not usually a good aesthetic to map to a variable. However it would be useful to be able to decrease the size of the points for this dataset as it contains 2509 observations. We can do this by setting size to a single value but we must now do so outside of the aesthetic mappings.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index), size = 0.5)</code></pre>
+<p><img src="week3_files/figure-html/scatter_plot_4-1.png" width="672" /></p>
+<p>If you use an aesthetic designed for a continuous variable with a discrete variable, ggplot2 will warn you about this not being a good idea.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, size = ER_status))</code></pre>
+<pre><code>## Warning: Using size for a discrete variable is not advised.</code></pre>
+<p><img src="week3_files/figure-html/scatter_plot_5-1.png" width="672" /></p>
+<p>Some aesthetics can only be used with categorical variables, e.g. shape.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, shape = Survival_time))</code></pre>
+<pre><code>Error: A continuous variable can not be mapped to shape</code></pre>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, shape = `3_gene_classifier`), size = 0.9)</code></pre>
+<pre><code>## Warning: Removed 204 rows containing missing values (geom_point).</code></pre>
+<p><img src="week3_files/figure-html/scatter_plot_6-1.png" width="672" /></p>
+<p>Note that some of the patient samples have not been classified and ggplot has removed those points with missing values for the 3-gene classifier.</p>
+<p>It is usually preferable to use colours to distinguish between different categories but sometimes these are used together where we want to show which group a data point belongs to in two different categorical variables.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = PAM50, shape = `3_gene_classifier`), size = 0.9)</code></pre>
+<pre><code>## Warning: Removed 204 rows containing missing values (geom_point).</code></pre>
+<p><img src="week3_files/figure-html/scatter_plot_7-1.png" width="672" /></p>
+<p>Transparency can be useful when we have a large number of points but is not usually mapped to a variable so sits outside the <code>aes()</code>.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = `3_gene_classifier`), size = 0.75, alpha = 0.5)</code></pre>
+<p><img src="week3_files/figure-html/scatter_plot_8-1.png" width="672" /></p>
+<p>Colours are more commonly used than shapes, sizes or transparency.</p>
+<p>Virtually every aspect of the plots we’ve created can be customized. We will learn how to change the colours used as well as other display parameters later in the course.</p>
+</div>
+<div id="ggplot2-grammar" class="section level1">
+<h1>ggplot2 grammar</h1>
+<p>The “gg” in ggplot2 stands for “grammar of graphics”. This grammar is a coherent system for describing and building graphs.</p>
+<p>The basic template is:</p>
+<pre><code>ggplot(data = &lt;DATA&gt;) +
+  &lt;GEOM_FUNCTION&gt;(mapping = aes(&lt;MAPPINGS&gt;))</code></pre>
+<p>This template can be used to create any of the different types of graph possible with ggplot2.</p>
+</div>
+<div id="another-plot-type---bar-chart" class="section level1">
+<h1>Another plot type - bar chart</h1>
+<p>Look up ggplot2 package help in RStudio to see what other geoms are available (find the ggplot2 package in the Packages tab normally found in the bottom right hand corner).</p>
+<p>The METABRIC study redefined how we think about breast cancer by identifying and characterizing several new subtypes, referred to as <em>integrative clusters</em>. Let’s create a bar chart of the number of patients whose cancers fall within each subtype in the METABRIC cohort.</p>
+<p><code>geom_bar</code> is the geom we need and it requires a single aesthetic mapping of the categorical variable of interest to <code>x</code>.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster))</code></pre>
+<p><img src="week3_files/figure-html/bar_plot_1-1.png" width="672" /></p>
+<p>The dark grey bars are a big ugly - what if we want each bar to be a different colour?</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, colour = Integrative_cluster))</code></pre>
+<p><img src="week3_files/figure-html/bar_plot_2-1.png" width="672" /></p>
+<p>Colouring the edges wasn’t quite what we had in mind. Look at the help for <code>geom_bar</code> to see what other aesthetic we should have used.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = Integrative_cluster))</code></pre>
+<p><img src="week3_files/figure-html/bar_plot_3-1.png" width="672" /></p>
+<p>What happens if we fill with something other than the integrative cluster?</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = ER_status))</code></pre>
+<p><img src="week3_files/figure-html/bar_plot_4-1.png" width="672" /></p>
+<p>We get a stacked bar plot.</p>
+<p>Note the similarity in what we did here to what we did with the scatter plot - there is a common grammar.</p>
+<p>What if want all the bars to be the same colour but not dark grey, e.g. blue?</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = &quot;blue&quot;))</code></pre>
+<p><img src="week3_files/figure-html/bar_plot_5-1.png" width="672" /></p>
+<p>That doesn’t look right - why not?</p>
+<p>You can set the aesthetics to a fixed value but this needs to be outside the mapping, just like we did before for size and transparency in the scatter plots.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster), fill = &quot;blue&quot;)</code></pre>
+<p><img src="week3_files/figure-html/bar_plot_6-1.png" width="672" /></p>
+<p>Setting this inside the <code>aes()</code> mapping told ggplot2 to map the colour aesthetic to some variable in the data frame, one that doesn’t really exist but which is created on-the-fly with a value of “blue” for every observation (patient).</p>
+</div>
+<div id="multiple-layers" class="section level1">
+<h1>Multiple layers</h1>
+<p>Consider again the ggplot2 grammar:</p>
+<pre><code>ggplot(data = &lt;DATA&gt;) +
+  &lt;GEOM_FUNCTION&gt;(mapping = aes(&lt;MAPPINGS&gt;))</code></pre>
+<p>Why do we have the ggplot part and geom part joined by a “+” symbol?</p>
+<p>The ‘+’ operator has been overridden by ggplot2 to add layers and other components (scales, themes, etc.) to the plot.</p>
+<p>We can have multiple geoms in the same plot. Each is a different layer.</p>
+<p>Let’s create a plot with two geoms.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1)) +
+  geom_smooth(mapping = aes(x = GATA3, y = ESR1))</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="week3_files/figure-html/scatter_line_plot_1-1.png" width="672" /></p>
+<p>What is geom_smooth doing? Look up the help page.</p>
+<p>Note that the shaded area represents the standard error bounds on the fitted model.</p>
+<p>There is some annoying duplication of code here. We can avoid this by putting the mappings in the <code>ggplot</code> function instead.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point() +
+  geom_smooth()</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="week3_files/figure-html/scatter_line_plot_2-1.png" width="672" /></p>
+<p>Let’s make the plot look a bit prettier by reducing the size of the points and making them transparent. We’re not mapping <code>size</code> or <code>alpha</code> to any variables, just setting them to constant values, and we only want these settings to apply to the points, so we set them inside <code>geom_point()</code>.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth()</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="week3_files/figure-html/scatter_line_plot_3-1.png" width="672" /></p>
+<p>Aesthetics set in the <code>ggplot</code> function are treated as global mappings for the plot and are inherited by all geoms added to the plot.</p>
+<p>Let’s say we still want to colour the points by ER status.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth()</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="week3_files/figure-html/scatter_line_plot_4-1.png" width="672" /></p>
+<p>Well, that wasn’t expected, although it’s pretty neat. We only wanted to apply the colour aesthetic to the points.</p>
+<p>We can add to the aesthetics in the geom function to apply them just to that geom.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(mapping = aes(colour = ER_status), size = 0.5, alpha = 0.5) +
+  geom_smooth()</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="week3_files/figure-html/scatter_line_plot_5-1.png" width="672" /></p>
+<p>Or if you have got your scatter plot just right, and you’d rather not interfere with it while trying out adding another layer, you can use set the <code>inherit.aes</code> option to <code>FALSE</code>.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(mapping = aes(x = GATA3, y = ESR1), inherit.aes = FALSE)</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="week3_files/figure-html/scatter_line_plot_6-1.png" width="672" /></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
