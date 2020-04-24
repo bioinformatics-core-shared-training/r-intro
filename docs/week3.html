@@ -508,7 +508,7 @@ metabric</code></pre>
 <p>The basic template is given in the summary box below. This template can be used to create any of the different types of graph possible with ggplot2.</p>
 <div class="rmdblock">
 <p>
-<strong>ggplot2 grammar</strong>
+<strong>ggplot2 grammar of graphics</strong>
 </p>
 <p>
 <strong><code>ggplot(data = &lt;DATA&gt;) + &lt;GEOM_FUNCTION&gt;(mapping = aes(&lt;MAPPINGS&gt;))</code></strong>
@@ -543,15 +543,19 @@ Layers can be added by adding geoms such as <code>geom_point()</code> using the 
 <p><img src="week3_files/figure-html/bar_plot_4-1.png" width="672" /></p>
 <p>We get a stacked bar plot.</p>
 <p>Note the similarity in what we did here to what we did with the scatter plot - there is a common grammar.</p>
+<p>Let’s try another stacked bar plot, this time with a categorical variable with more than two categories.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = `3_gene_classifier`))</code></pre>
+<p><img src="week3_files/figure-html/bar_plot_5-1.png" width="672" /></p>
 <p>What if want all the bars to be the same colour but not dark grey, e.g. blue?</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_bar(mapping = aes(x = Integrative_cluster, fill = &quot;blue&quot;))</code></pre>
-<p><img src="week3_files/figure-html/bar_plot_5-1.png" width="672" /></p>
+<p><img src="week3_files/figure-html/bar_plot_6-1.png" width="672" /></p>
 <p>That doesn’t look right - why not?</p>
 <p>You can set the aesthetics to a fixed value but this needs to be outside the mapping, just like we did before for size and transparency in the scatter plots.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_bar(mapping = aes(x = Integrative_cluster), fill = &quot;blue&quot;)</code></pre>
-<p><img src="week3_files/figure-html/bar_plot_6-1.png" width="672" /></p>
+<p><img src="week3_files/figure-html/bar_plot_7-1.png" width="672" /></p>
 <p>Setting this inside the <code>aes()</code> mapping told ggplot2 to map the colour aesthetic to some variable in the data frame, one that doesn’t really exist but which is created on-the-fly with a value of “blue” for every observation (patient).</p>
 </div>
 <div id="multiple-layers" class="section level1">
@@ -603,6 +607,34 @@ Layers can be added by adding geoms such as <code>geom_point()</code> using the 
   geom_smooth(mapping = aes(x = GATA3, y = ESR1), inherit.aes = FALSE)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
 <p><img src="week3_files/figure-html/scatter_line_plot_6-1.png" width="672" /></p>
+</div>
+<div id="box-plots" class="section level1">
+<h1>Box plots</h1>
+<p>Box plots are a particular favourite of Wednesday lunchtime seminars.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
+  geom_boxplot()</code></pre>
+<p><img src="week3_files/figure-html/box_plot_1-1.png" width="672" /></p>
+<p>See <code>geom_boxplot</code> help to explain how the box and whiskers are constructed.</p>
+<p>How about adding another layer to display all the points?</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
+  geom_boxplot() +
+  geom_point()</code></pre>
+<p><img src="week3_files/figure-html/box_plot_2-1.png" width="672" /></p>
+<p>The <code>geom_point</code> help points to <code>geom_jitter</code> as more suitable when one of the variables is categorical.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
+  geom_boxplot() +
+  geom_jitter()</code></pre>
+<p><img src="week3_files/figure-html/box_plot_3-1.png" width="672" /></p>
+<p>Well, that’s a bit of a mess. We need to reduce the spread or jitter and the size and make the points transparent.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.3, size = 0.5, alpha = 0.25)</code></pre>
+<p><img src="week3_files/figure-html/box_plot_4-1.png" width="672" /></p>
+<p>Displaying points in this way makes much more sense when we only have a few observations and where the box plot doesn’t really portray that. Here it makes less sense as we have very many observations.</p>
+<p>Let’s try a colour aesthetic to also look at how estrogen receptor expression differs between progesterone receptor (PR) positive and negative tumours.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3, colour = HER2_status)) +
+  geom_boxplot()</code></pre>
+<p><img src="week3_files/figure-html/box_plot_5-1.png" width="672" /></p>
 </div>
 
 

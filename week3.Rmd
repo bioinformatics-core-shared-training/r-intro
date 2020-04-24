@@ -185,7 +185,7 @@ The basic template is given in the summary box below. This template can be used
 to create any of the different types of graph possible with ggplot2.
 
 ```{block type = "rmdblock"}
-**ggplot2 grammar**
+**ggplot2 grammar of graphics**
 
 **`ggplot(data = <DATA>) + <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))`**
 
@@ -242,9 +242,17 @@ We get a stacked bar plot.
 Note the similarity in what we did here to what we did with the scatter plot
 - there is a common grammar.
 
-What if want all the bars to be the same colour but not dark grey, e.g. blue?
+Let's try another stacked bar plot, this time with a categorical variable with
+more than two categories.
 
 ```{r bar_plot_5}
+ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = `3_gene_classifier`))
+```
+
+What if want all the bars to be the same colour but not dark grey, e.g. blue?
+
+```{r bar_plot_6}
 ggplot(data = metabric) +
   geom_bar(mapping = aes(x = Integrative_cluster, fill = "blue"))
 ```
@@ -254,7 +262,7 @@ That doesn't look right - why not?
 You can set the aesthetics to a fixed value but this needs to be outside the
 mapping, just like we did before for size and transparency in the scatter plots.
 
-```{r bar_plot_6}
+```{r bar_plot_7}
 ggplot(data = metabric) +
   geom_bar(mapping = aes(x = Integrative_cluster), fill = "blue")
 ```
@@ -350,4 +358,52 @@ ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) 
   geom_smooth(mapping = aes(x = GATA3, y = ESR1), inherit.aes = FALSE)
 ```
 
+# Box plots
+
+Box plots are a particular favourite of Wednesday lunchtime seminars.
+
+```{r box_plot_1}
+ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
+  geom_boxplot()
+```
+
+See `geom_boxplot` help to explain how the box and whiskers are constructed.
+
+How about adding another layer to display all the points?
+
+```{r box_plot_2}
+ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
+  geom_boxplot() +
+  geom_point()
+```
+
+The `geom_point` help points to `geom_jitter` as more suitable when one of the
+variables is categorical.
+
+```{r box_plot_3}
+ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
+  geom_boxplot() +
+  geom_jitter()
+```
+
+Well, that's a bit of a mess. We need to reduce the spread or jitter and the
+size and make the points transparent.
+
+```{r box_plot_4}
+ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.3, size = 0.5, alpha = 0.25)
+```
+
+Displaying points in this way makes much more sense when we only have a few
+observations and where the box plot doesn't really portray that. Here it makes
+less sense as we have very many observations.
+
+Let's try a colour aesthetic to also look at how estrogen receptor expression
+differs between progesterone receptor (PR) positive and negative tumours.
+
+```{r box_plot_5}
+ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3, colour = HER2_status)) +
+  geom_boxplot()
+```
 
