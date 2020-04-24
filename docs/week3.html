@@ -411,7 +411,7 @@ div.tocify {
 <p><a href="https://pubmed.ncbi.nlm.nih.gov/22522925">Curtis <em>et al.</em>, Nature 486:346-52, 2012</a></p>
 <p><a href="https://www.ncbi.nlm.nih.gov/pubmed/27161491">Pereira <em>et al.</em>, Nature Communications 7:11479, 2016</a></p>
 <p>Both the clinical data and the gene expression values were downloaded from <a href="https://www.cbioportal.org/study/summary?id=brca_metabric">cBioPortal</a>.</p>
-<p>These have been combined into a single table using techniques we will cover later in the course. We’ve removed observations for patient tumour samples for which expression data are not available and have replaced spaces in column names so we don’t have to refer to these using backticks ( <strong>`</strong> ).</p>
+<p>These have been combined into a single table using techniques we will cover later in the course. We’ve removed observations for patient tumour samples for which expression data are not available and have replaced spaces in column names with underscores so we don’t have to constantly refer to these using backticks ( <strong>`</strong> ).</p>
 <pre class="r"><code>library(tidyverse)
 metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)
 metabric</code></pre>
@@ -445,14 +445,14 @@ metabric</code></pre>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1))</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_1-1.png" width="672" /></p>
-<p>We specified 3 things to create this plot.</p>
+<p>We specified 3 things to create this plot:</p>
 <ol style="list-style-type: decimal">
 <li>The <strong>data</strong> – needs to be a data frame (or a tibble)</li>
 <li>The type of plot – this is called a <strong>geom</strong> in ggplot2 terminology</li>
 <li>The mapping of variables in the data to visual properties (called <strong>aesthetics</strong> in ggplot2) of objects in the plot</li>
 </ol>
-<p>In this case the type of plot is a <strong><code>geom_point</code></strong>, ggplot2’s function for a scatter plot, and the expression of the genes GATA3 and ESR1 (estrogen receptor alpha) are mapped to the x and y coordinates, i.e. the positions of points on the scatter plot.</p>
-<p>Perhaps the x and y coordinates of the points plotted aren’t quite what we imagine as having aesthetic qualities. Other aesthetics that you might expect to be referred to in this way include the size, shape and colour of the points.</p>
+<p>In this case, the type of plot is a <strong><code>geom_point</code></strong>, ggplot2’s function for a scatter plot, and the expression of the genes GATA3 and ESR1 (estrogen receptor alpha) are mapped to the <strong><code>x</code></strong> and <strong><code>y</code></strong> coordinates, i.e. the positions of points on the scatter plot.</p>
+<p>Perhaps the x and y coordinates aren’t quite what we imagine as having aesthetic qualities. Other aesthetics that you might expect to be referred to in this way include the size, shape and colour of the points.</p>
 </div>
 <div id="aesthetic-mappings" class="section level1">
 <h1>Aesthetic mappings</h1>
@@ -460,7 +460,8 @@ metabric</code></pre>
 <pre class="r"><code>?geom_point</code></pre>
 <p>The help page lists all the aesthetics you can set for this particular type of scatter plot. If you scroll down to the aesthetics section you’ll see that the <strong><code>x</code></strong> and <strong><code>y</code></strong> aesthetics are in bold face which tells us that these are required, i.e. you have to supply them, otherwise you’ll get an error message from ggplot.</p>
 <p>Other aesthetics such as size, shape, colour and transparency (alpha) are optional.</p>
-<p>So what about those other aesthetics? Colours are usually fun – let’s try to use a colour aesthetic. We need to set a mapping of a variable to colour just like we did for x and y.</p>
+<p>So what about those other aesthetics? Colours are usually fun – let’s try to use a colour aesthetic.</p>
+<p>We need to set a mapping of a variable to colour just like we did for x and y.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = ER_status))</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_2-1.png" width="672" /></p>
@@ -468,14 +469,14 @@ metabric</code></pre>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index))</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_3-1.png" width="672" /></p>
-<p>Do you see the difference between using a colour aesthetic for a discrete variable compared with a continuous variable?</p>
+<p>ggplot2 uses a colour scale for a continous variable but discrete colours for discrete or categorical values.</p>
 <p>Size is not usually a good aesthetic to map to a variable. This is particularly the case where we have such a large number of observations.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, size = ER_status))</code></pre>
 <pre><code>## Warning: Using size for a discrete variable is not advised.</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_4-1.png" width="672" /></p>
 <p>Some aesthetics, such as size, are designed to be used with continuous variables. If you map these to a discrete variable as we have done here, then ggplot warns you that this isn’t such a good idea.</p>
-<p>It would however by useful to be able to decrease the size of the points given that there are around 2000 in this data set. We can do so by setting the size to a single value rather than mapping it to one of the variables in the data set - we can do so by setting it outside the aesthetic mappings, i.e. outside the <code>aes()</code> bit.</p>
+<p>It would however be useful to be able to decrease the size of the points given that there are around 2000 in this data set. We can do so by setting the size to a single value rather than mapping it to one of the variables in the data set - this has to be done outside the aesthetic mappings, i.e. outside the <code>aes()</code> bit.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index), size = 0.5)</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_5-1.png" width="672" /></p>

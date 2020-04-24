@@ -35,7 +35,8 @@ Both the clinical data and the gene expression values were downloaded from
 These have been combined into a single table using techniques we will cover
 later in the course. We've removed observations for patient tumour samples for
 which expression data are not available and have replaced spaces in column names
-so we don't have to refer to these using backticks ( **`** ).
+with underscores so we don't have to constantly refer to these using backticks
+( **`** ).
 
 ```{r message = FALSE}
 library(tidyverse)
@@ -54,20 +55,20 @@ ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1))
 ```
 
-We specified 3 things to create this plot.
+We specified 3 things to create this plot:
 
 1. The **data** -- needs to be a data frame (or a tibble)
 2. The type of plot -- this is called a **geom** in ggplot2 terminology
 3. The mapping of variables in the data to visual properties (called **aesthetics** in ggplot2) of objects in the plot
 
-In this case the type of plot is a **`geom_point`**, ggplot2's function for a
+In this case, the type of plot is a **`geom_point`**, ggplot2's function for a
 scatter plot, and the expression of the genes GATA3 and ESR1 (estrogen receptor
-alpha) are mapped to the x and y coordinates, i.e. the positions of points on
-the scatter plot.
+alpha) are mapped to the **`x`** and **`y`** coordinates, i.e. the positions of
+points on the scatter plot.
 
-Perhaps the x and y coordinates of the points plotted aren't quite what we
-imagine as having aesthetic qualities. Other aesthetics that you might expect to
-be referred to in this way include the size, shape and colour of the points.
+Perhaps the x and y coordinates aren't quite what we imagine as having aesthetic
+qualities. Other aesthetics that you might expect to be referred to in this way
+include the size, shape and colour of the points.
 
 # Aesthetic mappings
 
@@ -88,8 +89,9 @@ Other aesthetics such as size, shape, colour and transparency (alpha) are
 optional.
 
 So what about those other aesthetics? Colours are usually fun -- let's try to
-use a colour aesthetic. We need to set a mapping of a variable to colour just
-like we did for x and y.
+use a colour aesthetic.
+
+We need to set a mapping of a variable to colour just like we did for x and y.
 
 ```{r scatter_plot_2}
 ggplot(data = metabric) +
@@ -103,8 +105,8 @@ ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index))
 ```
 
-Do you see the difference between using a colour aesthetic for a discrete
-variable compared with a continuous variable?
+ggplot2 uses a colour scale for a continous variable but discrete colours for
+discrete or categorical values.
 
 Size is not usually a good aesthetic to map to a variable. This is particularly
 the case where we have such a large number of observations.
@@ -118,11 +120,11 @@ Some aesthetics, such as size, are designed to be used with continuous
 variables. If you map these to a discrete variable as we have done here, then
 ggplot warns you that this isn't such a good idea.
 
-It would however by useful to be able to decrease the size of the points given
+It would however be useful to be able to decrease the size of the points given
 that there are around 2000 in this data set. We can do so by setting the size
 to a single value rather than mapping it to one of the variables in the data
-set - we can do so by setting it outside the aesthetic mappings, i.e. outside
-the `aes()` bit.
+set - this has to be done outside the aesthetic mappings, i.e. outside the
+`aes()` bit.
 
 ```{r scatter_plot_5}
 ggplot(data = metabric) +
