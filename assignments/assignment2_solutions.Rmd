@@ -1,0 +1,251 @@
+---
+title: "Assignment 2"
+---
+
+---
+
+### Working with vectors, data frames and tibbles
+
+**1. How many cars in the `mtcars` data set have 8 cylinders?**
+
+Write an R instruction to calculate this.
+
+```{r}
+sum(mtcars$cyl == 8)
+```
+
+**2. Print out a subset of the `starwars` tibble containing just the characters with blond hair and blue eyes**
+
+```{r}
+library(tidyverse)
+table(starwars$hair_color)
+table(starwars$eye_color)
+starwars[(starwars$hair_color == "blond" | starwars$hair_color == "blonde") & starwars$eye_color == "blue", ]
+```
+
+**3. Convert the values for the heights of characters in the `starwars` tibble from centimetres to metres**
+
+```{r}
+typeof(starwars)
+starwars$height <- starwars$height / 100
+starwars
+typeof(starwars)
+```
+
+What happened to the type of the height column?
+
+Convert the height column back to metres again and see if you can work out how
+to change it back to its original type.
+
+```{r}
+# type of height column changed from integer to double
+
+# convert back to centimetres
+starwars$height <- starwars$height * 100
+typeof(starwars)
+
+# after converting back the height column is still a double
+# converting back to an integer
+
+starwars$height <- as.integer(starwars$height)
+starwars
+typeof(starwars)
+```
+
+---
+
+### Simulation: rolling 6-sided dice
+
+**4. Use the `sample()` function to simulate the rolling of a 6-sided die**
+
+If you look at the help page for `sample` you'll find there are two functions
+with the same name, one in the `base` package and the other in the `dplyr`
+package. The `sample` function in the `base` package is the one you need for
+this exercise.
+
+Count the number of sixes you get for 1000 rolls?
+
+```{r}
+six_sided_die <- 1:6
+rolls <- sample(six_sided_die, size = 1000, replace = TRUE)
+sum(rolls == 6)
+```
+
+What number would you expect to get? Calculate this in R.
+
+```{r}
+1000 / 6
+```
+
+Re-run the simulation a few times by clicking on the green 'Run current chunk'
+button for the code you've written. What do you notice?
+
+Re-run the simulation with a much larger sample size. Check that the number of
+sixes you obtain is much closer to the expected value.
+
+```{r}
+# re-running the simulation gives different numbers of sixes each time
+
+# re-running for larger sample size
+number_of_rolls <- 100000
+number_of_rolls / 6
+rolls <- sample(1:6, size = number_of_rolls, replace = TRUE)
+sum(rolls == 6)
+```
+
+**5. Simulate the rolling of a weighted six-sided die**
+
+Imagine we're running a casino and we have some weighted dice in which the
+probability of throwing a six is a bit lower than it should be if all is fair
+and square. Let's say the probability of a throwing a six is 0.1 while the
+other 5 numbers all have equal probability.
+
+Calculate the probability for throwing each of the other numbers and then,
+referring again at the help page for `sample()`, re-run the simulation using
+these probabilities. See how many sixes you get.
+
+```{r}
+prob_six <- 0.1
+prob_not_six <- 1.0 - prob_six
+prob_other <- prob_not_six / 5
+
+number_of_rolls <- 100000
+number_of_rolls * prob_six
+
+# long-winded
+#rolls <- sample(1:6, size = number_of_rolls, replace = TRUE, prob = c(prob_other, prob_other, prob_other, prob_other, prob_other, prob_six))
+
+# using rep() instead
+rolls <- sample(1:6, size = number_of_rolls, replace = TRUE, prob = c(rep(prob_other, 5), prob_six))
+sum(rolls == 6)
+```
+
+*Hint:* use the `rep()` function to save some typing.
+
+---
+
+### Clinical cancer data
+
+**6. How many samples in the METABRIC dataset have high cellularity but have no recorded classification with the 3-gene classifier?**
+
+```{r}
+metabric <- read_tsv("brca_metabric_clinical_data.tsv")
+metabric
+
+table(metabric$Cellularity)
+table(metabric$`3-Gene classifier subtype`)
+
+sum(metabric$Cellularity == "High")
+metabric$Cellularity
+sum(metabric$Cellularity == "High" & !is.na(metabric$Cellularity))
+sum(metabric$Cellularity == "High", na.rm = TRUE)
+
+sum(is.na(metabric$`3-Gene classifier subtype`))
+
+sum(metabric$Cellularity == "High" & !is.na(metabric$Cellularity) & is.na(metabric$`3-Gene classifier subtype`))
+
+sum(metabric$Cellularity == "High" & is.na(metabric$`3-Gene classifier subtype`), na.rm = TRUE)
+
+# note dplyr filter that we'll introduce in a couple of weeks is much easier and
+# handles the missing value more like how we'd expect
+```
+
+*Hint:* this is actually quite tricky -- you may want to check for missing
+values in the cellularity column as well as the column for the 3-gene
+classifier.
+
+---
+
+### Working with data from an Excel spreadsheet
+
+**7. Read into R one of your own Excel spreadsheets and explore the data using `summary()`, `table()` and/or `plot()`**
+
+We haven't yet showed how to read Excel spreadsheets into R. There are more than
+package providing this capability but for this exercise use the `readxl` package
+from the tidyverse.
+
+`readxl` should have been installed as part of the tidyverse but if you find
+that's not the case, you will have to install it separately.
+
+`readxl` is not loaded as one of the core tidyverse packages when you run
+`library(tidyverse)` so you'll have to load this separately.
+
+If you don't have an Excel spreadsheet to hand, you can use the clinical
+annotation data for the NCI-60 cell line data set (https://bioinformatics-core-shared-training.github.io/r-intro/data/cellline_nci60_clinical_data.xlsx).
+
+```{r}
+library(readxl)
+
+nci60 <- read_excel("cellline_nci60_clinical_data.xlsx", na = "NA")
+# need to comment on the na argument when reading data in (blanks assigned to NA
+# by default, not "NA" strings)
+
+nci60
+
+# summary of each variable
+summary(nci60)
+
+# note that categorical variables are not factors so would need converting
+# using as.factor() or for this to be specified when reading the data in
+# nevertheless we can run table() on these
+table(nci60$`Cancer Type`)
+
+# scatter plot to see if there is a relationship between the number of point
+# mutations and the fraction of the genome altered
+plot(nci60$`Mutation Count`, nci60$`Fraction Genome Altered`)
+```
+
+---
+
+### Create a report for your assignment
+
+Click on the 'Knit' menu at the top of this file and select either whichever
+option you prefer to create an HTML, PDF or Word document version of your
+assignment. This will run all the code chunks and "knit" the resulting
+results with the surrounding text to produce a report.
+
+#### Additional markdown features
+
+**_Emphasis_**
+
+Can use either underscores or asterisks and combination of both for both bold
+and italic emphasis.
+
+```
+*italic*   **bold**
+_italic_   __bold__
+```
+
+**_Inline Code_**
+
+Use of backticks (`).
+
+```
+`mean(starwar$height)`
+```
+
+**_Horizontal Rule_**
+
+Three of more astisks or dashes.
+
+```
+*******
+
+-------
+```
+
+**_Plain Code Blocks_**
+
+Plain code blocks are displayed in a fixed-width font but not evaluated.
+
+```
+This text is displayed verbatim / preformatted
+```
+
+Have a look at examples of these in the text parts of this R markdown document
+and how these are rendered when you run the knit operation.
+
+For more features, see the help page in RStudio that can be accessed from the
+the help menu: **Help > Markdown Quick Reference**
+
+---
