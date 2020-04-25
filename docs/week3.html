@@ -654,7 +654,7 @@ counts</code></pre>
   geom_jitter(width = 0.3, size = 0.5, alpha = 0.25)</code></pre>
 <p><img src="week3_files/figure-html/box_plot_4-1.png" width="672" /></p>
 <p>Displaying points in this way makes much more sense when we only have a few observations and where the box plot doesn’t really portray that. Here it makes less sense as we have very many observations.</p>
-<p>Let’s try a colour aesthetic to also look at how estrogen receptor expression differs between progesterone receptor (PR) positive and negative tumours.</p>
+<p>Let’s try a colour aesthetic to also look at how estrogen receptor expression differs between HER2 positive and negative tumours.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3, colour = HER2_status)) +
   geom_boxplot()</code></pre>
 <p><img src="week3_files/figure-html/box_plot_5-1.png" width="672" /></p>
@@ -762,7 +762,58 @@ rail_use</code></pre>
 <p><img src="week3_files/figure-html/histogram_plot_4-1.png" width="672" /></p>
 </div>
 <div id="categorical-variables-factors" class="section level1">
-<h1>Categorical variables – Factors</h1>
+<h1>Categorical variables – factors</h1>
+<p>Several of the variables in the METABRIC data set are categorical, i.e. they can take one of a limited set of values. Some of these have been read into R as character types (e.g. the 3-gene classifier), other as numerical values, e.g. tumour stage. We also have some binary variables that are essentially categorical variables but with only 2 possible values, e.g. ER status.</p>
+<p>In many of the plots given above, ggplot2 has treated character variables as categorical in situtations where a categorical variable is expected. For example, when we displayed points on a scatter plot using different colours for each 3-gene classification, or when we created separate box plots in the same plot for ER positive and negative patients.</p>
+<p>But what about when our categorical variable has been read into R as a continuous variable, e.g. <code>Tumour_stage</code>, which is read in as a double type.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Tumour_stage))</code></pre>
+<p><img src="week3_files/figure-html/scatter_plot_9-1.png" width="672" /></p>
+<pre class="r"><code>table(metabric$Tumour_stage)</code></pre>
+<pre><code>## 
+##   0   1   2   3   4 
+##   4 475 800 115   9</code></pre>
+<p>Tumour stage has only 5 discrete states but ggplot2 doesn’t know this and has used a colour scale to show these as if they were continuous. We need to tell R that these are categorical.</p>
+<p>R has a special type for categorical variables called a <strong>factor</strong>. Let’s convert our tumour stage variable to a factor using <code>as.factor()</code>.</p>
+<pre class="r"><code>metabric$Tumour_stage &lt;- as.factor(metabric$Tumour_stage)
+metabric[, c(&quot;Patient_ID&quot;, &quot;Tumour_stage&quot;)]</code></pre>
+<pre><code>## # A tibble: 1,904 x 2
+##    Patient_ID Tumour_stage
+##    &lt;chr&gt;      &lt;fct&gt;       
+##  1 MB-0000    2           
+##  2 MB-0002    1           
+##  3 MB-0005    2           
+##  4 MB-0006    2           
+##  5 MB-0008    2           
+##  6 MB-0010    4           
+##  7 MB-0014    2           
+##  8 MB-0022    2           
+##  9 MB-0028    2           
+## 10 MB-0035    2           
+## # … with 1,894 more rows</code></pre>
+<p>R actually stores categorical variables as integers but with some additional metadata about which of the integer values or ‘levels’ corresponds to each category.</p>
+<pre class="r"><code>typeof(metabric$Tumour_stage)</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<pre class="r"><code>class(metabric$Tumour_stage)</code></pre>
+<pre><code>## [1] &quot;factor&quot;</code></pre>
+<pre class="r"><code>levels(metabric$Tumour_stage)</code></pre>
+<pre><code>## [1] &quot;0&quot; &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot;</code></pre>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Tumour_stage))</code></pre>
+<p><img src="week3_files/figure-html/scatter_plot_10-1.png" width="672" /></p>
+<p>In this case the order of the levels makes sense but for other variables you may wish for more control over the ordering. Take the integrative cluster variable for example. We created a bar plot of the numbers of patients in the METABRIC cohort within each integrative cluster. Did you notice the ordering of the clusters? 10 came just after 1 and before 2. That looked a bit odd as we’d have naturally expected it to come last of all. R, on the other hand, is treating this vector as a character vector (mainly because of the ‘ER-’ and ‘ER+’ subtypes of cluster 4) and sorts the values into alphanumerical order.</p>
+<pre class="r"><code>metabric$Integrative_cluster &lt;- as.factor(metabric$Integrative_cluster)
+levels(metabric$Integrative_cluster)</code></pre>
+<pre><code>##  [1] &quot;1&quot;    &quot;10&quot;   &quot;2&quot;    &quot;3&quot;    &quot;4ER-&quot; &quot;4ER+&quot; &quot;5&quot;    &quot;6&quot;    &quot;7&quot;    &quot;8&quot;   
+## [11] &quot;9&quot;</code></pre>
+<p>A look at the help page for <code>as.factor</code> shows that we can create a factor using the <code>factor()</code> function and specify the levels using the <code>levels</code> argument.</p>
+<pre class="r"><code>metabric$Integrative_cluster &lt;- factor(metabric$Integrative_cluster, levels = c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4ER-&quot;, &quot;4ER+&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;10&quot;))
+levels(metabric$Integrative_cluster)</code></pre>
+<pre><code>##  [1] &quot;1&quot;    &quot;2&quot;    &quot;3&quot;    &quot;4ER-&quot; &quot;4ER+&quot; &quot;5&quot;    &quot;6&quot;    &quot;7&quot;    &quot;8&quot;    &quot;9&quot;   
+## [11] &quot;10&quot;</code></pre>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = Integrative_cluster))</code></pre>
+<p><img src="week3_files/figure-html/bar_plot_9-1.png" width="672" /></p>
 </div>
 <div id="the-ggplot-object-a-peek-under-the-hood-advanced" class="section level1">
 <h1>The ggplot object – a peek under the hood (ADVANCED)</h1>
@@ -798,11 +849,11 @@ rail_use</code></pre>
 ## 10 MB-0035         1             84.2          36.3 DECEASED       
 ## # … with 1,894 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
 ## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
-## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Tumour_stage &lt;fct&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
 ## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
 ## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
 ## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
-## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;fct&gt;, Mutation_count &lt;dbl&gt;,
 ## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
 ## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
 <p>This <code>plot</code> list object is really only a specification for how ggplot2 should create the plot. ggplot2 only renders the plot when we ask it to by printing it out to the screen. We haven’t added any layers yet so what does our plot look like at this point?</p>

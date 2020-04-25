@@ -439,7 +439,7 @@ observations and where the box plot doesn't really portray that. Here it makes
 less sense as we have very many observations.
 
 Let's try a colour aesthetic to also look at how estrogen receptor expression
-differs between progesterone receptor (PR) positive and negative tumours.
+differs between HER2 positive and negative tumours.
 
 ```{r box_plot_5}
 ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3, colour = HER2_status)) +
@@ -577,7 +577,85 @@ ggplot(data = metabric) +
   geom_histogram(mapping = aes(x = Age_at_diagnosis), bins = 20, colour = "darkblue", fill = "grey")
 ```
 
-# Categorical variables -- Factors
+# Categorical variables -- factors
+
+Several of the variables in the METABRIC data set are categorical, i.e. they can
+take one of a limited set of values. Some of these have been read into R as
+character types (e.g. the 3-gene classifier), other as numerical values, e.g.
+tumour stage. We also have some binary variables that are essentially categorical
+variables but with only 2 possible values, e.g. ER status.
+
+In many of the plots given above, ggplot2 has treated character variables as
+categorical in situtations where a categorical variable is expected. For example,
+when we displayed points on a scatter plot using different colours for each
+3-gene classification, or when we created separate box plots in the same plot
+for ER positive and negative patients.
+
+But what about when our categorical variable has been read into R as a
+continuous variable, e.g. `Tumour_stage`, which is read in as a double type.
+
+```{r scatter_plot_9}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Tumour_stage))
+```
+
+```{r}
+table(metabric$Tumour_stage)
+```
+
+Tumour stage has only 5 discrete states but ggplot2 doesn't know this and has
+used a colour scale to show these as if they were continuous. We need to tell R
+that these are categorical.
+
+R has a special type for categorical variables called a **factor**. Let's
+convert our tumour stage variable to a factor using `as.factor()`.
+
+```{r}
+metabric$Tumour_stage <- as.factor(metabric$Tumour_stage)
+metabric[, c("Patient_ID", "Tumour_stage")]
+```
+
+R actually stores categorical variables as integers but with some additional
+metadata about which of the integer values or 'levels' corresponds to each
+category.
+
+```{r}
+typeof(metabric$Tumour_stage)
+class(metabric$Tumour_stage)
+levels(metabric$Tumour_stage)
+```
+
+```{r scatter_plot_10}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Tumour_stage))
+```
+
+In this case the order of the levels makes sense but for other variables you
+may wish for more control over the ordering. Take the integrative cluster
+variable for example. We created a bar plot of the numbers of patients in the
+METABRIC cohort within each integrative cluster. Did you notice the ordering of
+the clusters? 10 came just after 1 and before 2. That looked a bit odd as we'd
+have naturally expected it to come last of all. R, on the other hand, is
+treating this vector as a character vector (mainly because of the 'ER-' and
+'ER+' subtypes of cluster 4) and sorts the values into alphanumerical order.
+
+```{r}
+metabric$Integrative_cluster <- as.factor(metabric$Integrative_cluster)
+levels(metabric$Integrative_cluster)
+```
+
+A look at the help page for `as.factor` shows that we can create a factor using
+the `factor()` function and specify the levels using the `levels` argument.
+
+```{r}
+metabric$Integrative_cluster <- factor(metabric$Integrative_cluster, levels = c("1", "2", "3", "4ER-", "4ER+", "5", "6", "7", "8", "9", "10"))
+levels(metabric$Integrative_cluster)
+```
+
+```{r bar_plot_9}
+ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = Integrative_cluster))
+```
 
 # The ggplot object -- a peek under the hood (ADVANCED)
 
