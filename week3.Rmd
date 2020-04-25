@@ -34,9 +34,17 @@ Both the clinical data and the gene expression values were downloaded from
 
 These have been combined into a single table using techniques we will cover
 later in the course. We've removed observations for patient tumour samples for
-which expression data are not available and have replaced spaces in column names
-with underscores so we don't have to constantly refer to these using backticks
-( **`** ).
+which expression data are not available.
+
+In addition, we have replaced spaces in column names with underscores so we
+don't have to constantly refer to these using backticks ( **`` ` ``** ). Note,
+however, that even after renaming up some of the column names, we have one
+column, '3-gene classifier', that is not strictly a valid name in R as it
+starts with a number and contains a hyphen. Valid names for variables in R
+contain only letters, numbers and the dot (**`.`**) and underscore (**`_`**)
+characters and should not begin with a number. So when we refer to the
+'3-gene classifier' column we'll have to use backticks, e.g.
+``metabric$`3-gene_classifier` ``.
 
 ```{r message = FALSE}
 library(tidyverse)
@@ -146,7 +154,7 @@ Here we set the shape based on the 3-gene classifier.
 
 ```{r scatter_plot_6}
 ggplot(data = metabric) +
-  geom_point(mapping = aes(x = GATA3, y = ESR1, shape = `3_gene_classifier`), size = 0.9)
+  geom_point(mapping = aes(x = GATA3, y = ESR1, shape = `3-gene_classifier`), size = 0.9)
 ```
 
 Note that some of the patient samples have not been classified and ggplot has
@@ -158,7 +166,7 @@ group a data point belongs to in two different categorical variables.
 
 ```{r scatter_plot_7}
 ggplot(data = metabric) +
-  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = PAM50, shape = `3_gene_classifier`), size = 0.9)
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = PAM50, shape = `3-gene_classifier`), size = 0.9)
 ```
 
 Transparency can be useful when we have a large number of points as we can more
@@ -167,7 +175,7 @@ a variable and sits outside the `aes()`.
 
 ```{r scatter_plot_8}
 ggplot(data = metabric) +
-  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = `3_gene_classifier`), size = 0.75, alpha = 0.5)
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`), size = 0.75, alpha = 0.5)
 ```
 
 Colours are more commonly used than shapes, sizes or transparency.
@@ -247,7 +255,7 @@ more than two categories.
 
 ```{r bar_plot_5}
 ggplot(data = metabric) +
-  geom_bar(mapping = aes(x = Integrative_cluster, fill = `3_gene_classifier`))
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = `3-gene_classifier`))
 ```
 
 What if want all the bars to be the same colour but not dark grey, e.g. blue?
@@ -270,6 +278,37 @@ ggplot(data = metabric) +
 Setting this inside the `aes()` mapping told ggplot2 to map the colour aesthetic
 to some variable in the data frame, one that doesn't really exist but which is
 created on-the-fly with a value of "blue" for every observation (patient).
+
+## Statistical transformations (ADVANCED)
+
+You may have noticed that ggplot2 didn't just plot values from our data set but
+had to do some calculation first for the bar chart, i.e. it had to sum the
+number of observations in each category.
+
+Each geom has a **statistical transformation**. In the case of the scatter plot,
+`geom_point` uses the "identity" transformation which means just use the values
+as they are, i.e. not really a transformation at all. The statistical
+transformation for `geom_bar` is "count", which means it will count the number
+of observations for each category in the variable mapped to the x aesthetic.
+
+You can see which statistical transformation is being used by a geom by looking
+at the `stat` argument in the help page for that geom.
+
+There are some circumstances where you'd want to change the `stat`, for example
+if we already had count values in our table.
+
+```{r}
+counts <- tibble(
+  `3-gene_classifier` = c("ER-/HER2-", "ER+/HER2- High Prolif", "ER+/HER2- Low Prolif", "HER2+"),
+  count = c(290, 603, 619, 188)
+)
+counts
+```
+
+```{r bar_plot_8}
+ggplot(data = counts) +
+  geom_bar(mapping = aes(x = `3-gene_classifier`, y = count), stat = "identity")
+```
 
 # Multiple layers
 
@@ -406,4 +445,224 @@ differs between progesterone receptor (PR) positive and negative tumours.
 ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3, colour = HER2_status)) +
   geom_boxplot()
 ```
+
+# Time series data
+
+The next type of plot we're going to look at is a **line plot**. Line plots are
+a common visualization for time series data but we don't have data of this kind
+in the METABRIC data set so we'll turn our attention to a more topical data set,
+the reduction in different types of transport use over time in the UK in the
+week leading up to and since the lockdown restrictions were introduced in
+response to the coronavirus (COVID-19) pandemic.
+
+These are data that the UK Government presents in its daily press conference and
+published on its
+[website](https://www.gov.uk/government/publications/slides-and-datasets-to-accompany-coronavirus-press-conference-24-april-2020).
+
+```{r message = FALSE, warning = FALSE}
+library(readxl)
+transport_use <- read_excel("data/2020-04-24_COVID-19_Press_Conference_Data__1_.xlsx",
+                            sheet = "Transport use",
+                            col_names = c("date", "transport_type", "percentage"),
+                            col_types = c("date", "text", "numeric"),
+                            skip = 4,
+                            n_max = 186)
+transport_use$percentage <- transport_use$percentage * 100
+transport_use
+```
+
+In this data set each row represents an observation of the current traffic
+volume for various modes of transport (motor vehicle, bus, train, etc.) since
+16 March as a percentage of the volume measured during the first week of
+February.
+
+So let's get a feel for this data set. Firstly, what modes of transport are
+included and how many observations do we have for each?
+
+```{r}
+table(transport_use$transport_type)
+```
+
+We'll focus solely on rail use to start with.
+
+```{r}
+rail_use <- transport_use[transport_use$transport_type == "National rail", ]
+rail_use
+```
+
+## Dates
+
+There is something unfamiliar about the `date` column that needs some
+explanation. Let's check the type and class of `date`.
+
+```{r}
+typeof(rail_use$date)
+class(rail_use$date)
+```
+
+So the `date` column is stored as a double and is a suitable continuous variable
+for a line plot but it's also got some special properties, afforded to by its
+`POSIXct` class, that allows it to be treated as a date.
+
+The `POSIXct` class is how R represents dates where POSIX is a standardization
+scheme in the world of computers spanning multiple operating systems and
+programming languages and the `ct` part stands for calendar time. We won't go
+into the details here but note that the numeric representation of a date, i.e.
+the `double` value, is the number of seconds since 1 January 1970. For example,
+the date in our first row is:
+
+```{r}
+rail_use$date[1]
+as.double(rail_use$date[1])
+```
+
+## Line plot
+
+We're going to plot the volume of traffic on each date with each measurement
+represented as a point on our graph and observations on successive dates
+connected by a line. Looking at the geoms available in ggplot2 (see the list of
+functions available for ggplot2 by navigating to the ggplot2 package in the
+Packages tab in RStudio), it looks like **`geom_line`** is the one we need.
+
+The aesthetics section in the help page for `geom_line` tells us we need an x
+and y mapping. Our x aesthetic will be `date` and the y aesthetic will be
+`percentage`.
+
+```{r line_plot_1}
+ggplot(data = rail_use) +
+  geom_line(mapping = aes(x = date, y = percentage))
+```
+
+We can use another aesthetic, e.g. colour,  to plot a line for each of several
+modes of transport.
+
+```{r line_plot_2}
+ggplot(data = transport_use) +
+  geom_line(mapping = aes(x = date, y = percentage, colour = transport_type))
+```
+
+Another aesthetic available for `geom_line` is `linetype`.
+
+```{r line_plot_3}
+ggplot(data = transport_use) +
+  geom_line(mapping = aes(x = date, y = percentage, linetype = transport_type))
+```
+
+# Histograms
+
+```{r histogram_plot_1}
+ggplot(data = metabric) +
+  geom_histogram(mapping = aes(x = Age_at_diagnosis))
+```
+
+The warning message hints at picking a more optimal number of bins.
+
+```{r histogram_plot_2}
+ggplot(data = metabric) +
+  geom_histogram(mapping = aes(x = Age_at_diagnosis), binwidth = 5)
+```
+
+Or can set the number of bins.
+
+```{r histogram_plot_3}
+ggplot(data = metabric) +
+  geom_histogram(mapping = aes(x = Age_at_diagnosis), bins = 20)
+```
+
+These histograms are not aesthetically very pleasing - how about some better
+aesthetics?
+
+```{r histogram_plot_4}
+ggplot(data = metabric) +
+  geom_histogram(mapping = aes(x = Age_at_diagnosis), bins = 20, colour = "darkblue", fill = "grey")
+```
+
+# Categorical variables -- Factors
+
+# The ggplot object -- a peek under the hood (ADVANCED)
+
+Let's the build the plot up in stages.
+
+```{r}
+plot <- ggplot(data = metabric)
+```
+
+What is the plot object we've just created?
+
+```{r}
+typeof(plot)
+```
+
+```{r}
+length(plot)
+```
+
+The plot object is a list containing 9 elements. It's actually a special type of
+list.
+
+```{r}
+class(plot)
+```
+
+What are the 9 things in the list?
+
+```{r}
+names(plot)
+```
+
+So far we've constructed ggplots from data, layers (geoms) and aesthetic mappings.
+We'll be looking at how to customize plots later, including changing the labels,
+scales and theme.
+
+The data element is just the metabric tibble that we provided to the `ggplot()`
+function.
+
+```{r}
+plot$data
+```
+
+This `plot` list object is really only a specification for how ggplot2 should
+create the plot. ggplot2 only renders the plot when we ask it to by printing it
+out to the screen. We haven't added any layers yet so what does our plot look
+like at this point?
+
+```{r building_up_plot_1}
+plot
+```
+
+```{r}
+plot$mapping
+plot$layers
+```
+
+Lets add an aesthetic mapping.
+
+```{r building_up_plot_2}
+plot <- ggplot(data = metabric, mapping = aes(x = Nottingham_prognostic_index, y = ESR1, colour = ER_status))
+plot
+```
+
+ggplot2 has automatically added scales for x and y based on the ranges of
+values for the Nottingham prognostic index and ESR1 expression. Still nothing
+has been plotted as we haven't yet specified the type of plot (geom) to add as a
+layer.
+
+```{r}
+plot$mapping
+plot$layers
+```
+
+```{r building_up_plot_3}
+plot <- plot + geom_point()
+plot
+```
+
+```{r}
+plot$layers
+```
+
+We touched on statistical transformations earlier. The `stat` associated with a
+`geom_point` is `stat_identity` which leaves values unchanged. In the case of a
+scatter plot, we already have the x and y values -- they don't need to be
+transformed, just plotted on the x and y axes.
 

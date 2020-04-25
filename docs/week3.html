@@ -411,7 +411,8 @@ div.tocify {
 <p><a href="https://pubmed.ncbi.nlm.nih.gov/22522925">Curtis <em>et al.</em>, Nature 486:346-52, 2012</a></p>
 <p><a href="https://www.ncbi.nlm.nih.gov/pubmed/27161491">Pereira <em>et al.</em>, Nature Communications 7:11479, 2016</a></p>
 <p>Both the clinical data and the gene expression values were downloaded from <a href="https://www.cbioportal.org/study/summary?id=brca_metabric">cBioPortal</a>.</p>
-<p>These have been combined into a single table using techniques we will cover later in the course. We’ve removed observations for patient tumour samples for which expression data are not available and have replaced spaces in column names with underscores so we don’t have to constantly refer to these using backticks ( <strong>`</strong> ).</p>
+<p>These have been combined into a single table using techniques we will cover later in the course. We’ve removed observations for patient tumour samples for which expression data are not available.</p>
+<p>In addition, we have replaced spaces in column names with underscores so we don’t have to constantly refer to these using backticks ( <strong><code>`</code></strong> ). Note, however, that even after renaming up some of the column names, we have one column, ‘3-gene classifier’, that is not strictly a valid name in R as it starts with a number and contains a hyphen. Valid names for variables in R contain only letters, numbers and the dot (<strong><code>.</code></strong>) and underscore (<strong><code>_</code></strong>) characters and should not begin with a number. So when we refer to the ‘3-gene classifier’ column we’ll have to use backticks, e.g. <code>metabric$`3-gene_classifier`</code>.</p>
 <pre class="r"><code>library(tidyverse)
 metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)
 metabric</code></pre>
@@ -433,7 +434,7 @@ metabric</code></pre>
 ## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
 ## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
 ## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
-## #   `3_gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
 ## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
 ## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
 ## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
@@ -486,18 +487,18 @@ metabric</code></pre>
 <pre><code>Error: A continuous variable can not be mapped to shape</code></pre>
 <p>Here we set the shape based on the 3-gene classifier.</p>
 <pre class="r"><code>ggplot(data = metabric) +
-  geom_point(mapping = aes(x = GATA3, y = ESR1, shape = `3_gene_classifier`), size = 0.9)</code></pre>
+  geom_point(mapping = aes(x = GATA3, y = ESR1, shape = `3-gene_classifier`), size = 0.9)</code></pre>
 <pre><code>## Warning: Removed 204 rows containing missing values (geom_point).</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_6-1.png" width="672" /></p>
 <p>Note that some of the patient samples have not been classified and ggplot has removed those points with missing values for the 3-gene classifier.</p>
 <p>It is usually preferable to use colours to distinguish between different categories but sometimes these are used together where we want to show which group a data point belongs to in two different categorical variables.</p>
 <pre class="r"><code>ggplot(data = metabric) +
-  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = PAM50, shape = `3_gene_classifier`), size = 0.9)</code></pre>
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = PAM50, shape = `3-gene_classifier`), size = 0.9)</code></pre>
 <pre><code>## Warning: Removed 204 rows containing missing values (geom_point).</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_7-1.png" width="672" /></p>
 <p>Transparency can be useful when we have a large number of points as we can more easily tell when points are overlaid, but like size, it is not usually mapped to a variable and sits outside the <code>aes()</code>.</p>
 <pre class="r"><code>ggplot(data = metabric) +
-  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = `3_gene_classifier`), size = 0.75, alpha = 0.5)</code></pre>
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`), size = 0.75, alpha = 0.5)</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_8-1.png" width="672" /></p>
 <p>Colours are more commonly used than shapes, sizes or transparency.</p>
 <p>Virtually every aspect of the plots we’ve created can be customized. We will learn how to change the colours used as well as other display parameters later in the course.</p>
@@ -545,7 +546,7 @@ Layers can be added by adding geoms such as <code>geom_point()</code> using the 
 <p>Note the similarity in what we did here to what we did with the scatter plot - there is a common grammar.</p>
 <p>Let’s try another stacked bar plot, this time with a categorical variable with more than two categories.</p>
 <pre class="r"><code>ggplot(data = metabric) +
-  geom_bar(mapping = aes(x = Integrative_cluster, fill = `3_gene_classifier`))</code></pre>
+  geom_bar(mapping = aes(x = Integrative_cluster, fill = `3-gene_classifier`))</code></pre>
 <p><img src="week3_files/figure-html/bar_plot_5-1.png" width="672" /></p>
 <p>What if want all the bars to be the same colour but not dark grey, e.g. blue?</p>
 <pre class="r"><code>ggplot(data = metabric) +
@@ -557,6 +558,28 @@ Layers can be added by adding geoms such as <code>geom_point()</code> using the 
   geom_bar(mapping = aes(x = Integrative_cluster), fill = &quot;blue&quot;)</code></pre>
 <p><img src="week3_files/figure-html/bar_plot_7-1.png" width="672" /></p>
 <p>Setting this inside the <code>aes()</code> mapping told ggplot2 to map the colour aesthetic to some variable in the data frame, one that doesn’t really exist but which is created on-the-fly with a value of “blue” for every observation (patient).</p>
+<div id="statistical-transformations-advanced" class="section level2">
+<h2>Statistical transformations (ADVANCED)</h2>
+<p>You may have noticed that ggplot2 didn’t just plot values from our data set but had to do some calculation first for the bar chart, i.e. it had to sum the number of observations in each category.</p>
+<p>Each geom has a <strong>statistical transformation</strong>. In the case of the scatter plot, <code>geom_point</code> uses the “identity” transformation which means just use the values as they are, i.e. not really a transformation at all. The statistical transformation for <code>geom_bar</code> is “count”, which means it will count the number of observations for each category in the variable mapped to the x aesthetic.</p>
+<p>You can see which statistical transformation is being used by a geom by looking at the <code>stat</code> argument in the help page for that geom.</p>
+<p>There are some circumstances where you’d want to change the <code>stat</code>, for example if we already had count values in our table.</p>
+<pre class="r"><code>counts &lt;- tibble(
+  `3-gene_classifier` = c(&quot;ER-/HER2-&quot;, &quot;ER+/HER2- High Prolif&quot;, &quot;ER+/HER2- Low Prolif&quot;, &quot;HER2+&quot;),
+  count = c(290, 603, 619, 188)
+)
+counts</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   `3-gene_classifier`   count
+##   &lt;chr&gt;                 &lt;dbl&gt;
+## 1 ER-/HER2-               290
+## 2 ER+/HER2- High Prolif   603
+## 3 ER+/HER2- Low Prolif    619
+## 4 HER2+                   188</code></pre>
+<pre class="r"><code>ggplot(data = counts) +
+  geom_bar(mapping = aes(x = `3-gene_classifier`, y = count), stat = &quot;identity&quot;)</code></pre>
+<p><img src="week3_files/figure-html/bar_plot_8-1.png" width="672" /></p>
+</div>
 </div>
 <div id="multiple-layers" class="section level1">
 <h1>Multiple layers</h1>
@@ -635,6 +658,182 @@ Layers can be added by adding geoms such as <code>geom_point()</code> using the 
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3, colour = HER2_status)) +
   geom_boxplot()</code></pre>
 <p><img src="week3_files/figure-html/box_plot_5-1.png" width="672" /></p>
+</div>
+<div id="time-series-data" class="section level1">
+<h1>Time series data</h1>
+<p>The next type of plot we’re going to look at is a <strong>line plot</strong>. Line plots are a common visualization for time series data but we don’t have data of this kind in the METABRIC data set so we’ll turn our attention to a more topical data set, the reduction in different types of transport use over time in the UK in the week leading up to and since the lockdown restrictions were introduced in response to the coronavirus (COVID-19) pandemic.</p>
+<p>These are data that the UK Government presents in its daily press conference and published on its <a href="https://www.gov.uk/government/publications/slides-and-datasets-to-accompany-coronavirus-press-conference-24-april-2020">website</a>.</p>
+<pre class="r"><code>library(readxl)
+transport_use &lt;- read_excel(&quot;data/2020-04-24_COVID-19_Press_Conference_Data__1_.xlsx&quot;,
+                            sheet = &quot;Transport use&quot;,
+                            col_names = c(&quot;date&quot;, &quot;transport_type&quot;, &quot;percentage&quot;),
+                            col_types = c(&quot;date&quot;, &quot;text&quot;, &quot;numeric&quot;),
+                            skip = 4,
+                            n_max = 186)
+transport_use$percentage &lt;- transport_use$percentage * 100
+transport_use</code></pre>
+<pre><code>## # A tibble: 186 x 3
+##    date                transport_type     percentage
+##    &lt;dttm&gt;              &lt;chr&gt;                   &lt;dbl&gt;
+##  1 2020-03-16 00:00:00 All motor vehicles         98
+##  2 2020-03-17 00:00:00 All motor vehicles         89
+##  3 2020-03-18 00:00:00 All motor vehicles         83
+##  4 2020-03-19 00:00:00 All motor vehicles         82
+##  5 2020-03-20 00:00:00 All motor vehicles         81
+##  6 2020-03-21 00:00:00 All motor vehicles         73
+##  7 2020-03-22 00:00:00 All motor vehicles         69
+##  8 2020-03-23 00:00:00 All motor vehicles         69
+##  9 2020-03-24 00:00:00 All motor vehicles         49
+## 10 2020-03-25 00:00:00 All motor vehicles         42
+## # … with 176 more rows</code></pre>
+<p>In this data set each row represents an observation of the current traffic volume for various modes of transport (motor vehicle, bus, train, etc.) since 16 March as a percentage of the volume measured during the first week of February.</p>
+<p>So let’s get a feel for this data set. Firstly, what modes of transport are included and how many observations do we have for each?</p>
+<pre class="r"><code>table(transport_use$transport_type)</code></pre>
+<pre><code>## 
+## All motor vehicles Bus (excl. London)      National rail 
+##                 38                 38                 38 
+##          TfL - Bus         TfL - Tube 
+##                 34                 38</code></pre>
+<p>We’ll focus solely on rail use to start with.</p>
+<pre class="r"><code>rail_use &lt;- transport_use[transport_use$transport_type == &quot;National rail&quot;, ]
+rail_use</code></pre>
+<pre><code>## # A tibble: 38 x 3
+##    date                transport_type percentage
+##    &lt;dttm&gt;              &lt;chr&gt;               &lt;dbl&gt;
+##  1 2020-03-16 00:00:00 National rail        77  
+##  2 2020-03-17 00:00:00 National rail        69  
+##  3 2020-03-18 00:00:00 National rail        59  
+##  4 2020-03-19 00:00:00 National rail        52  
+##  5 2020-03-20 00:00:00 National rail        44  
+##  6 2020-03-21 00:00:00 National rail        38  
+##  7 2020-03-22 00:00:00 National rail        35  
+##  8 2020-03-23 00:00:00 National rail        29.0
+##  9 2020-03-24 00:00:00 National rail        24  
+## 10 2020-03-25 00:00:00 National rail        18  
+## # … with 28 more rows</code></pre>
+<div id="dates" class="section level2">
+<h2>Dates</h2>
+<p>There is something unfamiliar about the <code>date</code> column that needs some explanation. Let’s check the type and class of <code>date</code>.</p>
+<pre class="r"><code>typeof(rail_use$date)</code></pre>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<pre class="r"><code>class(rail_use$date)</code></pre>
+<pre><code>## [1] &quot;POSIXct&quot; &quot;POSIXt&quot;</code></pre>
+<p>So the <code>date</code> column is stored as a double and is a suitable continuous variable for a line plot but it’s also got some special properties, afforded to by its <code>POSIXct</code> class, that allows it to be treated as a date.</p>
+<p>The <code>POSIXct</code> class is how R represents dates where POSIX is a standardization scheme in the world of computers spanning multiple operating systems and programming languages and the <code>ct</code> part stands for calendar time. We won’t go into the details here but note that the numeric representation of a date, i.e. the <code>double</code> value, is the number of seconds since 1 January 1970. For example, the date in our first row is:</p>
+<pre class="r"><code>rail_use$date[1]</code></pre>
+<pre><code>## [1] &quot;2020-03-16 UTC&quot;</code></pre>
+<pre class="r"><code>as.double(rail_use$date[1])</code></pre>
+<pre><code>## [1] 1584316800</code></pre>
+</div>
+<div id="line-plot" class="section level2">
+<h2>Line plot</h2>
+<p>We’re going to plot the volume of traffic on each date with each measurement represented as a point on our graph and observations on successive dates connected by a line. Looking at the geoms available in ggplot2 (see the list of functions available for ggplot2 by navigating to the ggplot2 package in the Packages tab in RStudio), it looks like <strong><code>geom_line</code></strong> is the one we need.</p>
+<p>The aesthetics section in the help page for <code>geom_line</code> tells us we need an x and y mapping. Our x aesthetic will be <code>date</code> and the y aesthetic will be <code>percentage</code>.</p>
+<pre class="r"><code>ggplot(data = rail_use) +
+  geom_line(mapping = aes(x = date, y = percentage))</code></pre>
+<p><img src="week3_files/figure-html/line_plot_1-1.png" width="672" /></p>
+<p>We can use another aesthetic, e.g. colour, to plot a line for each of several modes of transport.</p>
+<pre class="r"><code>ggplot(data = transport_use) +
+  geom_line(mapping = aes(x = date, y = percentage, colour = transport_type))</code></pre>
+<p><img src="week3_files/figure-html/line_plot_2-1.png" width="672" /></p>
+<p>Another aesthetic available for <code>geom_line</code> is <code>linetype</code>.</p>
+<pre class="r"><code>ggplot(data = transport_use) +
+  geom_line(mapping = aes(x = date, y = percentage, linetype = transport_type))</code></pre>
+<p><img src="week3_files/figure-html/line_plot_3-1.png" width="672" /></p>
+</div>
+</div>
+<div id="histograms" class="section level1">
+<h1>Histograms</h1>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_histogram(mapping = aes(x = Age_at_diagnosis))</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="week3_files/figure-html/histogram_plot_1-1.png" width="672" /></p>
+<p>The warning message hints at picking a more optimal number of bins.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_histogram(mapping = aes(x = Age_at_diagnosis), binwidth = 5)</code></pre>
+<p><img src="week3_files/figure-html/histogram_plot_2-1.png" width="672" /></p>
+<p>Or can set the number of bins.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_histogram(mapping = aes(x = Age_at_diagnosis), bins = 20)</code></pre>
+<p><img src="week3_files/figure-html/histogram_plot_3-1.png" width="672" /></p>
+<p>These histograms are not aesthetically very pleasing - how about some better aesthetics?</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_histogram(mapping = aes(x = Age_at_diagnosis), bins = 20, colour = &quot;darkblue&quot;, fill = &quot;grey&quot;)</code></pre>
+<p><img src="week3_files/figure-html/histogram_plot_4-1.png" width="672" /></p>
+</div>
+<div id="categorical-variables-factors" class="section level1">
+<h1>Categorical variables – Factors</h1>
+</div>
+<div id="the-ggplot-object-a-peek-under-the-hood-advanced" class="section level1">
+<h1>The ggplot object – a peek under the hood (ADVANCED)</h1>
+<p>Let’s the build the plot up in stages.</p>
+<pre class="r"><code>plot &lt;- ggplot(data = metabric)</code></pre>
+<p>What is the plot object we’ve just created?</p>
+<pre class="r"><code>typeof(plot)</code></pre>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<pre class="r"><code>length(plot)</code></pre>
+<pre><code>## [1] 9</code></pre>
+<p>The plot object is a list containing 9 elements. It’s actually a special type of list.</p>
+<pre class="r"><code>class(plot)</code></pre>
+<pre><code>## [1] &quot;gg&quot;     &quot;ggplot&quot;</code></pre>
+<p>What are the 9 things in the list?</p>
+<pre class="r"><code>names(plot)</code></pre>
+<pre><code>## [1] &quot;data&quot;        &quot;layers&quot;      &quot;scales&quot;      &quot;mapping&quot;     &quot;theme&quot;      
+## [6] &quot;coordinates&quot; &quot;facet&quot;       &quot;plot_env&quot;    &quot;labels&quot;</code></pre>
+<p>So far we’ve constructed ggplots from data, layers (geoms) and aesthetic mappings. We’ll be looking at how to customize plots later, including changing the labels, scales and theme.</p>
+<p>The data element is just the metabric tibble that we provided to the <code>ggplot()</code> function.</p>
+<pre class="r"><code>plot$data</code></pre>
+<pre><code>## # A tibble: 1,904 x 30
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0000         1             75.6         140.  LIVING         
+##  2 MB-0002         1             43.2          84.6 LIVING         
+##  3 MB-0005         1             48.9         164.  DECEASED       
+##  4 MB-0006         1             47.7         165.  LIVING         
+##  5 MB-0008         1             77.0          41.4 DECEASED       
+##  6 MB-0010         1             78.8           7.8 DECEASED       
+##  7 MB-0014         1             56.4         164.  LIVING         
+##  8 MB-0022         1             89.1          99.5 DECEASED       
+##  9 MB-0028         1             86.4          36.6 DECEASED       
+## 10 MB-0035         1             84.2          36.3 DECEASED       
+## # … with 1,894 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
+<p>This <code>plot</code> list object is really only a specification for how ggplot2 should create the plot. ggplot2 only renders the plot when we ask it to by printing it out to the screen. We haven’t added any layers yet so what does our plot look like at this point?</p>
+<pre class="r"><code>plot</code></pre>
+<p><img src="week3_files/figure-html/building_up_plot_1-1.png" width="672" /></p>
+<pre class="r"><code>plot$mapping</code></pre>
+<pre><code>## Aesthetic mapping: 
+## &lt;empty&gt;</code></pre>
+<pre class="r"><code>plot$layers</code></pre>
+<pre><code>## list()</code></pre>
+<p>Lets add an aesthetic mapping.</p>
+<pre class="r"><code>plot &lt;- ggplot(data = metabric, mapping = aes(x = Nottingham_prognostic_index, y = ESR1, colour = ER_status))
+plot</code></pre>
+<p><img src="week3_files/figure-html/building_up_plot_2-1.png" width="672" /></p>
+<p>ggplot2 has automatically added scales for x and y based on the ranges of values for the Nottingham prognostic index and ESR1 expression. Still nothing has been plotted as we haven’t yet specified the type of plot (geom) to add as a layer.</p>
+<pre class="r"><code>plot$mapping</code></pre>
+<pre><code>## Aesthetic mapping: 
+## * `x`      -&gt; `Nottingham_prognostic_index`
+## * `y`      -&gt; `ESR1`
+## * `colour` -&gt; `ER_status`</code></pre>
+<pre class="r"><code>plot$layers</code></pre>
+<pre><code>## list()</code></pre>
+<pre class="r"><code>plot &lt;- plot + geom_point()
+plot</code></pre>
+<p><img src="week3_files/figure-html/building_up_plot_3-1.png" width="672" /></p>
+<pre class="r"><code>plot$layers</code></pre>
+<pre><code>## [[1]]
+## geom_point: na.rm = FALSE
+## stat_identity: na.rm = FALSE
+## position_identity</code></pre>
+<p>We touched on statistical transformations earlier. The <code>stat</code> associated with a <code>geom_point</code> is <code>stat_identity</code> which leaves values unchanged. In the case of a scatter plot, we already have the x and y values – they don’t need to be transformed, just plotted on the x and y axes.</p>
 </div>
 
 
