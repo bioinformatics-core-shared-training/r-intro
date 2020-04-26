@@ -1,0 +1,185 @@
+---
+title: "Assignment 3"
+---
+
+The week's assignment will test your ability to create various different types
+of plot. It includes some extension exercises which you can consider optional.
+
+```{r message = FALSE, warning = FALSE}
+library(tidyverse)
+metabric <- read_csv("metabric_clinical_and_expression_data.csv")
+```
+
+---
+
+**1. Create a bar plot showing the number of patients with tumours at each of the different neoplasm histologic grades**
+
+```{r}
+
+```
+
+Turn this into a stacked bar plot showing the proportions of patients with each
+histologic grade that had chemotherapy
+
+```{r}
+
+```
+
+**Extension**
+
+ggplot gives a warning about non-finite values, i.e. the missing values. Find
+out how to get rid of this warning.
+
+```{r}
+
+```
+
+Let's say we are interested in displaying the missing values as a separate
+category and recreate the bar plot with an additional column.
+
+```{r}
+
+```
+
+---
+
+**2. Create a density plot of the estrogen receptor (ESR1) expression level**
+
+```{r}
+
+```
+
+_Hint: this is a new plot type -- look up the geom you need by looking at the
+list of functions for the ggplot2 package in the Packages tab in RStudio._
+
+Create separate but overlaying density plots for ESR1 expression for HER2
+positive and negative patients. Try to ensure that both density plots are
+visible.
+
+```{r}
+
+```
+
+---
+
+**3. Create box plots for the survival time of patients with different tumour stages only including deceased patients**
+
+```{r}
+
+```
+
+_Hint: if you get a warning message and only have a single box displayed
+consider the type of the tumour stage variable as read into R and what kind of
+variable is expected for the x aesthetic._
+
+Convert this into a violin plot and display ER negative and ER positive patients
+separately.
+
+```{r}
+
+```
+
+_Hint: look at the help for geom_boxplot._
+
+---
+
+**4. Explore the correlation between FOXA1 and one other gene**
+
+A recently-published paper looks at associations of expression and genomic data
+in the METABRIC data set. It found a strong correlation between FOXA1 and one of
+the other genes included in our table. Can you find which one?
+
+```{r}
+
+```
+
+_Hint: the `stats` package contains a correlation test._
+
+Create a scatter plot of the expression of FOXA1 and this gene with a line of
+best fit.
+
+```{r}
+
+```
+
+Change the method used to draw the line of best fit to be a straight line.
+
+```{r}
+
+```
+
+**Extension**
+
+Fit a linear model to these data (again you'll need to look up the appropriate
+function in R).
+
+```{r}
+
+```
+
+Pass the resulting object to the `summary()` function for information about the
+fit and capture the result in another object called summary. Print this out.
+
+```{r}
+
+```
+
+Extract the R-squared value from the summary and assign this to another
+variable and print it out.
+
+```{r}
+
+```
+
+_Hint: what type of object is the summary?_
+
+---
+
+**5. Explore the Apple Mobility data on transport use during the coronavirus lockdown using line plots**
+
+On the weekend the Government included in their daily press conference a new set
+of data of transport use as measured by direction requests on Apple Maps.
+
+Search for and download the UK Government data for the Sunday briefing (26 April
+2020).
+
+_Hint: use the search terms "uk government coronavirus press conference data"._
+
+Load the 'Apple Mobility' sheet into a tibble in R. You will need to specify the
+worksheet and a few other arguments as the data are not in the most convenient
+format (see how the transport use worksheet was read into R in the course
+materials).
+
+```{r}
+
+```
+
+Plot the 7-day rolling average against date as a line graph with separate lines
+for each mode of transport.
+
+```{r}
+
+```
+
+What is the main (and obvious) conclusion to draw from this plot?
+
+Now plot the daily percentage instead of the 7-day rolling average.
+
+```{r}
+
+```
+
+What do you notice about daily fluctuations?
+
+**Extension**
+
+Create a new column for the weekday (taking values Sunday, Monday, Tuesday,
+etc.) in the Apple Mobility table and plot just the daily percentage for walking
+but now as separate lines for each day of the week.
+
+```{r}
+
+```
+
+_Hint: use a function from the lubridate package, another of the tidyverse
+packages (install if necessary)._
