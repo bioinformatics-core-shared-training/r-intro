@@ -461,6 +461,8 @@ The next type of plot we're going to look at is a **line plot**. Line plots are
 a common visualization for time series data but we don't have data of this kind
 in the METABRIC data set so we'll turn our attention to a more topical data set.
 
+## COVID-19 data set
+
 Every day the UK Government presents a series of plots showing data relating to
 the coronavirus (COVID-19) pandemic. Both the plots and the data are published
 on the Government's
