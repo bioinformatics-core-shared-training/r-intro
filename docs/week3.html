@@ -403,16 +403,16 @@ div.tocify {
 </blockquote>
 <div id="visualizing-data-with-ggplot2" class="section level1">
 <h1>Visualizing data with ggplot2</h1>
-<p>In this session we will focus our attention on the popular <strong>ggplot2</strong> package for visualizing tabular data by creating various kinds of plot.</p>
+<p>In this session we will focus our attention on the popular <strong>ggplot2</strong> package for visualizing tabular data and will be learning how to create various different kinds of plot.</p>
 <div id="metabric-data-set" class="section level2">
 <h2>METABRIC data set</h2>
-<p>We’ll be using an extended version of the METABRIC data set in which columns have been added for the mRNA expression values for selected genes, including estrogen receptor alpha (ESR1), progesterone receptor (PGR), GATA3 and FOXA1.</p>
-<p>The METABRIC study characterized the genomic mutations and gene expression profiles for over 2000 primary breast tumours. In addition to the gene expression obtained using microarrays, genome-wide copy number profiles were obtained using SNP microarrays and targeted sequencing was performed using a panel of 40 driver-mutation genes.</p>
+<p>We’ll be using an extended version of the METABRIC data set (from last week) in which columns have been added for the mRNA expression values for selected genes, including estrogen receptor alpha (ESR1), progesterone receptor (PGR), GATA3 and FOXA1.</p>
+<p>The METABRIC study characterized the genomic mutations and gene expression profiles for over 2000 primary breast tumours. In addition to the gene expression data generated using microarrays, genome-wide copy number profiles were obtained using SNP microarrays and targeted sequencing was performed using a panel of 40 driver-mutation genes to detect mutations (single nucleotide variants).</p>
 <p><a href="https://pubmed.ncbi.nlm.nih.gov/22522925">Curtis <em>et al.</em>, Nature 486:346-52, 2012</a></p>
 <p><a href="https://www.ncbi.nlm.nih.gov/pubmed/27161491">Pereira <em>et al.</em>, Nature Communications 7:11479, 2016</a></p>
 <p>Both the clinical data and the gene expression values were downloaded from <a href="https://www.cbioportal.org/study/summary?id=brca_metabric">cBioPortal</a>.</p>
-<p>These have been combined into a single table using techniques we will cover later in the course. We’ve removed observations for patient tumour samples for which expression data are not available.</p>
-<p>In addition, we have replaced spaces in column names with underscores so we don’t have to constantly refer to these using backticks ( <strong><code>`</code></strong> ). Note, however, that even after renaming up some of the column names, we have one column, ‘3-gene classifier’, that is not strictly a valid name in R as it starts with a number and contains a hyphen. Valid names for variables in R contain only letters, numbers and the dot (<strong><code>.</code></strong>) and underscore (<strong><code>_</code></strong>) characters and should not begin with a number. So when we refer to the ‘3-gene classifier’ column we’ll have to use backticks, e.g. <code>metabric$`3-gene_classifier`</code>.</p>
+<p>These have been combined into a single table using techniques we will cover later in the course. We’ve removed observations for patient tumour samples for which expression data are not available, so our table has fewer rows.</p>
+<p>In addition, we have replaced spaces in column names with underscores so we don’t have to constantly refer to these using backticks ( <strong><code>`</code></strong> ). Note, however, that even after renaming some of the column names, we have one column, ‘3-gene classifier’, that is not strictly a valid name in R as it starts with a number and contains a hyphen. Valid names for variables in R contain only letters, numbers and the dot (<strong><code>.</code></strong>) and underscore (<strong><code>_</code></strong>) characters and should not begin with a number. So when we refer to the ‘3-gene classifier’ column we’ll have to use backticks, e.g. <code>metabric$`3-gene_classifier`</code>.</p>
 <pre class="r"><code>library(tidyverse)
 metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)
 metabric</code></pre>
@@ -450,23 +450,23 @@ metabric</code></pre>
 <ol style="list-style-type: decimal">
 <li>The <strong>data</strong> – needs to be a data frame (or a tibble)</li>
 <li>The type of plot – this is called a <strong>geom</strong> in ggplot2 terminology</li>
-<li>The mapping of variables in the data to visual properties (called <strong>aesthetics</strong> in ggplot2) of objects in the plot</li>
+<li>The mapping of variables in the data to visual properties of objects in the plot - these are called <strong>aesthetics</strong> in ggplot2</li>
 </ol>
 <p>In this case, the type of plot is a <strong><code>geom_point</code></strong>, ggplot2’s function for a scatter plot, and the expression of the genes GATA3 and ESR1 (estrogen receptor alpha) are mapped to the <strong><code>x</code></strong> and <strong><code>y</code></strong> coordinates, i.e. the positions of points on the scatter plot.</p>
-<p>Perhaps the x and y coordinates aren’t quite what we imagine as having aesthetic qualities. Other aesthetics that you might expect to be referred to in this way include the size, shape and colour of the points.</p>
+<p>Other aesthetics include the size, shape and colour of the points. It might seem a little surprising that the x and y coordinates are treated in the same way as we wouldn’t normally think about these as having aesthetic qualities but this is indeed the case with ggplot2.</p>
 </div>
 <div id="aesthetic-mappings" class="section level1">
 <h1>Aesthetic mappings</h1>
 <p>Look up the <code>geom_point</code> help page to see the list of aesthetics that are available for this geom.</p>
 <pre class="r"><code>?geom_point</code></pre>
-<p>The help page lists all the aesthetics you can set for this particular type of scatter plot. If you scroll down to the aesthetics section you’ll see that the <strong><code>x</code></strong> and <strong><code>y</code></strong> aesthetics are in bold face which tells us that these are required, i.e. you have to supply them, otherwise you’ll get an error message from ggplot.</p>
-<p>Other aesthetics such as size, shape, colour and transparency (alpha) are optional.</p>
-<p>So what about those other aesthetics? Colours are usually fun – let’s try to use a colour aesthetic.</p>
-<p>We need to set a mapping of a variable to colour just like we did for x and y.</p>
+<p>If you scroll down to the aesthetics section in the help page for <code>geom_point</code>, you’ll see that the <strong><code>x</code></strong> and <strong><code>y</code></strong> aesthetics are in bold face which tells us that these are required, i.e. you have to supply them, otherwise you’ll get an error message from ggplot.</p>
+<p>Other aesthetics such as size, shape, colour and transparency (<code>alpha</code>) are optional.</p>
+<p>So what about those other aesthetics? Colours are usually fun – let’s try to use the <code>colour</code> aesthetic.</p>
+<p>We need to map a variable to a colour just like we did for x and y. We’ll use the ER status as an example.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = ER_status))</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_2-1.png" width="672" /></p>
-<p>What about colouring based on a continuous variable?</p>
+<p>What about colouring points based on a continuous variable?</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index))</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_3-1.png" width="672" /></p>
@@ -491,7 +491,7 @@ metabric</code></pre>
 <pre><code>## Warning: Removed 204 rows containing missing values (geom_point).</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_6-1.png" width="672" /></p>
 <p>Note that some of the patient samples have not been classified and ggplot has removed those points with missing values for the 3-gene classifier.</p>
-<p>It is usually preferable to use colours to distinguish between different categories but sometimes these are used together where we want to show which group a data point belongs to in two different categorical variables.</p>
+<p>It is usually preferable to use colours to distinguish between different categories but sometimes colour and shape are used together where we want to show which group a data point belongs to in two different categorical variables.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = PAM50, shape = `3-gene_classifier`), size = 0.9)</code></pre>
 <pre><code>## Warning: Removed 204 rows containing missing values (geom_point).</code></pre>
@@ -506,7 +506,7 @@ metabric</code></pre>
 <div id="ggplot2-grammar" class="section level1">
 <h1>ggplot2 grammar</h1>
 <p>The “gg” in ggplot2 stands for “grammar of graphics”. This grammar is a coherent system for describing and building graphs.</p>
-<p>The basic template is given in the summary box below. This template can be used to create any of the different types of graph possible with ggplot2.</p>
+<p>The basic template is given in the summary box below. This template can be used to create any of a wide range of graph types with ggplot2.</p>
 <div class="rmdblock">
 <p>
 <strong>ggplot2 grammar of graphics</strong>
@@ -524,7 +524,7 @@ Layers can be added by adding geoms such as <code>geom_point()</code> using the 
 </div>
 <div id="another-plot-type---bar-chart" class="section level1">
 <h1>Another plot type - bar chart</h1>
-<p>Look up ggplot2 package help in RStudio to see what other geoms are available (find the ggplot2 package in the Packages tab normally found in the bottom right hand corner).</p>
+<p>The range of geoms available in ggplot2 can be obtained by navigating to the ggplot2 package in the Packages tab pane in RStudio (bottom right-hand corner) and scrolling down the list of functions sorted alphabetically to the <code>geom_...</code> functions.</p>
 <p>The METABRIC study redefined how we think about breast cancer by identifying and characterizing several new subtypes, referred to as <em>integrative clusters</em>. Let’s create a bar chart of the number of patients whose cancers fall within each subtype in the METABRIC cohort.</p>
 <p><code>geom_bar</code> is the geom we need and it requires a single aesthetic mapping of the categorical variable of interest to <code>x</code>.</p>
 <pre class="r"><code>ggplot(data = metabric) +
@@ -538,7 +538,7 @@ Layers can be added by adding geoms such as <code>geom_point()</code> using the 
 <pre class="r"><code>ggplot(data = metabric) +
   geom_bar(mapping = aes(x = Integrative_cluster, fill = Integrative_cluster))</code></pre>
 <p><img src="week3_files/figure-html/bar_plot_3-1.png" width="672" /></p>
-<p>What happens if we fill with something other than the integrative cluster?</p>
+<p>What happens if we colour (fill) with something other than the integrative cluster?</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_bar(mapping = aes(x = Integrative_cluster, fill = ER_status))</code></pre>
 <p><img src="week3_files/figure-html/bar_plot_4-1.png" width="672" /></p>
@@ -557,7 +557,7 @@ Layers can be added by adding geoms such as <code>geom_point()</code> using the 
 <pre class="r"><code>ggplot(data = metabric) +
   geom_bar(mapping = aes(x = Integrative_cluster), fill = &quot;blue&quot;)</code></pre>
 <p><img src="week3_files/figure-html/bar_plot_7-1.png" width="672" /></p>
-<p>Setting this inside the <code>aes()</code> mapping told ggplot2 to map the colour aesthetic to some variable in the data frame, one that doesn’t really exist but which is created on-the-fly with a value of “blue” for every observation (patient).</p>
+<p>Setting this inside the <code>aes()</code> mapping told ggplot2 to map the colour aesthetic to some variable in the data frame, one that doesn’t really exist but which is created on-the-fly with a value of “blue” for every observation.</p>
 <div id="statistical-transformations-advanced" class="section level2">
 <h2>Statistical transformations (ADVANCED)</h2>
 <p>You may have noticed that ggplot2 didn’t just plot values from our data set but had to do some calculation first for the bar chart, i.e. it had to sum the number of observations in each category.</p>
@@ -587,7 +587,7 @@ counts</code></pre>
 <pre><code>ggplot(data = &lt;DATA&gt;) +
   &lt;GEOM_FUNCTION&gt;(mapping = aes(&lt;MAPPINGS&gt;))</code></pre>
 <p>Why do we have the ggplot part and geom part joined by a “+” symbol?</p>
-<p>The <strong>‘+’</strong> operator has been overridden by ggplot2 to add layers and other components (scales, themes, etc.) to the plot.</p>
+<p>The <strong>‘+’</strong> operator has been overridden by ggplot2 to add layers (geoms) and other components (scales, themes, etc.) to the plot.</p>
 <p>We can have multiple geoms in the same plot. Each is a different layer.</p>
 <p>Let’s create a plot with two geoms.</p>
 <pre class="r"><code>ggplot(data = metabric) +
@@ -596,9 +596,9 @@ counts</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
 <p><img src="week3_files/figure-html/scatter_line_plot_1-1.png" width="672" /></p>
 <p>What is <strong><code>geom_smooth()</code></strong> doing? Look up the help page.</p>
-<p>Note that the shaded area represents the standard error bounds on the fitted model.</p>
-<p>It is important when breaking these ggplot statments across multiple lines to ensure that the <code>+</code> is at the end of lines so that R knows you haven’t finished constructing your plot.</p>
-<p>There is some annoying duplication of code in the code above. We’ve repeated the exact same aesthetic mapping for both geoms. We can avoid this by putting the mappings in the <code>ggplot()</code> function instead.</p>
+<p>Note that the shaded area surrounding blue line represents the standard error bounds on the fitted model.</p>
+<p>It is important when breaking these ggplot statements across multiple lines to ensure that the <code>+</code> is at the end of the line so that R knows you haven’t finished constructing your plot.</p>
+<p>There is some annoying duplication of code used to create this plot. We’ve repeated the exact same aesthetic mapping for both geoms. We can avoid this by putting the mappings in the <code>ggplot()</code> function instead.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
   geom_point() +
   geom_smooth()</code></pre>
@@ -618,13 +618,13 @@ counts</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
 <p><img src="week3_files/figure-html/scatter_line_plot_4-1.png" width="672" /></p>
 <p>Well, that wasn’t expected, although it’s pretty neat. We only wanted to apply the colour aesthetic to the points.</p>
-<p>We can add to the aesthetics in the geom function to apply them just to that geom.</p>
+<p>We can add the colour aesthetic to the <code>geom_point()</code> function instead of as a global mapping in the <code>ggplot()</code> function.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
   geom_point(mapping = aes(colour = ER_status), size = 0.5, alpha = 0.5) +
   geom_smooth()</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
 <p><img src="week3_files/figure-html/scatter_line_plot_5-1.png" width="672" /></p>
-<p>Or if you have got your scatter plot just right, and you’d rather not interfere with it while trying out adding another layer, you can use set the <code>inherit.aes</code> option to <code>FALSE</code>.</p>
+<p>Or suppose you’ve spent a bit of time getting your scatter plot just right and decide to add another layer but you’re a bit worried about interfering with the the code you so lovingly crafted, you can set the <code>inherit.aes</code> option to <code>FALSE</code> and set the aesthetic mappings explicitly for your new layer.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.5, alpha = 0.5) +
   geom_smooth(mapping = aes(x = GATA3, y = ESR1), inherit.aes = FALSE)</code></pre>
@@ -637,23 +637,23 @@ counts</code></pre>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
   geom_boxplot()</code></pre>
 <p><img src="week3_files/figure-html/box_plot_1-1.png" width="672" /></p>
-<p>See <code>geom_boxplot</code> help to explain how the box and whiskers are constructed.</p>
+<p>See <code>geom_boxplot</code> help to explain how the box and whiskers are constructed and how it decides which points are outliers and should be displayed as points.</p>
 <p>How about adding another layer to display all the points?</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
   geom_boxplot() +
   geom_point()</code></pre>
 <p><img src="week3_files/figure-html/box_plot_2-1.png" width="672" /></p>
-<p>The <code>geom_point</code> help points to <code>geom_jitter</code> as more suitable when one of the variables is categorical.</p>
+<p>Ideally, we’d like these points to be spread out a bit. The <code>geom_point</code> help points to <code>geom_jitter</code> as more suitable when one of the variables is categorical.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
   geom_boxplot() +
   geom_jitter()</code></pre>
 <p><img src="week3_files/figure-html/box_plot_3-1.png" width="672" /></p>
-<p>Well, that’s a bit of a mess. We need to reduce the spread or jitter and the size and make the points transparent.</p>
+<p>Well, that’s a bit of a mess. We need to reduce the spread or jitter and make the points smaller and transparent.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3)) +
   geom_boxplot() +
   geom_jitter(width = 0.3, size = 0.5, alpha = 0.25)</code></pre>
 <p><img src="week3_files/figure-html/box_plot_4-1.png" width="672" /></p>
-<p>Displaying points in this way makes much more sense when we only have a few observations and where the box plot doesn’t really portray that. Here it makes less sense as we have very many observations.</p>
+<p>Displaying points in this way makes much more sense when we only have a few observations and where the box plot masks the fact, perhaps giving the false impression that the sample size is larger than it actually is. Here it makes less sense as we have very many observations.</p>
 <p>Let’s try a colour aesthetic to also look at how estrogen receptor expression differs between HER2 positive and negative tumours.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = ER_status, y = GATA3, colour = HER2_status)) +
   geom_boxplot()</code></pre>
@@ -661,10 +661,12 @@ counts</code></pre>
 </div>
 <div id="time-series-data" class="section level1">
 <h1>Time series data</h1>
-<p>The next type of plot we’re going to look at is a <strong>line plot</strong>. Line plots are a common visualization for time series data but we don’t have data of this kind in the METABRIC data set so we’ll turn our attention to a more topical data set, the reduction in different types of transport use over time in the UK in the week leading up to and since the lockdown restrictions were introduced in response to the coronavirus (COVID-19) pandemic.</p>
-<p>These are data that the UK Government presents in its daily press conference and published on its <a href="https://www.gov.uk/government/publications/slides-and-datasets-to-accompany-coronavirus-press-conference-24-april-2020">website</a>.</p>
+<p>The next type of plot we’re going to look at is a <strong>line plot</strong>. Line plots are a common visualization for time series data but we don’t have data of this kind in the METABRIC data set so we’ll turn our attention to a more topical data set.</p>
+<p>Every day the UK Government presents a series of plots showing data relating to the coronavirus (COVID-19) pandemic. Both the plots and the data are published on the Government’s <a href="https://www.gov.uk/government/collections/slides-and-datasets-to-accompany-coronavirus-press-conferences">website</a>.</p>
+<p>One of the plots shows the reduction in different types oftransport use over time in the UK in the week leading up to and since the lockdown restrictions were introduced in response to the pandemic.</p>
+<p>Reading these data into R from the downloaded Excel spreadsheet requires a bit more care as the spreadsheet contains multiple sheets and each table has header lines and footnotes. The date column doesn’t have a column heading, so in the code below we’ve skipped that row as well and told <code>read_excel()</code> what column names to use. We’ve also given it a heads-up about which type of data are in each column. Look up the help page for <code>read_excel()</code> for more details about the arguments we’ve used below.</p>
 <pre class="r"><code>library(readxl)
-transport_use &lt;- read_excel(&quot;data/2020-04-24_COVID-19_Press_Conference_Data__1_.xlsx&quot;,
+transport_use &lt;- read_excel(&quot;data/2020-04-25_COVID-19_Press_Conference_Data__4_.xlsx&quot;,
                             sheet = &quot;Transport use&quot;,
                             col_names = c(&quot;date&quot;, &quot;transport_type&quot;, &quot;percentage&quot;),
                             col_types = c(&quot;date&quot;, &quot;text&quot;, &quot;numeric&quot;),
@@ -691,13 +693,13 @@ transport_use</code></pre>
 <pre class="r"><code>table(transport_use$transport_type)</code></pre>
 <pre><code>## 
 ## All motor vehicles Bus (excl. London)      National rail 
-##                 38                 38                 38 
+##                 39                 39                 39 
 ##          TfL - Bus         TfL - Tube 
-##                 34                 38</code></pre>
+##                 34                 35</code></pre>
 <p>We’ll focus solely on rail use to start with.</p>
 <pre class="r"><code>rail_use &lt;- transport_use[transport_use$transport_type == &quot;National rail&quot;, ]
 rail_use</code></pre>
-<pre><code>## # A tibble: 38 x 3
+<pre><code>## # A tibble: 39 x 3
 ##    date                transport_type percentage
 ##    &lt;dttm&gt;              &lt;chr&gt;               &lt;dbl&gt;
 ##  1 2020-03-16 00:00:00 National rail        77  
@@ -710,7 +712,7 @@ rail_use</code></pre>
 ##  8 2020-03-23 00:00:00 National rail        29.0
 ##  9 2020-03-24 00:00:00 National rail        24  
 ## 10 2020-03-25 00:00:00 National rail        18  
-## # … with 28 more rows</code></pre>
+## # … with 29 more rows</code></pre>
 <div id="dates" class="section level2">
 <h2>Dates</h2>
 <p>There is something unfamiliar about the <code>date</code> column that needs some explanation. Let’s check the type and class of <code>date</code>.</p>
@@ -718,8 +720,8 @@ rail_use</code></pre>
 <pre><code>## [1] &quot;double&quot;</code></pre>
 <pre class="r"><code>class(rail_use$date)</code></pre>
 <pre><code>## [1] &quot;POSIXct&quot; &quot;POSIXt&quot;</code></pre>
-<p>So the <code>date</code> column is stored as a double and is a suitable continuous variable for a line plot but it’s also got some special properties, afforded to by its <code>POSIXct</code> class, that allows it to be treated as a date.</p>
-<p>The <code>POSIXct</code> class is how R represents dates where POSIX is a standardization scheme in the world of computers spanning multiple operating systems and programming languages and the <code>ct</code> part stands for calendar time. We won’t go into the details here but note that the numeric representation of a date, i.e. the <code>double</code> value, is the number of seconds since 1 January 1970. For example, the date in our first row is:</p>
+<p>So the <code>date</code> column is stored as a double and is a suitable continuous variable for a line plot but it’s also got some special properties, afforded to it by its <code>POSIXct</code> class, that allows it to be treated as a date.</p>
+<p>The <code>POSIXct</code> class is how R represents dates, where POSIX is a standardization scheme in the world of computers, spanning multiple operating systems and programming languages, and the <code>ct</code> part stands for calendar time. We won’t go into the details here but note that the numeric representation of a date, i.e. the <code>double</code> value, is the number of seconds since 1 January 1970. For example, the date in our first row is:</p>
 <pre class="r"><code>rail_use$date[1]</code></pre>
 <pre><code>## [1] &quot;2020-03-16 UTC&quot;</code></pre>
 <pre class="r"><code>as.double(rail_use$date[1])</code></pre>
@@ -732,7 +734,7 @@ rail_use</code></pre>
 <pre class="r"><code>ggplot(data = rail_use) +
   geom_line(mapping = aes(x = date, y = percentage))</code></pre>
 <p><img src="week3_files/figure-html/line_plot_1-1.png" width="672" /></p>
-<p>We can use another aesthetic, e.g. colour, to plot a line for each of several modes of transport.</p>
+<p>We can return to our original <code>transport_use</code> table containing data for all transport modes and use another aesthetic, e.g. colour, to plot a line for each.</p>
 <pre class="r"><code>ggplot(data = transport_use) +
   geom_line(mapping = aes(x = date, y = percentage, colour = transport_type))</code></pre>
 <p><img src="week3_files/figure-html/line_plot_2-1.png" width="672" /></p>
@@ -744,19 +746,20 @@ rail_use</code></pre>
 </div>
 <div id="histograms" class="section level1">
 <h1>Histograms</h1>
+<p>The geom for creating histograms is, rather unsurprisingly, <code>geom_histogram()</code>.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_histogram(mapping = aes(x = Age_at_diagnosis))</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="week3_files/figure-html/histogram_plot_1-1.png" width="672" /></p>
-<p>The warning message hints at picking a more optimal number of bins.</p>
+<p>The warning message hints at picking a more optimal number of bins by specifying the <code>binwidth</code> argument.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_histogram(mapping = aes(x = Age_at_diagnosis), binwidth = 5)</code></pre>
 <p><img src="week3_files/figure-html/histogram_plot_2-1.png" width="672" /></p>
-<p>Or can set the number of bins.</p>
+<p>Or we can set the number of bins.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_histogram(mapping = aes(x = Age_at_diagnosis), bins = 20)</code></pre>
 <p><img src="week3_files/figure-html/histogram_plot_3-1.png" width="672" /></p>
-<p>These histograms are not aesthetically very pleasing - how about some better aesthetics?</p>
+<p>These histograms are not very pleasing, aesthetically speaking - how about some better aesthetics?</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_histogram(mapping = aes(x = Age_at_diagnosis), bins = 20, colour = &quot;darkblue&quot;, fill = &quot;grey&quot;)</code></pre>
 <p><img src="week3_files/figure-html/histogram_plot_4-1.png" width="672" /></p>
@@ -764,7 +767,7 @@ rail_use</code></pre>
 <div id="categorical-variables-factors" class="section level1">
 <h1>Categorical variables – factors</h1>
 <p>Several of the variables in the METABRIC data set are categorical, i.e. they can take one of a limited set of values. Some of these have been read into R as character types (e.g. the 3-gene classifier), other as numerical values, e.g. tumour stage. We also have some binary variables that are essentially categorical variables but with only 2 possible values, e.g. ER status.</p>
-<p>In many of the plots given above, ggplot2 has treated character variables as categorical in situtations where a categorical variable is expected. For example, when we displayed points on a scatter plot using different colours for each 3-gene classification, or when we created separate box plots in the same plot for ER positive and negative patients.</p>
+<p>In many of the plots given above, ggplot2 has treated character variables as categorical in situtations where a categorical variable is expected. For example, when we displayed points on a scatter plot using different colours for each 3-gene classification, or when we created separate box plots in the same graph for ER positive and negative patients.</p>
 <p>But what about when our categorical variable has been read into R as a continuous variable, e.g. <code>Tumour_stage</code>, which is read in as a double type.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Tumour_stage))</code></pre>
@@ -773,8 +776,8 @@ rail_use</code></pre>
 <pre><code>## 
 ##   0   1   2   3   4 
 ##   4 475 800 115   9</code></pre>
-<p>Tumour stage has only 5 discrete states but ggplot2 doesn’t know this and has used a colour scale to show these as if they were continuous. We need to tell R that these are categorical.</p>
-<p>R has a special type for categorical variables called a <strong>factor</strong>. Let’s convert our tumour stage variable to a factor using <code>as.factor()</code>.</p>
+<p>Tumour stage has only 5 discrete states but ggplot2 doesn’t know these are supposed to be a restricted set of values and has used a colour scale to show them as if they were continuous. We need to tell R that these are categorical.</p>
+<p>R has a special type for categorical variables called a <strong>factor</strong>. Let’s convert our tumour stage variable to a factor using the <code>as.factor()</code> function.</p>
 <pre class="r"><code>metabric$Tumour_stage &lt;- as.factor(metabric$Tumour_stage)
 metabric[, c(&quot;Patient_ID&quot;, &quot;Tumour_stage&quot;)]</code></pre>
 <pre><code>## # A tibble: 1,904 x 2
@@ -791,7 +794,7 @@ metabric[, c(&quot;Patient_ID&quot;, &quot;Tumour_stage&quot;)]</code></pre>
 ##  9 MB-0028    2           
 ## 10 MB-0035    2           
 ## # … with 1,894 more rows</code></pre>
-<p>R actually stores categorical variables as integers but with some additional metadata about which of the integer values or ‘levels’ corresponds to each category.</p>
+<p>R actually stores categorical variables as integers but with some additional metadata about which of the integer values, or ‘levels’, corresponds to each category.</p>
 <pre class="r"><code>typeof(metabric$Tumour_stage)</code></pre>
 <pre><code>## [1] &quot;integer&quot;</code></pre>
 <pre class="r"><code>class(metabric$Tumour_stage)</code></pre>
@@ -801,7 +804,7 @@ metabric[, c(&quot;Patient_ID&quot;, &quot;Tumour_stage&quot;)]</code></pre>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = Tumour_stage))</code></pre>
 <p><img src="week3_files/figure-html/scatter_plot_10-1.png" width="672" /></p>
-<p>In this case the order of the levels makes sense but for other variables you may wish for more control over the ordering. Take the integrative cluster variable for example. We created a bar plot of the numbers of patients in the METABRIC cohort within each integrative cluster. Did you notice the ordering of the clusters? 10 came just after 1 and before 2. That looked a bit odd as we’d have naturally expected it to come last of all. R, on the other hand, is treating this vector as a character vector (mainly because of the ‘ER-’ and ‘ER+’ subtypes of cluster 4) and sorts the values into alphanumerical order.</p>
+<p>In this case the order of the levels makes sense but for other variables you may wish for more control over the ordering. Take the integrative cluster variable for example. We created a bar plot of the numbers of patients in the METABRIC cohort within each integrative cluster. Did you notice the ordering of the clusters? 10 came just after 1 and before 2. That looked a bit odd as we’d have naturally expected it to come last of all. R, on the other hand, is treating this vector as a character vector (mainly because of the ‘ER-’ and ‘ER+’ subtypes of cluster 4, and sorts the values into alphanumerical order.</p>
 <pre class="r"><code>metabric$Integrative_cluster &lt;- as.factor(metabric$Integrative_cluster)
 levels(metabric$Integrative_cluster)</code></pre>
 <pre><code>##  [1] &quot;1&quot;    &quot;10&quot;   &quot;2&quot;    &quot;3&quot;    &quot;4ER-&quot; &quot;4ER+&quot; &quot;5&quot;    &quot;6&quot;    &quot;7&quot;    &quot;8&quot;   
@@ -817,7 +820,7 @@ levels(metabric$Integrative_cluster)</code></pre>
 </div>
 <div id="the-ggplot-object-a-peek-under-the-hood-advanced" class="section level1">
 <h1>The ggplot object – a peek under the hood (ADVANCED)</h1>
-<p>Let’s the build the plot up in stages.</p>
+<p>Let’s build a ggplot2 plot up in stages to understand what’s really going on.</p>
 <pre class="r"><code>plot &lt;- ggplot(data = metabric)</code></pre>
 <p>What is the plot object we’ve just created?</p>
 <pre class="r"><code>typeof(plot)</code></pre>
@@ -831,8 +834,8 @@ levels(metabric$Integrative_cluster)</code></pre>
 <pre class="r"><code>names(plot)</code></pre>
 <pre><code>## [1] &quot;data&quot;        &quot;layers&quot;      &quot;scales&quot;      &quot;mapping&quot;     &quot;theme&quot;      
 ## [6] &quot;coordinates&quot; &quot;facet&quot;       &quot;plot_env&quot;    &quot;labels&quot;</code></pre>
-<p>So far we’ve constructed ggplots from data, layers (geoms) and aesthetic mappings. We’ll be looking at how to customize plots later, including changing the labels, scales and theme.</p>
-<p>The data element is just the metabric tibble that we provided to the <code>ggplot()</code> function.</p>
+<p>So far we’ve constructed ggplots from data, layers (geoms) and aesthetic mappings but do you notice the labels, scales, facet and theme elements? We’ll be looking at how to customize plots later, including changing the labels, altering the scales of axes, and applying a different visual theme.</p>
+<p>The <code>data</code> element is just the metabric tibble that we provided to the <code>ggplot()</code> function.</p>
 <pre class="r"><code>plot$data</code></pre>
 <pre><code>## # A tibble: 1,904 x 30
 ##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
@@ -856,9 +859,11 @@ levels(metabric$Integrative_cluster)</code></pre>
 ## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;fct&gt;, Mutation_count &lt;dbl&gt;,
 ## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
 ## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
-<p>This <code>plot</code> list object is really only a specification for how ggplot2 should create the plot. ggplot2 only renders the plot when we ask it to by printing it out to the screen. We haven’t added any layers yet so what does our plot look like at this point?</p>
+<p>This <code>plot</code> list object is really only a specification for how ggplot2 should create the plot. ggplot2 only renders the plot when we ask it to by printing it out to the screen by typing <code>print(plot)</code> or simply just <code>plot</code>.</p>
+<p>We haven’t added any layers yet so what does our plot look like at this point?</p>
 <pre class="r"><code>plot</code></pre>
 <p><img src="week3_files/figure-html/building_up_plot_1-1.png" width="672" /></p>
+<p>ggplot2 doesn’t know what to plot yet as we haven’t added a layer (geom).</p>
 <pre class="r"><code>plot$mapping</code></pre>
 <pre><code>## Aesthetic mapping: 
 ## &lt;empty&gt;</code></pre>
@@ -876,6 +881,7 @@ plot</code></pre>
 ## * `colour` -&gt; `ER_status`</code></pre>
 <pre class="r"><code>plot$layers</code></pre>
 <pre><code>## list()</code></pre>
+<p>Finally, let’s add a <code>geom_point</code> layer to create a scatter plot.</p>
 <pre class="r"><code>plot &lt;- plot + geom_point()
 plot</code></pre>
 <p><img src="week3_files/figure-html/building_up_plot_3-1.png" width="672" /></p>
