@@ -480,7 +480,7 @@ arguments we've used below.
 
 ```{r message = FALSE, warning = FALSE}
 library(readxl)
-transport_use <- read_excel("data/2020-04-25_COVID-19_Press_Conference_Data__4_.xlsx",
+transport_use <- read_excel("data/2020-04-26_COVID-19_Press_Conference_Data.xlsx",
                             sheet = "Transport use",
                             col_names = c("date", "transport_type", "percentage"),
                             col_types = c("date", "text", "numeric"),

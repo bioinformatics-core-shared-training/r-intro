@@ -666,7 +666,7 @@ counts</code></pre>
 <p>One of the plots shows the reduction in different types oftransport use over time in the UK in the week leading up to and since the lockdown restrictions were introduced in response to the pandemic.</p>
 <p>Reading these data into R from the downloaded Excel spreadsheet requires a bit more care as the spreadsheet contains multiple sheets and each table has header lines and footnotes. The date column doesn’t have a column heading, so in the code below we’ve skipped that row as well and told <code>read_excel()</code> what column names to use. We’ve also given it a heads-up about which type of data are in each column. Look up the help page for <code>read_excel()</code> for more details about the arguments we’ve used below.</p>
 <pre class="r"><code>library(readxl)
-transport_use &lt;- read_excel(&quot;data/2020-04-25_COVID-19_Press_Conference_Data__4_.xlsx&quot;,
+transport_use &lt;- read_excel(&quot;data/2020-04-26_COVID-19_Press_Conference_Data.xlsx&quot;,
                             sheet = &quot;Transport use&quot;,
                             col_names = c(&quot;date&quot;, &quot;transport_type&quot;, &quot;percentage&quot;),
                             col_types = c(&quot;date&quot;, &quot;text&quot;, &quot;numeric&quot;),
@@ -693,13 +693,13 @@ transport_use</code></pre>
 <pre class="r"><code>table(transport_use$transport_type)</code></pre>
 <pre><code>## 
 ## All motor vehicles Bus (excl. London)      National rail 
-##                 39                 39                 39 
+##                 40                 40                 40 
 ##          TfL - Bus         TfL - Tube 
-##                 34                 35</code></pre>
+##                 34                 32</code></pre>
 <p>We’ll focus solely on rail use to start with.</p>
 <pre class="r"><code>rail_use &lt;- transport_use[transport_use$transport_type == &quot;National rail&quot;, ]
 rail_use</code></pre>
-<pre><code>## # A tibble: 39 x 3
+<pre><code>## # A tibble: 40 x 3
 ##    date                transport_type percentage
 ##    &lt;dttm&gt;              &lt;chr&gt;               &lt;dbl&gt;
 ##  1 2020-03-16 00:00:00 National rail        77  
@@ -712,7 +712,7 @@ rail_use</code></pre>
 ##  8 2020-03-23 00:00:00 National rail        29.0
 ##  9 2020-03-24 00:00:00 National rail        24  
 ## 10 2020-03-25 00:00:00 National rail        18  
-## # … with 29 more rows</code></pre>
+## # … with 30 more rows</code></pre>
 <div id="dates" class="section level2">
 <h2>Dates</h2>
 <p>There is something unfamiliar about the <code>date</code> column that needs some explanation. Let’s check the type and class of <code>date</code>.</p>
