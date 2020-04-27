@@ -374,7 +374,7 @@ week's assignment.
 
 ---
 
-Over to you for the assignment - see you again at the end of the week!
+# Assignment
 
 Assignment: [assignment1.Rmd](assignments/assignment1.Rmd)
 
