@@ -774,3 +774,24 @@ We touched on statistical transformations earlier. The `stat` associated with a
 scatter plot, we already have the x and y values -- they don't need to be
 transformed, just plotted on the x and y axes.
 
+---
+
+# Summary
+
+In this session we have covered the following concepts:
+
+* How to use ggplot2 to create different types of plot using a common grammar
+* How to map variables to aesthetic features of a plot
+* How to construct a plot with multiple layers (geoms)
+* Various types of plot including scatter plots, box plots, bar plots and histograms
+* Working with dates
+* Plotting time series data as line graphs
+* How to work with time series data
+* Categorical variables and how R handles these with its factor type
+
+---
+
+# Assignment
+
+Assignment: [assignment3.Rmd](assignments/assignment3.Rmd)
+
