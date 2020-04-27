@@ -1498,4 +1498,6 @@ In this session we have covered the following concepts:
 
 # Assignment
 
-Assignment: [assignment1.Rmd](assignments/assignment2.Rmd)
+Assignment: [assignment2.Rmd](assignments/assignment2.Rmd)
+
+Solutions: [assignment2_solutions.Rmd](assignments/assignment2_solutions.Rmd)
