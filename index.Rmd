@@ -56,13 +56,13 @@ chats and calls within Teams.
 
 2. [Working with data](week2.html) (20 April) - Creating R scripts, working with tabular data and other types of objects in R, reading data into R
 
-3. [Visualizing tabular data with ggplot2](week3.html) (27 April)
+3. [Data visualization with ggplot2](week3.html) (27 April) - A common grammar to create scatter plots, bar charts, boxplots, histograms and line graphs for time series data
 
-4. The concept of “tidy” data, manipulating and transforming data (4 May)
+4. [Data manipulation using dplyr](week4.html) (4 May) - Filtering and modifying tabular data, faceting with ggplot2
 
-5. Elegant scripting using piping, advanced grouping and summarization operations (11 May)
+5. The concept of "tidy data" and data transformations, ggplot2 customization (11 May)
 
-6. Advanced topics including customization of plots, looping, conditional branching logic and writing functions (18 May)
+6. Advanced grouping and summarization operations, joining data from different tables, ggplot2 extras (18 May)
 
 7. **Capstone project** – putting it all together in a typical data analysis including:
 

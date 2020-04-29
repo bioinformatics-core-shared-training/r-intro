@@ -11,8 +11,10 @@ navbar:
           href: week1.html
         - text: "Week 2 - Working with data in R"
           href: week2.html
-        - text: "Week 3 - Visualizing tabular data in R"
+        - text: "Week 3 - Data visualization with ggplot2"
           href: week3.html
+        - text: "Week 4 - Data manipulation using dplyr"
+          href: week4.html
   right:
     - icon: fa-github fa-lg
       href: https://github.com/bioinformatics-core-shared-training/r-intro
