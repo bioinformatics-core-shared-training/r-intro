@@ -1028,8 +1028,8 @@ From "Tidy Data" by Hadley Wickham, [*The Journal of Statistical Software*, vol.
 > *A variable contains all values that measure the same underlying attribute*
 > *(like height, temperature, duration) across units.*
 >
-> *An observation contains all values measured on the same unit (like a person,*
-> *or a day, or a race) across attributes.*
+> *An observation contains all values measured on the same unit (like a person*
+> *or a day) across attributes.*
 
 The data frame represents observations as rows and variables or attributes as
 columns.
