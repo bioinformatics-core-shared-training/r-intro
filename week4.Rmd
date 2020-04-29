@@ -1,0 +1,244 @@
+---
+title: "Week 4 -- Data manipulation with dplyr"
+---
+
+> #### Learning objectives
+>
+> * Learn the five key **dplyr** functions for manipulating your data
+>     * **`select()`** for selecting a subset of variables, i.e. selecting columns in your table
+>     * **`filter()`** for selecting observations based on their values, i.e. selecting rows in your table
+>     * **`arrange()`** for sorting the observations in your table 
+>     * **`mutate()`** for creating a new variable, or modifying an existing variable
+>     * **`summarize()`** for collapsing values in one of more columns to a single summary value
+> * Chain operations together into a workflow using pipes
+> * Learn about faceting in ggplot2 to create separate subplots
+
+# Data manipulation with dplyr
+
+**dplyr** is one of the packages that gets loaded as part of the tidyverse.
+
+```{r}
+library(tidyverse)
+```
+
+dplyr is the Swiss army knife in the tidyverse, providing many useful functions
+for manipulating tabular data in data frames or tibble objects. We're going to
+look at the key functions for slicing and dicing our data, modifying the
+contents and computing summary statistics.
+
+We'll also look at how we can chain operations together into mini workflows in
+a way that makes for more readable and maintainable code, introducing the pipe
+operator, **`%>%`**.
+
+Finally, we'll return to plotting and look at a powerful feature of ggplot2,
+**faceting**, that allows you to divide your plots into sub-plots by splitting
+the observations based on one or more categorical variables.
+
+We'll again use the METABRIC data set to illustrate how these operations work.
+
+```{r message = FALSE}
+library(tidyverse)
+metabric <- read_csv("data/metabric_clinical_and_expression_data.csv")
+metabric
+```
+
+---
+
+# Data semantics (recap)
+
+We use the terms 'observation' and 'variable' a lot in this course. As a
+reminder from week 2, when we talk about an observation, we're talking about a
+set of values measured for the same unit or thing, e.g. a person or a gene, and
+when we talk about a variable we are really talking about the attribute that we
+are measuring or recording, e.g. height, temperature or expression value.
+
+**Observations are represented as rows** in our data frames or tibbles, while
+the **columns correspond to variables**.
+
+```{block type = "rmdblock"}
+From **"Tidy Data"** by **Hadley Wickham**, [*The Journal of Statistical
+Software*, vol. 59, 2014](https://www.jstatsoft.org/index.php/jss/article/view/v059i10/v59i10.pdf).
+
+A data set is a collection of **values**, usually either numbers (if
+quantitative) or character strings (if qualitative). Values are organised in
+two ways. Every value belongs to a variable and an observation.
+
+A **variable** contains all values that measure the same underlying attribute
+(like height, temperature, duration) across units.
+
+An **observation** contains all values measured on the same unit (like a person,
+or a day) across attributes.
+```
+
+---
+
+# dplyr 'verbs'
+
+We will be looking at the 5 key dplyr functions this week:
+
+* **`filter()`** for filtering rows
+* **`select()`** for selecting columns
+* **`arrange()`** for sorting rows
+* **`mutate()`** for modifying columns or creating new ones
+* **`summarize()`** for computing summary values
+
+In looking at each of these in turn, we'll be applying these to the entire data
+set. It is possible to combine these with the `group_by()` function to instead
+operate on separate groups within our data set but this is something we'll cover
+in detail in week 6.
+
+The dplyr operations are commonly referred to as "verbs" in a data manipulation
+grammar. These verbs work similarly with the following common behaviour:
+
+* The first argument in each function is a data frame (or tibble)
+
+* Any additional arguments describe what operation to perform on the data frame
+
+* Variable names, i.e. column names, are referred to without using quotes
+
+* The result of an operation is a new data frame
+
+---
+
+# Filtering rows with `filter()`
+
+The **`filter`** verb allows you to choose rows from a data frame that match
+some specified criteria. The criteria are based on values of variables and can
+make use of comparison operators such as `==`, `>`, `<` and `!=`.
+
+For example, to filter the METABRIC data set so that it only contains
+observations for those patients who died of breast cancer.
+
+```{r}
+deceased <- filter(metabric, Vital_status == "Died of Disease")
+deceased
+```
+
+Remember that the **`==`** operator tests for equality.
+
+This filtering operation is equivalent to subsetting the rows based on a logical
+vector resulting from our comparison of vital status values with "Died of
+Disease".
+
+```{r eval = FALSE}
+deceased <- metabric[metabric$Vital_status == "Died of Disease", ]
+```
+
+Both achieve the same result but the dplyr filter method is arguably much easier
+to read. We haven't had to write `metabric` twice for one thing, we just
+referred to the variable name as it is, unquoted and without any fuss.
+
+Let's have a look at the various categories in the `Vital_status` variable.
+
+```{r}
+table(metabric$Vital_status)
+```
+
+We could use the `!=` comparison operator to select all deceased patients
+regardless of whether they died of the disease or other causes.
+
+```{r}
+deceased <- filter(metabric, Vital_status != "Living")
+deceased
+```
+
+Another way of doing this is to specify which classes we are interested in and
+use the `%in%` operator to test which observations (rows) contain those values.
+
+```{r}
+deceased <- filter(metabric, Vital_status %in% c("Died of Disease", "Died of Other Causes"))
+deceased
+```
+
+Another of the tidyverse packages, **`stringr`**, contains a set of very useful
+functions for operating on text or character strings. One such function,
+**`str_starts()`** could be used to find all vital status values that start with
+"Died".
+
+```{r}
+deceased <- filter(metabric, str_starts(Vital_status, "Died"))
+deceased
+```
+
+Note that `str_starts()` returns a logical vector - this is important since the
+criterion for filtering must evaluate to `TRUE` or `FALSE` values for each row.
+
+**Advanced**: `str_detect()` is another useful function that determines whether
+values match a regular expression. Regular expressions are a language for search
+patterns used very frequently in computer programming.
+
+Filtering based on a logical variable is the most simple type of filtering of
+all. We don't have a logical variable in our METABRIC data set so we'll create
+one from the binary survival status variable.
+
+```{r}
+metabric$Deceased <- metabric$Survival_status == "DECEASED"
+filter(metabric, Deceased)
+```
+
+We can use the **`!`** operator to filter those patients who are not
+deceased.
+
+```{r}
+filter(metabric, !Deceased)
+```
+
+The eagle-eyed will have spotted that filtering on our newly created Deceased
+logical variable gave a slightly different number of observations (patients) who
+are considered to be deceased. We get one extra row. This is becuase we have a
+missing value for the Vital status of one of the patients. We can filter for this
+using the **`is.na()`** function.
+
+```{r}
+filter(metabric, is.na(Vital_status))
+```
+
+`filter()` only retains rows where the condition if `TRUE`; both `FALSE` and
+`NA` values are filtered out.
+
+We can apply include more than one condition in our filtering operation, for
+example the patients who were still alive at the time of the METABRIC study and
+had survived for more than 10 years (120 months).
+
+```{r}
+filter(metabric, Survival_status == "LIVING", Survival_time > 120)
+```
+
+The equivalent using R's usual subsetting looks much less readable.
+
+```{r}
+metabric[metabric$Survival_status == "LIVING" & metabric$Survival_time > 120, ]
+```
+
+We can add as many conditions as we like separating each with a comma. Note
+that filtering using R subsetting gets more unreadable the more conditions you
+add.
+
+Adding conditions in this way is equivalent to combining the conditions using
+the **`&`** (Boolean AND) operator.
+
+```{r}
+# filter(metabric, Survival_status == "LIVING", Survival_time > 120)
+# is equivalent to
+filter(metabric, Survival_status == "LIVING" & Survival_time > 120)
+```
+
+We could instead use the **`|`** (Boolean OR) operator.
+
+And we can build up more complicated filtering operations using both `&` and
+`|`, for example, let's see which patients with stage 3 or 4 tumours that are
+either estrogen receptor (ER) positive or progesterone receptor (PR) positive.
+
+```{r}
+filter(metabric, Tumour_stage >= 3, ER_status == "Positive" | PR_status == "Positive")
+```
+
+In this case, if you used `&` in place of the comma you'd need to be careful
+about the precedence of the `&` and `|` operators and use parentheses to make
+clear what you intended.
+
+```{r}
+filter(metabric, Tumour_stage >= 3 & (ER_status == "Positive" | PR_status == "Positive"))
+```
+
+

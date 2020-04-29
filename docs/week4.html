@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Week 4 – Data manipulation with dplyr</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img style="width: 120px; float: left; margin-top: 0px; margin-right: 20px;" src="images/CRUK_CI_logo.png"/>Introduction to R&nbsp;&nbsp;&nbsp;</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Contents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="week0.html">Week 0 - Getting ready</a>
+    </li>
+    <li>
+      <a href="week1.html">Week 1 - Introduction to R and RStudio</a>
+    </li>
+    <li>
+      <a href="week2.html">Week 2 - Working with data in R</a>
+    </li>
+    <li>
+      <a href="week3.html">Week 3 - Visualizing tabular data in R</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/bioinformatics-core-shared-training/r-intro">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Week 4 – Data manipulation with dplyr</h1>
+
+</div>
+
+
+<blockquote>
+<h4 id="learning-objectives">Learning objectives</h4>
+<ul>
+<li>Learn the five key <strong>dplyr</strong> functions for manipulating your data
+<ul>
+<li><strong><code>select()</code></strong> for selecting a subset of variables, i.e. selecting columns in your table</li>
+<li><strong><code>filter()</code></strong> for selecting observations based on their values, i.e. selecting rows in your table</li>
+<li><strong><code>arrange()</code></strong> for sorting the observations in your table</li>
+<li><strong><code>mutate()</code></strong> for creating a new variable, or modifying an existing variable</li>
+<li><strong><code>summarize()</code></strong> for collapsing values in one of more columns to a single summary value</li>
+</ul></li>
+<li>Chain operations together into a workflow using pipes</li>
+<li>Learn about faceting in ggplot2 to create separate subplots</li>
+</ul>
+</blockquote>
+<div id="data-manipulation-with-dplyr" class="section level1">
+<h1>Data manipulation with dplyr</h1>
+<p><strong>dplyr</strong> is one of the packages that gets loaded as part of the tidyverse.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p>dplyr is the Swiss army knife in the tidyverse, providing many useful functions for manipulating tabular data in data frames or tibble objects. We’re going to look at the key functions for slicing and dicing our data, modifying the contents and computing summary statistics.</p>
+<p>We’ll also look at how we can chain operations together into mini workflows in a way that makes for more readable and maintainable code, introducing the pipe operator, <strong><code>%&gt;%</code></strong>.</p>
+<p>Finally, we’ll return to plotting and look at a powerful feature of ggplot2, <strong>faceting</strong>, that allows you to divide your plots into sub-plots by splitting the observations based on one or more categorical variables.</p>
+<p>We’ll again use the METABRIC data set to illustrate how these operations work.</p>
+<pre class="r"><code>library(tidyverse)
+metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)
+metabric</code></pre>
+<pre><code>## # A tibble: 1,904 x 30
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0000         1             75.6         140.  LIVING         
+##  2 MB-0002         1             43.2          84.6 LIVING         
+##  3 MB-0005         1             48.9         164.  DECEASED       
+##  4 MB-0006         1             47.7         165.  LIVING         
+##  5 MB-0008         1             77.0          41.4 DECEASED       
+##  6 MB-0010         1             78.8           7.8 DECEASED       
+##  7 MB-0014         1             56.4         164.  LIVING         
+##  8 MB-0022         1             89.1          99.5 DECEASED       
+##  9 MB-0028         1             86.4          36.6 DECEASED       
+## 10 MB-0035         1             84.2          36.3 DECEASED       
+## # … with 1,894 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
+<hr />
+</div>
+<div id="data-semantics-recap" class="section level1">
+<h1>Data semantics (recap)</h1>
+<p>We use the terms ‘observation’ and ‘variable’ a lot in this course. As a reminder from week 2, when we talk about an observation, we’re talking about a set of values measured for the same unit or thing, e.g. a person or a gene, and when we talk about a variable we are really talking about the attribute that we are measuring or recording, e.g. height, temperature or expression value.</p>
+<p><strong>Observations are represented as rows</strong> in our data frames or tibbles, while the <strong>columns correspond to variables</strong>.</p>
+<div class="rmdblock">
+<p>
+From <strong>“Tidy Data”</strong> by <strong>Hadley Wickham</strong>, <a href="https://www.jstatsoft.org/index.php/jss/article/view/v059i10/v59i10.pdf"><em>The Journal of Statistical Software</em>, vol. 59, 2014</a>.
+</p>
+<p>
+A data set is a collection of <strong>values</strong>, usually either numbers (if quantitative) or character strings (if qualitative). Values are organised in two ways. Every value belongs to a variable and an observation.
+</p>
+<p>
+A <strong>variable</strong> contains all values that measure the same underlying attribute (like height, temperature, duration) across units.
+</p>
+<p>
+An <strong>observation</strong> contains all values measured on the same unit (like a person, or a day) across attributes.
+</p>
+</div>
+<hr />
+</div>
+<div id="dplyr-verbs" class="section level1">
+<h1>dplyr ‘verbs’</h1>
+<p>We will be looking at the 5 key dplyr functions this week:</p>
+<ul>
+<li><strong><code>filter()</code></strong> for filtering rows</li>
+<li><strong><code>select()</code></strong> for selecting columns</li>
+<li><strong><code>arrange()</code></strong> for sorting rows</li>
+<li><strong><code>mutate()</code></strong> for modifying columns or creating new ones</li>
+<li><strong><code>summarize()</code></strong> for computing summary values</li>
+</ul>
+<p>In looking at each of these in turn, we’ll be applying these to the entire data set. It is possible to combine these with the <code>group_by()</code> function to instead operate on separate groups within our data set but this is something we’ll cover in detail in week 6.</p>
+<p>The dplyr operations are commonly referred to as “verbs” in a data manipulation grammar. These verbs work similarly with the following common behaviour:</p>
+<ul>
+<li><p>The first argument in each function is a data frame (or tibble)</p></li>
+<li><p>Any additional arguments describe what operation to perform on the data frame</p></li>
+<li><p>Variable names, i.e. column names, are referred to without using quotes</p></li>
+<li><p>The result of an operation is a new data frame</p></li>
+</ul>
+<hr />
+</div>
+<div id="filtering-rows-with-filter" class="section level1">
+<h1>Filtering rows with <code>filter()</code></h1>
+<p>The <strong><code>filter</code></strong> verb allows you to choose rows from a data frame that match some specified criteria. The criteria are based on values of variables and can make use of comparison operators such as <code>==</code>, <code>&gt;</code>, <code>&lt;</code> and <code>!=</code>.</p>
+<p>For example, to filter the METABRIC data set so that it only contains observations for those patients who died of breast cancer.</p>
+<pre class="r"><code>deceased &lt;- filter(metabric, Vital_status == &quot;Died of Disease&quot;)
+deceased</code></pre>
+<pre><code>## # A tibble: 622 x 30
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0005         1             48.9        164.   DECEASED       
+##  2 MB-0008         1             77.0         41.4  DECEASED       
+##  3 MB-0010         1             78.8          7.8  DECEASED       
+##  4 MB-0035         1             84.2         36.3  DECEASED       
+##  5 MB-0036         1             85.5        132.   DECEASED       
+##  6 MB-0079         1             50.4         28.5  DECEASED       
+##  7 MB-0083         1             64.8         86.1  DECEASED       
+##  8 MB-0100         1             68.7          8.07 DECEASED       
+##  9 MB-0102         1             51.4        141.   DECEASED       
+## 10 MB-0108         1             43.2         42.7  DECEASED       
+## # … with 612 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
+<p>Remember that the <strong><code>==</code></strong> operator tests for equality.</p>
+<p>This filtering operation is equivalent to subsetting the rows based on a logical vector resulting from our comparison of vital status values with “Died of Disease”.</p>
+<pre class="r"><code>deceased &lt;- metabric[metabric$Vital_status == &quot;Died of Disease&quot;, ]</code></pre>
+<p>Both achieve the same result but the dplyr filter method is arguably much easier to read. We haven’t had to write <code>metabric</code> twice for one thing, we just referred to the variable name as it is, unquoted and without any fuss.</p>
+<p>Let’s have a look at the various categories in the <code>Vital_status</code> variable.</p>
+<pre class="r"><code>table(metabric$Vital_status)</code></pre>
+<pre><code>## 
+##      Died of Disease Died of Other Causes               Living 
+##                  622                  480                  801</code></pre>
+<p>We could use the <code>!=</code> comparison operator to select all deceased patients regardless of whether they died of the disease or other causes.</p>
+<pre class="r"><code>deceased &lt;- filter(metabric, Vital_status != &quot;Living&quot;)
+deceased</code></pre>
+<pre><code>## # A tibble: 1,102 x 30
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0005         1             48.9         164.  DECEASED       
+##  2 MB-0008         1             77.0          41.4 DECEASED       
+##  3 MB-0010         1             78.8           7.8 DECEASED       
+##  4 MB-0022         1             89.1          99.5 DECEASED       
+##  5 MB-0028         1             86.4          36.6 DECEASED       
+##  6 MB-0035         1             84.2          36.3 DECEASED       
+##  7 MB-0036         1             85.5         132.  DECEASED       
+##  8 MB-0046         1             83.0          14.1 DECEASED       
+##  9 MB-0079         1             50.4          28.5 DECEASED       
+## 10 MB-0083         1             64.8          86.1 DECEASED       
+## # … with 1,092 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
+<p>Another way of doing this is to specify which classes we are interested in and use the <code>%in%</code> operator to test which observations (rows) contain those values.</p>
+<pre class="r"><code>deceased &lt;- filter(metabric, Vital_status %in% c(&quot;Died of Disease&quot;, &quot;Died of Other Causes&quot;))
+deceased</code></pre>
+<pre><code>## # A tibble: 1,102 x 30
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0005         1             48.9         164.  DECEASED       
+##  2 MB-0008         1             77.0          41.4 DECEASED       
+##  3 MB-0010         1             78.8           7.8 DECEASED       
+##  4 MB-0022         1             89.1          99.5 DECEASED       
+##  5 MB-0028         1             86.4          36.6 DECEASED       
+##  6 MB-0035         1             84.2          36.3 DECEASED       
+##  7 MB-0036         1             85.5         132.  DECEASED       
+##  8 MB-0046         1             83.0          14.1 DECEASED       
+##  9 MB-0079         1             50.4          28.5 DECEASED       
+## 10 MB-0083         1             64.8          86.1 DECEASED       
+## # … with 1,092 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
+<p>Another of the tidyverse packages, <strong><code>stringr</code></strong>, contains a set of very useful functions for operating on text or character strings. One such function, <strong><code>str_starts()</code></strong> could be used to find all vital status values that start with “Died”.</p>
+<pre class="r"><code>deceased &lt;- filter(metabric, str_starts(Vital_status, &quot;Died&quot;))
+deceased</code></pre>
+<pre><code>## # A tibble: 1,102 x 30
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0005         1             48.9         164.  DECEASED       
+##  2 MB-0008         1             77.0          41.4 DECEASED       
+##  3 MB-0010         1             78.8           7.8 DECEASED       
+##  4 MB-0022         1             89.1          99.5 DECEASED       
+##  5 MB-0028         1             86.4          36.6 DECEASED       
+##  6 MB-0035         1             84.2          36.3 DECEASED       
+##  7 MB-0036         1             85.5         132.  DECEASED       
+##  8 MB-0046         1             83.0          14.1 DECEASED       
+##  9 MB-0079         1             50.4          28.5 DECEASED       
+## 10 MB-0083         1             64.8          86.1 DECEASED       
+## # … with 1,092 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
+<p>Note that <code>str_starts()</code> returns a logical vector - this is important since the criterion for filtering must evaluate to <code>TRUE</code> or <code>FALSE</code> values for each row.</p>
+<p><strong>Advanced</strong>: <code>str_detect()</code> is another useful function that determines whether values match a regular expression. Regular expressions are a language for search patterns used very frequently in computer programming.</p>
+<p>Filtering based on a logical variable is the most simple type of filtering of all. We don’t have a logical variable in our METABRIC data set so we’ll create one from the binary survival status variable.</p>
+<pre class="r"><code>metabric$Deceased &lt;- metabric$Survival_status == &quot;DECEASED&quot;
+filter(metabric, Deceased)</code></pre>
+<pre><code>## # A tibble: 1,103 x 31
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0005         1             48.9         164.  DECEASED       
+##  2 MB-0008         1             77.0          41.4 DECEASED       
+##  3 MB-0010         1             78.8           7.8 DECEASED       
+##  4 MB-0022         1             89.1          99.5 DECEASED       
+##  5 MB-0028         1             86.4          36.6 DECEASED       
+##  6 MB-0035         1             84.2          36.3 DECEASED       
+##  7 MB-0036         1             85.5         132.  DECEASED       
+##  8 MB-0046         1             83.0          14.1 DECEASED       
+##  9 MB-0079         1             50.4          28.5 DECEASED       
+## 10 MB-0083         1             64.8          86.1 DECEASED       
+## # … with 1,093 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
+<p>We can use the <strong><code>!</code></strong> operator to filter those patients who are not deceased.</p>
+<pre class="r"><code>filter(metabric, !Deceased)</code></pre>
+<pre><code>## # A tibble: 801 x 31
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0000         1             75.6         140.  LIVING         
+##  2 MB-0002         1             43.2          84.6 LIVING         
+##  3 MB-0006         1             47.7         165.  LIVING         
+##  4 MB-0014         1             56.4         164.  LIVING         
+##  5 MB-0039         1             70.9         164.  LIVING         
+##  6 MB-0045         1             45.3         165.  LIVING         
+##  7 MB-0048         1             51.5         104.  LIVING         
+##  8 MB-0050         1             44.6          75.3 LIVING         
+##  9 MB-0053         1             70.0         161.  LIVING         
+## 10 MB-0054         1             66.9         160.  LIVING         
+## # … with 791 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
+<p>The eagle-eyed will have spotted that filtering on our newly created Deceased logical variable gave a slightly different number of observations (patients) who are considered to be deceased. We get one extra row. This is becuase we have a missing value for the Vital status of one of the patients. We can filter for this using the <strong><code>is.na()</code></strong> function.</p>
+<pre class="r"><code>filter(metabric, is.na(Vital_status))</code></pre>
+<pre><code>## # A tibble: 1 x 31
+##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+## 1 MB-5130         3             58.6           255 DECEASED       
+## # … with 26 more variables: Vital_status &lt;chr&gt;, Chemotherapy &lt;chr&gt;,
+## #   Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;, Tumour_stage &lt;dbl&gt;,
+## #   Neoplasm_histologic_grade &lt;dbl&gt;, Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;,
+## #   PR_status &lt;chr&gt;, HER2_status &lt;chr&gt;,
+## #   HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
+<p><code>filter()</code> only retains rows where the condition if <code>TRUE</code>; both <code>FALSE</code> and <code>NA</code> values are filtered out.</p>
+<p>We can apply include more than one condition in our filtering operation, for example the patients who were still alive at the time of the METABRIC study and had survived for more than 10 years (120 months).</p>
+<pre class="r"><code>filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120)</code></pre>
+<pre><code>## # A tibble: 545 x 31
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0000         1             75.6          140. LIVING         
+##  2 MB-0006         1             47.7          165. LIVING         
+##  3 MB-0014         1             56.4          164. LIVING         
+##  4 MB-0039         1             70.9          164. LIVING         
+##  5 MB-0045         1             45.3          165. LIVING         
+##  6 MB-0053         1             70.0          161. LIVING         
+##  7 MB-0054         1             66.9          160. LIVING         
+##  8 MB-0060         1             45.4          141. LIVING         
+##  9 MB-0062         1             52.1          154. LIVING         
+## 10 MB-0066         1             61.5          157. LIVING         
+## # … with 535 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
+<p>The equivalent using R’s usual subsetting looks much less readable.</p>
+<pre class="r"><code>metabric[metabric$Survival_status == &quot;LIVING&quot; &amp; metabric$Survival_time &gt; 120, ]</code></pre>
+<pre><code>## # A tibble: 545 x 31
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0000         1             75.6          140. LIVING         
+##  2 MB-0006         1             47.7          165. LIVING         
+##  3 MB-0014         1             56.4          164. LIVING         
+##  4 MB-0039         1             70.9          164. LIVING         
+##  5 MB-0045         1             45.3          165. LIVING         
+##  6 MB-0053         1             70.0          161. LIVING         
+##  7 MB-0054         1             66.9          160. LIVING         
+##  8 MB-0060         1             45.4          141. LIVING         
+##  9 MB-0062         1             52.1          154. LIVING         
+## 10 MB-0066         1             61.5          157. LIVING         
+## # … with 535 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
+<p>We can add as many conditions as we like separating each with a comma. Note that filtering using R subsetting gets more unreadable the more conditions you add.</p>
+<p>Adding conditions in this way is equivalent to combining the conditions using the <strong><code>&amp;</code></strong> (Boolean AND) operator.</p>
+<pre class="r"><code># filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120)
+# is equivalent to
+filter(metabric, Survival_status == &quot;LIVING&quot; &amp; Survival_time &gt; 120)</code></pre>
+<pre><code>## # A tibble: 545 x 31
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0000         1             75.6          140. LIVING         
+##  2 MB-0006         1             47.7          165. LIVING         
+##  3 MB-0014         1             56.4          164. LIVING         
+##  4 MB-0039         1             70.9          164. LIVING         
+##  5 MB-0045         1             45.3          165. LIVING         
+##  6 MB-0053         1             70.0          161. LIVING         
+##  7 MB-0054         1             66.9          160. LIVING         
+##  8 MB-0060         1             45.4          141. LIVING         
+##  9 MB-0062         1             52.1          154. LIVING         
+## 10 MB-0066         1             61.5          157. LIVING         
+## # … with 535 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
+<p>We could instead use the <strong><code>|</code></strong> (Boolean OR) operator.</p>
+<p>And we can build up more complicated filtering operations using both <code>&amp;</code> and <code>|</code>, for example, let’s see which patients with stage 3 or 4 tumours that are either estrogen receptor (ER) positive or progesterone receptor (PR) positive.</p>
+<pre class="r"><code>filter(metabric, Tumour_stage &gt;= 3, ER_status == &quot;Positive&quot; | PR_status == &quot;Positive&quot;)</code></pre>
+<pre><code>## # A tibble: 79 x 31
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0010         1             78.8          7.8  DECEASED       
+##  2 MB-0036         1             85.5        132.   DECEASED       
+##  3 MB-0095         1             80.5         49.8  DECEASED       
+##  4 MB-0106         1             49.9         85.3  LIVING         
+##  5 MB-0112         1             83.9         39.2  DECEASED       
+##  6 MB-0116         1             42.6        122.   LIVING         
+##  7 MB-0124         1             43.5        118.   LIVING         
+##  8 MB-0151         1             67.7         49.2  DECEASED       
+##  9 MB-0165         1             53.8         47.6  DECEASED       
+## 10 MB-0189         1             57.8          9.07 DECEASED       
+## # … with 69 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
+<p>In this case, if you used <code>&amp;</code> in place of the comma you’d need to be careful about the precedence of the <code>&amp;</code> and <code>|</code> operators and use parentheses to make clear what you intended.</p>
+<pre class="r"><code>filter(metabric, Tumour_stage &gt;= 3 &amp; (ER_status == &quot;Positive&quot; | PR_status == &quot;Positive&quot;))</code></pre>
+<pre><code>## # A tibble: 79 x 31
+##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
+##  1 MB-0010         1             78.8          7.8  DECEASED       
+##  2 MB-0036         1             85.5        132.   DECEASED       
+##  3 MB-0095         1             80.5         49.8  DECEASED       
+##  4 MB-0106         1             49.9         85.3  LIVING         
+##  5 MB-0112         1             83.9         39.2  DECEASED       
+##  6 MB-0116         1             42.6        122.   LIVING         
+##  7 MB-0124         1             43.5        118.   LIVING         
+##  8 MB-0151         1             67.7         49.2  DECEASED       
+##  9 MB-0165         1             53.8         47.6  DECEASED       
+## 10 MB-0189         1             57.8          9.07 DECEASED       
+## # … with 69 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
+## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
+## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
