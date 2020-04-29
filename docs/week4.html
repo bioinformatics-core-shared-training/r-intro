@@ -411,6 +411,7 @@ div.tocify {
 <li>Learn about faceting in ggplot2 to create separate subplots</li>
 </ul>
 </blockquote>
+<hr />
 <div id="data-manipulation-with-dplyr" class="section level1">
 <h1>Data manipulation with dplyr</h1>
 <p><strong>dplyr</strong> is one of the packages that gets loaded as part of the tidyverse.</p>
@@ -767,28 +768,7 @@ filter(metabric, Survival_status == &quot;LIVING&quot; &amp; Survival_time &gt; 
 ## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
 <p>In this case, if you used <code>&amp;</code> in place of the comma you’d need to be careful about the precedence of the <code>&amp;</code> and <code>|</code> operators and use parentheses to make clear what you intended.</p>
 <pre class="r"><code>filter(metabric, Tumour_stage &gt;= 3 &amp; (ER_status == &quot;Positive&quot; | PR_status == &quot;Positive&quot;))</code></pre>
-<pre><code>## # A tibble: 79 x 31
-##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-##  1 MB-0010         1             78.8          7.8  DECEASED       
-##  2 MB-0036         1             85.5        132.   DECEASED       
-##  3 MB-0095         1             80.5         49.8  DECEASED       
-##  4 MB-0106         1             49.9         85.3  LIVING         
-##  5 MB-0112         1             83.9         39.2  DECEASED       
-##  6 MB-0116         1             42.6        122.   LIVING         
-##  7 MB-0124         1             43.5        118.   LIVING         
-##  8 MB-0151         1             67.7         49.2  DECEASED       
-##  9 MB-0165         1             53.8         47.6  DECEASED       
-## 10 MB-0189         1             57.8          9.07 DECEASED       
-## # … with 69 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
-## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
-## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
-## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
-## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
-## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
-## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
-## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
-## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
+<hr />
 </div>
 <div id="selecting-columns-with-select" class="section level1">
 <h1>Selecting columns with <code>select()</code></h1>
@@ -809,12 +789,12 @@ filter(metabric, Survival_status == &quot;LIVING&quot; &amp; Survival_time &gt; 
 ##  9 MB-0028    DECEASED        Died of Other Causes
 ## 10 MB-0035    DECEASED        Died of Disease     
 ## # … with 1,894 more rows</code></pre>
-<p>Non R users probably find this sort of command a bit obtuse.</p>
+<p>There are several reasons why you might find this command a bit obtuse.</p>
 <ul>
 <li>why the <code>[ ]</code>?</li>
-<li>what is <code>c</code>?</li>
+<li>what is the <code>c</code>?</li>
 <li>need to remember the row and column index</li>
-<li><code>[,...]</code> means display all rows</li>
+<li><code>[, ...]</code> means display all rows</li>
 </ul>
 <p>The <strong><code>select()</code></strong> function from dplyr is much more intuitive.</p>
 <pre class="r"><code>select(metabric, Patient_ID, Survival_status, Vital_status)</code></pre>

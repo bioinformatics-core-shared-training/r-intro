@@ -13,6 +13,8 @@ title: "Week 4 -- Data manipulation with dplyr"
 > * Chain operations together into a workflow using pipes
 > * Learn about faceting in ggplot2 to create separate subplots
 
+---
+
 # Data manipulation with dplyr
 
 **dplyr** is one of the packages that gets loaded as part of the tidyverse.
@@ -238,9 +240,11 @@ In this case, if you used `&` in place of the comma you'd need to be careful
 about the precedence of the `&` and `|` operators and use parentheses to make
 clear what you intended.
 
-```{r}
+```{r eval = FALSE}
 filter(metabric, Tumour_stage >= 3 & (ER_status == "Positive" | PR_status == "Positive"))
 ```
+
+---
 
 # Selecting columns with `select()`
 
@@ -262,12 +266,12 @@ along with the patient identifier we could write the following:
 metabric[, c("Patient_ID", "Survival_status", "Vital_status")]
 ```
 
-Non R users probably find this sort of command a bit obtuse.
+There are several reasons why you might find this command a bit obtuse.
 
 - why the `[ ]`?
-- what is `c`?
+- what is the `c`?
 - need to remember the row and column index
-- `[,...]` means display all rows
+- `[, ...]` means display all rows
 
 The **`select()`** function from dplyr is much more intuitive.
 
