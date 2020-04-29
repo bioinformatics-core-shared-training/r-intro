@@ -23,8 +23,8 @@ library(tidyverse)
 
 dplyr is the Swiss army knife in the tidyverse, providing many useful functions
 for manipulating tabular data in data frames or tibble objects. We're going to
-look at the key functions for slicing and dicing our data, modifying the
-contents and computing summary statistics.
+look at the key functions for filtering our data, modifying the contents and
+computing summary statistics.
 
 We'll also look at how we can chain operations together into mini workflows in
 a way that makes for more readable and maintainable code, introducing the pipe
@@ -44,7 +44,7 @@ metabric
 
 ---
 
-# Data semantics (recap)
+# Data semantics
 
 We use the terms 'observation' and 'variable' a lot in this course. As a
 reminder from week 2, when we talk about an observation, we're talking about a
@@ -72,7 +72,7 @@ or a day) across attributes.
 
 ---
 
-# dplyr 'verbs'
+# dplyr verbs
 
 We will be looking at the 5 key dplyr functions this week:
 
@@ -88,7 +88,8 @@ operate on separate groups within our data set but this is something we'll cover
 in detail in week 6.
 
 The dplyr operations are commonly referred to as "verbs" in a data manipulation
-grammar. These verbs work similarly with the following common behaviour:
+grammar. These verbs have a common syntax and work together in a consistent and
+uniform manner. They all have the following shared behaviours:
 
 * The first argument in each function is a data frame (or tibble)
 
@@ -163,9 +164,9 @@ deceased
 Note that `str_starts()` returns a logical vector - this is important since the
 criterion for filtering must evaluate to `TRUE` or `FALSE` values for each row.
 
-**Advanced**: `str_detect()` is another useful function that determines whether
-values match a regular expression. Regular expressions are a language for search
-patterns used very frequently in computer programming.
+`str_detect()` is another useful function that determines whether values match a
+regular expression. Regular expressions are a language for search patterns used
+very frequently in computer programming but beyond the scope of this course.
 
 Filtering based on a logical variable is the most simple type of filtering of
 all. We don't have a logical variable in our METABRIC data set so we'll create
@@ -241,4 +242,83 @@ clear what you intended.
 filter(metabric, Tumour_stage >= 3 & (ER_status == "Positive" | PR_status == "Positive"))
 ```
 
+# Selecting columns with `select()`
+
+Another way of "slicing and dicing"" our tabular data set is to select just the
+variables or columns we're interested in. This can be important particularly
+when the data set contains a very large number of variables as is the case for
+the METABRIC data. Notice how each time we printed the filtered METABRIC data
+frame in the examples given above, it was not possible to display all the
+columns.
+
+Using the `$` operator is quite convenient for selecting a single column and
+extracting the values as a vector. Selecting several columns using the `[]`
+subsetting operator is a bit more cumbersome. For example, in our look at
+filtering rows, we considered two different variables in our data set that
+are concerned with the living/deceased status of patients. To select these
+along with the patient identifier we could write the following:
+
+```{r}
+metabric[, c("Patient_ID", "Survival_status", "Vital_status")]
+```
+
+Non R users probably find this sort of command a bit obtuse.
+
+- why the `[ ]`?
+- what is `c`?
+- need to remember the row and column index
+- `[,...]` means display all rows
+
+The **`select()`** function from dplyr is much more intuitive.
+
+```{r}
+select(metabric, Patient_ID, Survival_status, Vital_status)
+```
+
+Notice the similarities with the `filter()` function. The first argument is the
+data frame we are operating on, the variables do not need to be put in quotes,
+and the returned value is another data frame.
+
+We can alter the order of the variables (columns).
+
+```{r}
+select(metabric, Patient_ID, Vital_status, Survival_status)
+```
+
+We can also select a range of columns using **`:`**, e.g. to select the patient
+identifier and all the columns between `Tumour_size` and `Cancer_type`.
+
+```{r}
+select(metabric, Patient_ID, Tumour_size:Cancer_type)
+```
+
+The help page for `select` points to some special functions that can be used
+within `select()`. We can find all the columns, for example, that contain the
+term "status".
+
+```{r}
+select(metabric, contains("status"))
+```
+
+If we only wanted those ending with "status" we could use `ends_with()`
+instead.
+
+```{r}
+select(metabric, ends_with("status"))
+```
+
+We can also select those columns we're not interested in and that shouldn't be
+included by negating the columns, e.g.
+
+```{r}
+select(metabric, -Cohort)
+```
+
+You can use a combination of explicit naming, ranges, helper functions and
+negation to select the columns of interest.
+
+```{r}
+selected_columns <- select(metabric, Patient_ID, starts_with("Tumour_"), `3-gene_classifier`:Integrative_cluster, -Cellularity)
+selected_columns
+```
 
