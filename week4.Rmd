@@ -487,5 +487,56 @@ We'll be using the pipe `%>%` operator throughout the rest of the course so
 you'd better get used to it. But actually we think you'll come to love it as
 much as we do.
 
+---
+
+# Sorting using `arrange()`
+
+It is sometimes quite useful to sort our data frame based on the values in one
+or more of the columns, particularly when displaying the contents or saving them
+to a file. The `arrange()` function in dplyr provides this sorting capability.
+
+For example, we can sort the METABRIC patients into order of increasing
+survival time.
+
+```{r}
+arrange(metabric, Survival_time)
+```
+
+Or we might be more interested in the patients that survived the longest so
+would need the order to be of decreasing survival time. For that we can use
+the helper function `desc()` that was specifically created to work with
+`arrange()`.
+
+```{r}
+arrange(metabric, desc(Survival_time))
+```
+
+As with the other tidyverse functions and, in particular, the other 4 key dplyr
+'verbs', `arrange()` works brilliantly in workflows in which successive
+operations are chained using `%>%`.
+
+```{r}
+patients_of_interest <- metabric %>%
+  filter(Survival_status == "LIVING") %>%
+  filter(Survival_time > 120) %>%
+  select(Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index) %>%
+  arrange(desc(Survival_time))
+# print out the result
+patients_of_interest
+```
+
+We can sort by more than one variable by adding more variable arguments to
+`arrange()`.
+
+```{r}
+arrange(patients_of_interest, Tumour_stage, Nottingham_prognostic_index)
+```
+
+Here we've sorted first by tumour stage from lowest to highest value and then
+by the Nottingham prognostic index when there are ties, i.e. where the tumour
+stage is the same.
+
+Sorting is commonly used in workflows usually as one of the last steps before
+presentation or writing out the resulting table to a file.
 
 
