@@ -1048,7 +1048,7 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 <p>It appears that the conversion of tumour size into centimetres was not carried out in the original NPI calculation. This could explain why the plots we created in weeks 1 and 2 that featured the Nottingham prognostic index looked so odd. We’ll see if they look any better with our recalculated values.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = Age_at_diagnosis, y = NPI), na.rm = TRUE)</code></pre>
-<p><img src="week4_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p><img src="week4_files/figure-html/scatter_plot_1-1.png" width="672" /></p>
 <p>There is still some banding but nothing like the NPI values downloaded from cBioPortal which line up very closely to whole numbers.</p>
 <p>The <strong><code>round()</code></strong> function is really useful for rounding numerical values to a specified number of decimal places. We’ll read in the METABRIC data again and create a small workflow that carries out the tumour size conversion, computes the NPI, rounds the tumour size and the resulting NPI value to 1 decimal place and displays the results in decreasing order of NPI.</p>
 <pre class="r"><code>read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;) %&gt;%

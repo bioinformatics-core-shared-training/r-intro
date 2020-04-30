@@ -609,7 +609,7 @@ out in the original NPI calculation. This could explain why the plots we created
 in weeks 1 and 2 that featured the Nottingham prognostic index looked so odd.
 We'll see if they look any better with our recalculated values.
 
-```{r}
+```{r scatter_plot_1}
 ggplot(data = metabric) +
   geom_point(mapping = aes(x = Age_at_diagnosis, y = NPI), na.rm = TRUE)
 ```
