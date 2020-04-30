@@ -405,7 +405,7 @@ div.tocify {
 <li><strong><code>filter()</code></strong> for selecting observations based on their values, i.e. selecting rows in your table</li>
 <li><strong><code>arrange()</code></strong> for sorting the observations in your table</li>
 <li><strong><code>mutate()</code></strong> for creating a new variable, or modifying an existing variable</li>
-<li><strong><code>summarize()</code></strong> for collapsing values in one of more columns to a single summary value</li>
+<li><strong><code>summarise()</code></strong> for collapsing values in one of more columns to a single summary value</li>
 </ul></li>
 <li>Chain operations together into a workflow using pipes</li>
 <li>Learn about faceting in ggplot2 to create separate subplots</li>
@@ -476,7 +476,7 @@ An <strong>observation</strong> contains all values measured on the same unit (l
 <li><strong><code>select()</code></strong> for selecting columns</li>
 <li><strong><code>arrange()</code></strong> for sorting rows</li>
 <li><strong><code>mutate()</code></strong> for modifying columns or creating new ones</li>
-<li><strong><code>summarize()</code></strong> for computing summary values</li>
+<li><strong><code>summarise()</code></strong> for computing summary values</li>
 </ul>
 <p>In looking at each of these in turn, we’ll be applying these to the entire data set. It is possible to combine these with the <code>group_by()</code> function to instead operate on separate groups within our data set but this is something we’ll cover in detail in week 6.</p>
 <p>The dplyr operations are commonly referred to as “verbs” in a data manipulation grammar. These verbs have a common syntax and work together in a consistent and uniform manner. They all have the following shared behaviours:</p>
@@ -791,6 +791,22 @@ selected_columns</code></pre>
 ## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
 ## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
 ## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
+<p>Finally, columns can be renamed as part of the selection process.</p>
+<pre class="r"><code>select(metabric, Patient_ID, Classification = `3-gene_classifier`, NPI = Nottingham_prognostic_index)</code></pre>
+<pre><code>## # A tibble: 1,904 x 3
+##    Patient_ID Classification          NPI
+##    &lt;chr&gt;      &lt;chr&gt;                 &lt;dbl&gt;
+##  1 MB-0000    ER-/HER2-              6.04
+##  2 MB-0002    ER+/HER2- High Prolif  4.02
+##  3 MB-0005    &lt;NA&gt;                   4.03
+##  4 MB-0006    &lt;NA&gt;                   4.05
+##  5 MB-0008    ER+/HER2- High Prolif  6.08
+##  6 MB-0010    ER+/HER2- High Prolif  4.06
+##  7 MB-0014    &lt;NA&gt;                   4.02
+##  8 MB-0022    &lt;NA&gt;                   4.06
+##  9 MB-0028    ER+/HER2- High Prolif  5.03
+## 10 MB-0035    ER+/HER2- High Prolif  3.06
+## # … with 1,894 more rows</code></pre>
 <hr />
 </div>
 <div id="chaining-operations-using" class="section level1">
@@ -1018,15 +1034,34 @@ patients_of_interest</code></pre>
 <p>Note that variables names in the <code>mutate()</code> function call do not need to be prefixed by <code>metabric$</code> just as they don’t in any of the <code>dplyr</code> functions.</p>
 <p>We can overwrite a column and this is quite commonly done when we want to change the units. For example, our tumour size values are in millimetres but the formula for the Nottingham prognostic index uses the tumour size in centimetres. We can convert to <code>Tumour_size</code> to centimetres by dividing by 10.</p>
 <pre class="r"><code>metabric &lt;- mutate(metabric, Tumour_size = Tumour_size / 10)</code></pre>
-<p>The formula for the Nottingham prognostic index is:</p>
-<p><strong><code>NPI = (0.2 * S) + N + G</code></strong></p>
-<p>where</p>
+<div class="rmdblock">
+<p>
+<strong>Nottingham Prognostic Index</strong>
+</p>
+<p>
+The Nottingham prognostic index (<strong>NPI</strong>) is used to determine prognosis following surgery for breast cancer. Its value is calculated using three pathological criteria: the size of the tumour, the number of lymph nodes involved, and the grade of the tumour.
+</p>
+<p>
+The formula for the Nottingham prognostic index is:
+</p>
+<p>
+<strong><code>NPI = (0.2 * S) + N + G</code></strong>
+</p>
+<p>
+where
+</p>
 <ul>
-<li><strong>NPI</strong> is the Nottingham prognostic index</li>
-<li><strong>S</strong> is the size of the tumour in centimetres</li>
-<li><strong>N</strong> is the node status (0 nodes = 1, 1-3 nodes = 2, &gt;3 nodes = 3)</li>
-<li><strong>G</strong> is the grade of tumour (Grade I = 1, Grade II = 2, Grade III = 3)</li>
+<li>
+<strong>S</strong> is the size of the tumour in centimetres
+</li>
+<li>
+<strong>N</strong> is the node status (0 nodes = 1, 1-3 nodes = 2, &gt;3 nodes = 3)
+</li>
+<li>
+<strong>G</strong> is the grade of tumour (Grade I = 1, Grade II = 2, Grade III = 3)
+</li>
 </ul>
+</div>
 <p>We’ll recalculate the Nottingham prognostic index using the values in our <code>Tumour_size</code>, <code>Neoplasm_histologic_grade</code> and <code>Lymph_node_status</code> columns in our METABRIC data frame.</p>
 <pre class="r"><code>metabric &lt;- mutate(metabric, NPI = 0.2 * Tumour_size + Lymph_node_status + Neoplasm_histologic_grade)
 select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI, Nottingham_prognostic_index)</code></pre>
@@ -1156,13 +1191,155 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 <hr />
 </div>
 </div>
-<div id="computing-summary-values-using-summarize" class="section level1">
-<h1>Computing summary values using <code>summarize()</code></h1>
+<div id="computing-summary-values-using-summarise" class="section level1">
+<h1>Computing summary values using <code>summarise()</code></h1>
+<p>We’ll cover the fifth of the main dplyr ‘verb’ functions, <strong><code>summarise()</code></strong>, only briefly here. This function computes summary values for one or more variables (columns) in a table. Here we will summarize values for the entire table but this function is much more useful in combination with <code>group_by()</code> in working on groups of observations within the data set. We will look at grouping in week 6 where we’ll use <code>group_by()</code> in combination with both <code>summarize()</code> and <code>mutate()</code>.</p>
+<p>Any function that calculates a single scalar value from a vector can be used with <code>summarize()</code>. For example, the <code>mean()</code> function calculates the arithmetic mean of a numeric vector. Let’s calculate the average ESR1 expression for tumour samples in the METABRIC data set.</p>
+<pre class="r"><code>mean(metabric$ESR1)</code></pre>
+<pre><code>## [1] 9.607824</code></pre>
+<p>The equivalent operation using <code>summarise()</code> is:</p>
+<pre class="r"><code>summarise(metabric, mean(ESR1))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `mean(ESR1)`
+##          &lt;dbl&gt;
+## 1         9.61</code></pre>
+<p>If you prefer Oxford spelling, in which -ize is preferred to -ise, you’re in luck as dplyr accommodates the alternative spelling.</p>
+<p>Both of the above statements gave the same average expression value but these were output in differing formats. The <code>mean()</code> function collapses a vector to single scalar value, which as we know is in fact a vector of length 1. The <code>summarise()</code> function, as with most tidyverse functions, returns another data frame, albeit one in which there is a single row and a single column.</p>
+<p>Returning a data frame might be quite useful, particularly if we’re summarising multiple columns or using more than one function, for example computing the average and standard deviation.</p>
+<pre class="r"><code>summarise(metabric, ESR1_mean = mean(ESR1), ESR1_sd = sd(ESR1))</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   ESR1_mean ESR1_sd
+##       &lt;dbl&gt;   &lt;dbl&gt;
+## 1      9.61    2.13</code></pre>
+<p>Notice how we also named the output columns in this last example.</p>
+<div class="rmdblock">
+<p>
+<strong><code>summarise()</code></strong>
+</p>
+<p>
+<code>summarise()</code> collapses a data frame into a single row by calculating summary values of one or more of the columns.
+</p>
+<p>
+It can take any function that takes a vector of values and returns a single value. Some of the more useful functions include:
+</p>
+<ul>
+<li>
+Centre: <strong><code>mean()</code></strong>, <strong><code>median()</code></strong>
+</li>
+<li>
+Spread: <strong><code>sd()</code></strong>, <strong><code>mad()</code></strong>
+</li>
+<li>
+Range: <strong><code>min()</code></strong>, <strong><code>max()</code></strong>, <strong><code>quantile()</code></strong>
+</li>
+<li>
+Position: <strong><code>first()</code></strong>, <strong><code>last()</code></strong>
+</li>
+<li>
+Count: <strong><code>n()</code></strong>
+</li>
+</ul>
+<p>
+Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only really useful when working on groups of observations.
+</p>
+<p>
+<strong><code>n()</code></strong> is a special function that returns the number of observations; it doesn’t take a vector argument, i.e. a column.
+</p>
+</div>
+<p>It is also possible to summarise using a function that takes more than one value, i.e. from multiple columns. For example, we could compute the correlation between the expression of FOXA1 and MLPH.</p>
+<pre class="r"><code>summarise(metabric, correlation = cor(FOXA1, MLPH))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   correlation
+##         &lt;dbl&gt;
+## 1       0.898</code></pre>
+<div id="summarizing-multiple-columns" class="section level2">
+<h2>Summarizing multiple columns</h2>
+<p>Much like <code>mutate()</code> with its <code>mutate_at()</code>, <code>mutate_if()</code> and <code>mutate_all()</code> variants, there is a family of <code>summarise()</code> functions similarly named for applying the same summarization function to multiple columns in a single operation. These work in much the same way at their <code>mutate</code> cousins.</p>
+<p><strong><code>summarise_at()</code></strong> allows us to select the columns on which to operate using an additional <code>vars()</code> argument.</p>
+<pre class="r"><code>summarise_at(metabric, vars(FOXA1, MLPH), mean)</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   FOXA1  MLPH
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1  10.8  11.4</code></pre>
+<p>Selecting the columns is done in the same way as for <code>mutate_at()</code> and <code>select()</code>.</p>
+<p><strong><code>summarise_all()</code></strong> summarizes values in all columns.</p>
+<pre class="r"><code>metabric %&gt;%
+  select(ESR1:MLPH) %&gt;%
+  summarise_all(mean)</code></pre>
+<pre><code>## # A tibble: 1 x 8
+##    ESR1 ERBB2   PGR  TP53 PIK3CA GATA3 FOXA1  MLPH
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1  9.61  10.8  6.24  6.20   5.97  9.50  10.8  11.4</code></pre>
+<p>You have to be careful with <code>summarise_all()</code> that all columns can be summarized with the given summary function. For example, what happens if we try to compute an average of a set of character values?</p>
+<pre class="r"><code>summarise_all(metabric, mean, na.rm = TRUE)</code></pre>
+<pre><code>## Warning in mean.default(Patient_ID, na.rm = TRUE): argument is not numeric
+## or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(Survival_status, na.rm = TRUE): argument is not
+## numeric or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(Vital_status, na.rm = TRUE): argument is not
+## numeric or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(Chemotherapy, na.rm = TRUE): argument is not
+## numeric or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(Radiotherapy, na.rm = TRUE): argument is not
+## numeric or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(Cancer_type, na.rm = TRUE): argument is not numeric
+## or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(ER_status, na.rm = TRUE): argument is not numeric
+## or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(PR_status, na.rm = TRUE): argument is not numeric
+## or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(HER2_status, na.rm = TRUE): argument is not numeric
+## or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(HER2_status_measured_by_SNP6, na.rm = TRUE):
+## argument is not numeric or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(PAM50, na.rm = TRUE): argument is not numeric or
+## logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(`3-gene_classifier`, na.rm = TRUE): argument is not
+## numeric or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(Cellularity, na.rm = TRUE): argument is not numeric
+## or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(Integrative_cluster, na.rm = TRUE): argument is not
+## numeric or logical: returning NA</code></pre>
+<pre><code>## # A tibble: 1 x 34
+##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
+##        &lt;dbl&gt;  &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;           &lt;dbl&gt;
+## 1         NA   2.64             61.1          125.              NA
+## # … with 29 more variables: Vital_status &lt;dbl&gt;, Chemotherapy &lt;dbl&gt;,
+## #   Radiotherapy &lt;dbl&gt;, Tumour_size &lt;dbl&gt;, Tumour_stage &lt;dbl&gt;,
+## #   Neoplasm_histologic_grade &lt;dbl&gt;, Lymph_nodes_examined_positive &lt;dbl&gt;,
+## #   Lymph_node_status &lt;dbl&gt;, Cancer_type &lt;dbl&gt;, ER_status &lt;dbl&gt;,
+## #   PR_status &lt;dbl&gt;, HER2_status &lt;dbl&gt;,
+## #   HER2_status_measured_by_SNP6 &lt;dbl&gt;, PAM50 &lt;dbl&gt;,
+## #   `3-gene_classifier` &lt;dbl&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;dbl&gt;, Integrative_cluster &lt;dbl&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;dbl&gt;, NPI &lt;dbl&gt;</code></pre>
+<p>We get a lot of warning messages and <code>NA</code> values for those columns for which computing an average does not make sense.</p>
+<p><strong><code>summarise_if()</code></strong> can be used to select those values for which a summarization function is appropriate.</p>
+<pre class="r"><code>summarise_if(metabric, is.numeric, mean, na.rm = TRUE)</code></pre>
+<pre><code>## # A tibble: 1 x 19
+##   Cohort Age_at_diagnosis Survival_time Tumour_size Tumour_stage
+##    &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;
+## 1   2.64             61.1          125.        2.62         1.75
+## # … with 14 more variables: Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Lymph_nodes_examined_positive &lt;dbl&gt;, Lymph_node_status &lt;dbl&gt;,
+## #   Nottingham_prognostic_index &lt;dbl&gt;, Mutation_count &lt;dbl&gt;, ESR1 &lt;dbl&gt;,
+## #   ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;, GATA3 &lt;dbl&gt;,
+## #   FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, NPI &lt;dbl&gt;</code></pre>
+<p>It is possible to summarise using more than one function in which case a list of functions needs to be provided.</p>
+<pre class="r"><code>summarise_at(metabric, vars(FOXA1, MLPH), list(mean, sd))</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   FOXA1_fn1 MLPH_fn1 FOXA1_fn2 MLPH_fn2
+##       &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1      10.8     11.4      1.75     1.69</code></pre>
+<p>Pretty neat but I’m not sure about those column headings – fortunately we have some control over these.</p>
+<pre class="r"><code>summarise_at(metabric, vars(FOXA1, MLPH), list(average = mean, stdev = sd))</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   FOXA1_average MLPH_average FOXA1_stdev MLPH_stdev
+##           &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+## 1          10.8         11.4        1.75       1.69</code></pre>
 <hr />
 </div>
-<div id="writing-tabular-data-to-files" class="section level1">
-<h1>Writing tabular data to files</h1>
-<hr />
 </div>
 <div id="faceting-with-ggplot2" class="section level1">
 <h1>Faceting with ggplot2</h1>

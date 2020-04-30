@@ -9,7 +9,7 @@ title: "Week 4 -- Data manipulation with dplyr"
 >     * **`filter()`** for selecting observations based on their values, i.e. selecting rows in your table
 >     * **`arrange()`** for sorting the observations in your table 
 >     * **`mutate()`** for creating a new variable, or modifying an existing variable
->     * **`summarize()`** for collapsing values in one of more columns to a single summary value
+>     * **`summarise()`** for collapsing values in one of more columns to a single summary value
 > * Chain operations together into a workflow using pipes
 > * Learn about faceting in ggplot2 to create separate subplots
 
@@ -82,7 +82,7 @@ We will be looking at the 5 key dplyr functions this week:
 * **`select()`** for selecting columns
 * **`arrange()`** for sorting rows
 * **`mutate()`** for modifying columns or creating new ones
-* **`summarize()`** for computing summary values
+* **`summarise()`** for computing summary values
 
 In looking at each of these in turn, we'll be applying these to the entire data
 set. It is possible to combine these with the `group_by()` function to instead
@@ -356,6 +356,12 @@ afterwards in whatever order they were already in.
 select(metabric, Patient_ID, Survival_status, Tumour_stage, everything())
 ```
 
+Finally, columns can be renamed as part of the selection process.
+
+```{r}
+select(metabric, Patient_ID, Classification = `3-gene_classifier`, NPI = Nottingham_prognostic_index)
+```
+
 ---
 
 # Chaining operations using `%>%`
@@ -582,16 +588,24 @@ We can convert to `Tumour_size` to centimetres by dividing by 10.
 metabric <- mutate(metabric, Tumour_size = Tumour_size / 10)
 ```
 
+```{block type = "rmdblock"}
+**Nottingham Prognostic Index**
+
+The Nottingham prognostic index (**NPI**) is used to determine prognosis
+following surgery for breast cancer. Its value is calculated using three
+pathological criteria: the size of the tumour, the number of lymph nodes
+involved, and the grade of the tumour.
+
 The formula for the Nottingham prognostic index is:
 
 **`NPI = (0.2 * S) + N + G`**
 
 where
 
-* **NPI** is the Nottingham prognostic index
 * **S** is the size of the tumour in centimetres
 * **N** is the node status (0 nodes = 1, 1-3 nodes = 2, >3 nodes = 3)
 * **G** is the grade of tumour (Grade I = 1, Grade II = 2, Grade III = 3)
+```
 
 We'll recalculate the Nottingham prognostic index using the values in our
 `Tumour_size`, `Neoplasm_histologic_grade` and `Lymph_node_status` columns in
@@ -700,11 +714,136 @@ interested in finding out more.
 
 ---
 
-# Computing summary values using `summarize()`
+# Computing summary values using `summarise()`
 
----
+We'll cover the fifth of the main dplyr 'verb' functions, **`summarise()`**,
+only briefly here. This function computes summary values for one or more
+variables (columns) in a table. Here we will summarize values for the entire
+table but this function is much more useful in combination with `group_by()`
+in working on groups of observations within the data set. We will look at
+grouping in week 6 where we'll use `group_by()` in combination with both
+`summarize()` and `mutate()`.
 
-# Writing tabular data to files
+Any function that calculates a single scalar value from a vector can be used
+with `summarize()`. For example, the `mean()` function calculates the arithmetic
+mean of a numeric vector. Let's calculate the average ESR1 expression for tumour
+samples in the METABRIC data set.
+
+```{r}
+mean(metabric$ESR1)
+```
+
+The equivalent operation using `summarise()` is:
+
+```{r}
+summarise(metabric, mean(ESR1))
+```
+
+If you prefer Oxford spelling, in which -ize is preferred to -ise, you’re in
+luck as dplyr accommodates the alternative spelling.
+
+Both of the above statements gave the same average expression value but these
+were output in differing formats. The `mean()` function collapses a vector to
+single scalar value, which as we know is in fact a vector of length 1. The
+`summarise()` function, as with most tidyverse functions, returns another data
+frame, albeit one in which there is a single row and a single column.
+
+Returning a data frame might be quite useful, particularly if we’re summarising
+multiple columns or using more than one function, for example computing the
+average and standard deviation.
+
+```{r}
+summarise(metabric, ESR1_mean = mean(ESR1), ESR1_sd = sd(ESR1))
+```
+
+Notice how we also named the output columns in this last example.
+
+```{block type = "rmdblock"}
+**`summarise()`**
+
+`summarise()` collapses a data frame into a single row by calculating summary
+values of one or more of the columns.
+
+It can take any function that takes a vector of values and returns a single
+value. Some of the more useful functions include:
+
+* Centre: **`mean()`**, **`median()`**
+* Spread: **`sd()`**, **`mad()`**
+* Range: **`min()`**, **`max()`**, **`quantile()`**
+* Position: **`first()`**, **`last()`**
+* Count: **`n()`**
+
+Note the `first()`, `last()` and `n()` are only really useful when working on
+groups of observations.
+
+**`n()`** is a special function that returns the number of observations; it
+doesn't take a vector argument, i.e. a column.
+```
+
+It is also possible to summarise using a function that takes more than one
+value, i.e. from multiple columns. For example, we could compute the correlation
+between the expression of FOXA1 and MLPH.
+
+```{r}
+summarise(metabric, correlation = cor(FOXA1, MLPH))
+```
+
+## Summarizing multiple columns
+
+Much like `mutate()` with its `mutate_at()`, `mutate_if()` and `mutate_all()`
+variants, there is a family of `summarise()` functions similarly named for
+applying the same summarization function to multiple columns in a single
+operation. These work in much the same way at their `mutate` cousins.
+
+**`summarise_at()`** allows us to select the columns on which to operate using
+an additional `vars()` argument.
+
+```{r}
+summarise_at(metabric, vars(FOXA1, MLPH), mean)
+```
+
+Selecting the columns is done in the same way as for `mutate_at()` and
+`select()`.
+
+**`summarise_all()`** summarizes values in all columns.
+
+```{r}
+metabric %>%
+  select(ESR1:MLPH) %>%
+  summarise_all(mean)
+```
+
+You have to be careful with `summarise_all()` that all columns can be summarized
+with the given summary function. For example, what happens if we try to compute
+an average of a set of character values?
+
+```{r}
+summarise_all(metabric, mean, na.rm = TRUE)
+```
+
+We get a lot of warning messages and `NA` values for those columns for which
+computing an average does not make sense.
+
+**`summarise_if()`** can be used to select those values for which a
+summarization function is appropriate.
+
+```{r}
+summarise_if(metabric, is.numeric, mean, na.rm = TRUE)
+```
+
+It is possible to summarise using more than one function in which case a list of
+functions needs to be provided.
+
+```{r}
+summarise_at(metabric, vars(FOXA1, MLPH), list(mean, sd))
+```
+
+Pretty neat but I'm not sure about those column headings -- fortunately we have
+some control over these.
+
+```{r}
+summarise_at(metabric, vars(FOXA1, MLPH), list(average = mean, stdev = sd))
+```
 
 ---
 
