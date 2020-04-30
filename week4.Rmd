@@ -110,26 +110,30 @@ some specified criteria. The criteria are based on values of variables and can
 make use of comparison operators such as `==`, `>`, `<` and `!=`.
 
 For example, to filter the METABRIC data set so that it only contains
-observations for those patients who died of breast cancer.
+observations for those patients who died of breast cancer we can use `filter()`
+as follows.
 
 ```{r}
 deceased <- filter(metabric, Vital_status == "Died of Disease")
 deceased
 ```
 
-Remember that the **`==`** operator tests for equality.
+Remember that the **`==`** operator tests for equality, i.e. is the value for
+`Vital_status` for each patient (observation) equal to "Died of Disease".
 
 This filtering operation is equivalent to subsetting the rows based on a logical
 vector resulting from our comparison of vital status values with "Died of
 Disease".
 
 ```{r eval = FALSE}
-deceased <- metabric[metabric$Vital_status == "Died of Disease", ]
+filter(metabric, Vital_status == "Died of Disease")
+# is equivalent to
+metabric[metabric$Vital_status == "Died of Disease", ]
 ```
 
-Both achieve the same result but the dplyr filter method is arguably much easier
-to read. We haven't had to write `metabric` twice for one thing, we just
-referred to the variable name as it is, unquoted and without any fuss.
+Both achieve the same result but the dplyr filter method is arguably easier to
+read. We haven't had to write `metabric` twice for one thing, we just referred
+to the variable name as it is, unquoted and without any fuss.
 
 Let's have a look at the various categories in the `Vital_status` variable.
 
@@ -138,102 +142,115 @@ table(metabric$Vital_status)
 ```
 
 We could use the `!=` comparison operator to select all deceased patients
-regardless of whether they died of the disease or other causes.
+regardless of whether they died of the disease or other causes, by filtering for
+those that don't have the value "Living".
 
 ```{r}
 deceased <- filter(metabric, Vital_status != "Living")
-deceased
+nrow(deceased)
 ```
 
 Another way of doing this is to specify which classes we are interested in and
-use the `%in%` operator to test which observations (rows) contain those values.
+use the **`%in%`** operator to test which observations (rows) contain those
+values.
 
 ```{r}
 deceased <- filter(metabric, Vital_status %in% c("Died of Disease", "Died of Other Causes"))
-deceased
+nrow(deceased)
 ```
 
 Another of the tidyverse packages, **`stringr`**, contains a set of very useful
 functions for operating on text or character strings. One such function,
-**`str_starts()`** could be used to find all vital status values that start with
-"Died".
+**`str_starts()`** could be used to find all `Vital_status` values that start
+with "Died".
 
 ```{r}
 deceased <- filter(metabric, str_starts(Vital_status, "Died"))
-deceased
+nrow(deceased)
 ```
 
 Note that `str_starts()` returns a logical vector - this is important since the
 criterion for filtering must evaluate to `TRUE` or `FALSE` values for each row.
 
-`str_detect()` is another useful function that determines whether values match a
-regular expression. Regular expressions are a language for search patterns used
-very frequently in computer programming but beyond the scope of this course.
+Unsurprisingly there is an equivalent function, `str_ends()`, for matching the
+end of text (character) values and `str_detect()` is another useful function
+that determines whether values match a regular expression. Regular expressions
+are a language for search patterns used very frequently in computer programming
+and really worth getting to grips with but sadly these are beyond the scope of
+this course.
 
 Filtering based on a logical variable is the most simple type of filtering of
-all. We don't have a logical variable in our METABRIC data set so we'll create
-one from the binary survival status variable.
+all. We don't have any logical variables in our METABRIC data set so we'll
+create one from the binary `Survival_status` variable.
 
 ```{r}
+# create a new logical variable called 'Deceased'
 metabric$Deceased <- metabric$Survival_status == "DECEASED"
-filter(metabric, Deceased)
+#
+# filtering based on a logical variable - only selects TRUE values
+deceased <- filter(metabric, Deceased)
+#
+# only display those columns we're interested in
+deceased[, c("Patient_ID", "Survival_status", "Vital_status")]
 ```
 
 We can use the **`!`** operator to filter those patients who are not
 deceased.
 
-```{r}
+```{r eval = FALSE}
 filter(metabric, !Deceased)
 ```
 
 The eagle-eyed will have spotted that filtering on our newly created Deceased
 logical variable gave a slightly different number of observations (patients) who
-are considered to be deceased. We get one extra row. This is becuase we have a
+are considered to be deceased. We get one extra row. This is because we have a
 missing value for the Vital status of one of the patients. We can filter for this
 using the **`is.na()`** function.
 
 ```{r}
-filter(metabric, is.na(Vital_status))
+missing_vital_status <- filter(metabric, is.na(Vital_status))
+missing_vital_status[, c("Patient_ID", "Survival_status", "Vital_status")]
 ```
 
 `filter()` only retains rows where the condition if `TRUE`; both `FALSE` and
 `NA` values are filtered out.
 
-We can apply include more than one condition in our filtering operation, for
-example the patients who were still alive at the time of the METABRIC study and
-had survived for more than 10 years (120 months).
+We can apply more than one condition in our filtering operation, for example
+the patients who were still alive at the time of the METABRIC study and had
+survived for more than 10 years (120 months).
 
 ```{r}
 filter(metabric, Survival_status == "LIVING", Survival_time > 120)
 ```
 
-The equivalent using R's usual subsetting looks much less readable.
+The equivalent using R's usual subsetting is slightly less readable.
 
-```{r}
+```{r eval = FALSE}
 metabric[metabric$Survival_status == "LIVING" & metabric$Survival_time > 120, ]
 ```
 
-We can add as many conditions as we like separating each with a comma. Note
-that filtering using R subsetting gets more unreadable the more conditions you
-add.
+We can add as many conditions as we like separating each with a comma. Note that
+filtering using R subsetting gets more unreadable, and more cumbersome to code,
+the more conditions you add.
 
 Adding conditions in this way is equivalent to combining the conditions using
 the **`&`** (Boolean AND) operator.
 
-```{r}
-# filter(metabric, Survival_status == "LIVING", Survival_time > 120)
+```{r eval = FALSE}
+filter(metabric, Survival_status == "LIVING", Survival_time > 120)
 # is equivalent to
 filter(metabric, Survival_status == "LIVING" & Survival_time > 120)
 ```
 
-We could instead use the **`|`** (Boolean OR) operator.
-
-And we can build up more complicated filtering operations using both `&` and
-`|`, for example, let's see which patients with stage 3 or 4 tumours that are
-either estrogen receptor (ER) positive or progesterone receptor (PR) positive.
+Naturally we can also check when either of two conditions holds true by using
+the **`|`** (Boolean OR) operator. And we can build up more complicated
+filtering operations using both `&` and `|`. For example, let's see which
+patients have stage 3 or stage 4 tumours that are either estrogen receptor (ER)
+positive or progesterone receptor (PR) positive.
 
 ```{r}
-filter(metabric, Tumour_stage >= 3, ER_status == "Positive" | PR_status == "Positive")
+selected_patients <- filter(metabric, Tumour_stage >= 3, ER_status == "Positive" | PR_status == "Positive")
+nrow(selected_patients)
 ```
 
 In this case, if you used `&` in place of the comma you'd need to be careful
@@ -251,37 +268,39 @@ filter(metabric, Tumour_stage >= 3 & (ER_status == "Positive" | PR_status == "Po
 Another way of "slicing and dicing"" our tabular data set is to select just the
 variables or columns we're interested in. This can be important particularly
 when the data set contains a very large number of variables as is the case for
-the METABRIC data. Notice how each time we printed the filtered METABRIC data
-frame in the examples given above, it was not possible to display all the
-columns.
+the METABRIC data. Notice how when we print the METABRIC data frame it is not
+possible to display all the columns; we only get the first few and then a long
+list of the additional ones that weren't displayed.
 
 Using the `$` operator is quite convenient for selecting a single column and
 extracting the values as a vector. Selecting several columns using the `[]`
 subsetting operator is a bit more cumbersome. For example, in our look at
 filtering rows, we considered two different variables in our data set that
-are concerned with the living/deceased status of patients. To select these
-along with the patient identifier we could write the following:
+are concerned with the living/deceased status of patients. When printing out
+the results we selected just those columns along with the patient identifier.
 
 ```{r}
-metabric[, c("Patient_ID", "Survival_status", "Vital_status")]
+deceased[, c("Patient_ID", "Survival_status", "Vital_status")]
 ```
 
 There are several reasons why you might find this command a bit obtuse.
 
 - why the `[ ]`?
-- what is the `c`?
-- need to remember the row and column index
+- what is the `c()`?
+- the need to remember about row and column indexing
 - `[, ...]` means display all rows
 
-The **`select()`** function from dplyr is much more intuitive.
+The **`select()`** function from dplyr is more intuitive.
 
 ```{r}
 select(metabric, Patient_ID, Survival_status, Vital_status)
 ```
 
 Notice the similarities with the `filter()` function. The first argument is the
-data frame we are operating on, the variables do not need to be put in quotes,
-and the returned value is another data frame.
+data frame we are operating on and the arguments that follow on are specific to
+the operation in question, in this case, the variables (columns) to select. Note
+that the variables do not need to be put in quotes, and the returned value is
+another data frame.
 
 We can alter the order of the variables (columns).
 
@@ -290,7 +309,8 @@ select(metabric, Patient_ID, Vital_status, Survival_status)
 ```
 
 We can also select a range of columns using **`:`**, e.g. to select the patient
-identifier and all the columns between `Tumour_size` and `Cancer_type`.
+identifier and all the columns between `Tumour_size` and `Cancer_type` we could
+run the following `select()` command.
 
 ```{r}
 select(metabric, Patient_ID, Tumour_size:Cancer_type)
@@ -298,7 +318,7 @@ select(metabric, Patient_ID, Tumour_size:Cancer_type)
 
 The help page for `select` points to some special functions that can be used
 within `select()`. We can find all the columns, for example, that contain the
-term "status".
+term "status" using `contains()`.
 
 ```{r}
 select(metabric, contains("status"))
@@ -312,7 +332,7 @@ select(metabric, ends_with("status"))
 ```
 
 We can also select those columns we're not interested in and that shouldn't be
-included by negating the columns, e.g.
+included by prefixing the columns with **`-`**.
 
 ```{r}
 select(metabric, -Cohort)
