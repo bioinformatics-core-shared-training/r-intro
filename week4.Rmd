@@ -673,8 +673,27 @@ metabric %>%
 ```
 
 The `mutate_at()` function, and the related `mutate_if()` and `mutate_all()` 
-functions, are really very powerful but with that comes some complexity. We'll
-leave it there for now but point you to the help page for `mutate_at` if you're
+functions, are really very powerful but with that comes some complexity. For
+example, we may come across situations where we'd like to apply the same
+operation to multiple columns but where there is no available function in R
+to do what we want.
+
+Let's say we want to conver the petal and sepal measurements in the `iris`
+data set from centimetres to millimetres. We'd need to use what is known as a
+lambda expression for this.
+
+```{r}
+iris %>%
+  as_tibble() %>%
+  mutate_at(vars(Sepal.Length:Petal.Width), ~(. * 10))
+```
+
+The **`~`** denotes that we're using a lambda expression and the `.` is a
+placeholder for the column being operated on. In this case, we're multiplying
+each of the columns between `Sepal.Length` and `Petal.Width` inclusive by 10.
+
+If you think this is getting fairly complicated you'd be right. We'll leave it
+there for now but point you to the help page for `mutate_at` if you're
 interested in finding out more.
 
 ---

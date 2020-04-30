@@ -1131,7 +1131,27 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 ## 10 MB-0035    DECEASED        Died of Dis… 1                Positive 
 ## # … with 1,894 more rows, and 2 more variables: PR_status &lt;fct&gt;,
 ## #   HER2_status &lt;fct&gt;</code></pre>
-<p>The <code>mutate_at()</code> function, and the related <code>mutate_if()</code> and <code>mutate_all()</code> functions, are really very powerful but with that comes some complexity. We’ll leave it there for now but point you to the help page for <code>mutate_at</code> if you’re interested in finding out more.</p>
+<p>The <code>mutate_at()</code> function, and the related <code>mutate_if()</code> and <code>mutate_all()</code> functions, are really very powerful but with that comes some complexity. For example, we may come across situations where we’d like to apply the same operation to multiple columns but where there is no available function in R to do what we want.</p>
+<p>Let’s say we want to conver the petal and sepal measurements in the <code>iris</code> data set from centimetres to millimetres. We’d need to use what is known as a lambda expression for this.</p>
+<pre class="r"><code>iris %&gt;%
+  as_tibble() %&gt;%
+  mutate_at(vars(Sepal.Length:Petal.Width), ~(. * 10))</code></pre>
+<pre><code>## # A tibble: 150 x 5
+##    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+##           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;  
+##  1           51          35           14           2 setosa 
+##  2           49          30           14           2 setosa 
+##  3           47          32           13           2 setosa 
+##  4           46          31           15           2 setosa 
+##  5           50          36           14           2 setosa 
+##  6           54          39           17           4 setosa 
+##  7           46          34           14           3 setosa 
+##  8           50          34           15           2 setosa 
+##  9           44          29           14           2 setosa 
+## 10           49          31           15           1 setosa 
+## # … with 140 more rows</code></pre>
+<p>The <strong><code>~</code></strong> denotes that we’re using a lambda expression and the <code>.</code> is a placeholder for the column being operated on. In this case, we’re multiplying each of the columns between <code>Sepal.Length</code> and <code>Petal.Width</code> inclusive by 10.</p>
+<p>If you think this is getting fairly complicated you’d be right. We’ll leave it there for now but point you to the help page for <code>mutate_at</code> if you’re interested in finding out more.</p>
 <hr />
 </div>
 </div>
