@@ -761,6 +761,126 @@ selected_columns</code></pre>
 ##  9 MB-0028             16            2 ER+/HER2- High …             5.03
 ## 10 MB-0035             28            2 ER+/HER2- High …             3.06
 ## # … with 1,894 more rows, and 1 more variable: Integrative_cluster &lt;chr&gt;</code></pre>
+<hr />
+</div>
+<div id="chaining-operations-using" class="section level1">
+<h1>Chaining operations using <code>%&gt;%</code></h1>
+<p>Let’s consider again an earlier example in which we filtered the METABRIC data set to retain just the patients who were still alive at the time of the study and had survived fro more than 10 years (120 months). We used <code>filter()</code> to select the rows corresponding to the patients meeting these criteria and can then use <code>select()</code> to only display the variables (columns) we’re most interested in.</p>
+<pre class="r"><code>patients_of_interest &lt;- filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120)
+patient_details_of_interest &lt;- select(patients_of_interest, Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
+patient_details_of_interest</code></pre>
+<pre><code>## # A tibble: 545 x 4
+##    Patient_ID Survival_time Tumour_stage Nottingham_prognostic_index
+##    &lt;chr&gt;              &lt;dbl&gt;        &lt;dbl&gt;                       &lt;dbl&gt;
+##  1 MB-0000             140.            2                        6.04
+##  2 MB-0006             165.            2                        4.05
+##  3 MB-0014             164.            2                        4.02
+##  4 MB-0039             164.            1                        2.04
+##  5 MB-0045             165.            2                        5.04
+##  6 MB-0053             161.            2                        3.05
+##  7 MB-0054             160.            2                        4.07
+##  8 MB-0060             141.            2                        4.05
+##  9 MB-0062             154.            1                        4.03
+## 10 MB-0066             157.            2                        4.03
+## # … with 535 more rows</code></pre>
+<p>Here we’ve use an intermediate variable, <code>patients_of_interest</code>, which we only needed to get to the final result. We could just have used the same name to avoid cluttering our environment and overwritten the results from the <code>filter()</code> operation with those of the <code>select()</code> operation.</p>
+<pre class="r"><code>patients_of_interest &lt;- select(patients_of_interest, Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)</code></pre>
+<p>Another less readable way of writing this code is to nest the <code>filter()</code> function call inside the <code>select()</code>. Although this looks very unwieldy and is not easy to follow, nested function calls are very common in a lot of R code you may come across.</p>
+<pre class="r"><code>patients_of_interest &lt;- select(filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120), Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
+patients_of_interest</code></pre>
+<pre><code>## # A tibble: 545 x 4
+##    Patient_ID Survival_time Tumour_stage Nottingham_prognostic_index
+##    &lt;chr&gt;              &lt;dbl&gt;        &lt;dbl&gt;                       &lt;dbl&gt;
+##  1 MB-0000             140.            2                        6.04
+##  2 MB-0006             165.            2                        4.05
+##  3 MB-0014             164.            2                        4.02
+##  4 MB-0039             164.            1                        2.04
+##  5 MB-0045             165.            2                        5.04
+##  6 MB-0053             161.            2                        3.05
+##  7 MB-0054             160.            2                        4.07
+##  8 MB-0060             141.            2                        4.05
+##  9 MB-0062             154.            1                        4.03
+## 10 MB-0066             157.            2                        4.03
+## # … with 535 more rows</code></pre>
+<p>However, there is another way chaining together a series of operations into a mini workflow that is elegant, intuitive and makes for very readable R code. For that we need to introduce a new operator, the <strong>pipe</strong> operator, <strong><code>%&gt;%</code></strong>.</p>
+<div class="rmdblock">
+<p>
+<strong>The pipe operator <code>%&gt;%</code></strong>
+</p>
+<p>
+The pipe operator takes the output from one operation, i.e. whatever is on the left-hand side of <code>%&gt;%</code> and passes it in as the first argument to the second operation or function.
+</p>
+<p>
+<strong><code>x %&gt;% f(y)</code></strong> is equivalent to <strong><code>f(x, y)</code></strong>
+</p>
+<p>
+For example:
+</p>
+<p>
+<code>select(starwars, name, height, mass)</code>
+</p>
+<p>
+can be rewritten as
+</p>
+<p>
+<code>starwars %&gt;% select(name, height, mass)</code>
+</p>
+<p>
+This allows for chaining of operations into workflows, e.g.
+</p>
+<p>
+<code>starwars %&gt;%</code><br/>     <code>filter(species == “Droid”) %&gt;%</code><br/>     <code>select(name, height, mass)</code>
+</p>
+<p>
+The <code>%&gt;%</code> operator comes from the <code>magrittr</code> package (do you get the joke?) and is available when we load the tidyverse using <code>library(tidyverse)</code>.
+</p>
+</div>
+<p>We can rewrite the code for our filtering and column selection operations as follows.</p>
+<pre class="r"><code>patients_of_interest &lt;- metabric %&gt;%
+  filter(Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120) %&gt;%
+  select(Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)</code></pre>
+<p>Note how each operation takes the output from the previous operation as its first argument. This way of coding is embraced wholeheartedly in the tidyverse hence the first argument of almost every function that work on data frames has the data frame as the first argument. It is also the reason why tidyverse functions return a data frame regardless of whether the output could be recast as a vector or a single value.</p>
+<p>“Piping”, the act of chaining operations together, becomes really useful when there are several steps involved in filtering and transforming a data set.</p>
+<p>The usual way of developing a workflow is to build it up one step at a time, testing the output produced at each stage. Let’s do that for this case.</p>
+<p>We start by considering just the patients who are living.</p>
+<pre class="r"><code>patients_of_interest &lt;- metabric %&gt;%
+  filter(Survival_status == &quot;LIVING&quot;)</code></pre>
+<p>We then add another filter for the survival time.</p>
+<pre class="r"><code>patients_of_interest &lt;- metabric %&gt;%
+  filter(Survival_status == &quot;LIVING&quot;) %&gt;%
+  filter(Survival_time &gt; 120)</code></pre>
+<p>At each stage we look at the resulting <code>patients_of_interest</code> data frame to check we’re happy with the result.</p>
+<p>Finally we only want certain columns, so we add a <code>select()</code> operation.</p>
+<pre class="r"><code>patients_of_interest &lt;- metabric %&gt;%
+  filter(Survival_status == &quot;LIVING&quot;) %&gt;%
+  filter(Survival_time &gt; 120) %&gt;%
+  select(Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
+# print out the result
+patients_of_interest</code></pre>
+<pre><code>## # A tibble: 545 x 4
+##    Patient_ID Survival_time Tumour_stage Nottingham_prognostic_index
+##    &lt;chr&gt;              &lt;dbl&gt;        &lt;dbl&gt;                       &lt;dbl&gt;
+##  1 MB-0000             140.            2                        6.04
+##  2 MB-0006             165.            2                        4.05
+##  3 MB-0014             164.            2                        4.02
+##  4 MB-0039             164.            1                        2.04
+##  5 MB-0045             165.            2                        5.04
+##  6 MB-0053             161.            2                        3.05
+##  7 MB-0054             160.            2                        4.07
+##  8 MB-0060             141.            2                        4.05
+##  9 MB-0062             154.            1                        4.03
+## 10 MB-0066             157.            2                        4.03
+## # … with 535 more rows</code></pre>
+<p>When continuing our workflow across multiple lines, we need to be careful to ensure the <code>%&gt;%</code> is at the end of the line. If we try to place this at the start of the next line, R will think we’ve finished the workflow prematurely and will report an error on what it considers the next statement starting with <code>%&gt;%</code>.</p>
+<pre class="r"><code># R considers the following to be 2 separate commands, the first of which ends
+# with the first filter operation and runs successfully.
+# The second statement is the third and last line, is not a valid commmand and
+# so you&#39;ll get an error message
+patients_of_interest &lt;- metabric %&gt;%
+  filter(Survival_status == &quot;LIVING&quot;)
+  %&gt;% filter(Survival_time &gt; 120)</code></pre>
+<p>This is very similar to what we saw with adding layers and other components to a ggplot using the <code>+</code> operator, where we needed the <code>+</code> to be at the end of a line.</p>
+<p>We’ll be using the pipe <code>%&gt;%</code> operator throughout the rest of the course so you’d better get used to it. But actually we think you’ll come to love it as much as we do.</p>
 </div>
 
 

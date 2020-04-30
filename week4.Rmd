@@ -346,3 +346,146 @@ selected_columns <- select(metabric, Patient_ID, starts_with("Tumour_"), `3-gene
 selected_columns
 ```
 
+---
+
+# Chaining operations using `%>%`
+
+Let's consider again an earlier example in which we filtered the METABRIC data
+set to retain just the patients who were still alive at the time of the study
+and had survived fro more than 10 years (120 months). We used `filter()` to
+select the rows corresponding to the patients meeting these criteria and can
+then use `select()` to only display the variables (columns) we're most
+interested in.
+
+```{r}
+patients_of_interest <- filter(metabric, Survival_status == "LIVING", Survival_time > 120)
+patient_details_of_interest <- select(patients_of_interest, Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
+patient_details_of_interest
+```
+
+Here we've use an intermediate variable, `patients_of_interest`, which we only
+needed to get to the final result. We could just have used the same name to
+avoid cluttering our environment and overwritten the results from the `filter()`
+operation with those of the `select()` operation.
+
+```{r eval = FALSE}
+patients_of_interest <- select(patients_of_interest, Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
+```
+
+Another less readable way of writing this code is to nest the `filter()`
+function call inside the `select()`. Although this looks very unwieldy and is
+not easy to follow, nested function calls are very common in a lot of R code
+you may come across.
+
+```{r}
+patients_of_interest <- select(filter(metabric, Survival_status == "LIVING", Survival_time > 120), Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
+patients_of_interest
+```
+
+However, there is another way chaining together a series of operations into a
+mini workflow that is elegant, intuitive and makes for very readable R code.
+For that we need to introduce a new operator, the **pipe** operator, **`%>%`**.
+
+```{block type = "rmdblock"}
+**The pipe operator `%>%`**
+
+The pipe operator takes the output from one operation, i.e. whatever is on the
+left-hand side of `%>%` and passes it in as the first argument to the second
+operation or function.
+
+**`x %>% f(y)`** is equivalent to **`f(x, y)`**
+
+For example:
+
+`select(starwars, name, height, mass)`
+
+can be rewritten as
+
+`starwars %>% select(name, height, mass)`
+
+This allows for chaining of operations into workflows, e.g.
+
+`starwars %>%`<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;`filter(species == "Droid") %>%`<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;`select(name, height, mass)`
+
+The `%>%` operator comes from the `magrittr` package (do you get the joke?) and
+is available when we load the tidyverse using `library(tidyverse)`.
+```
+
+We can rewrite the code for our filtering and column selection operations as
+follows.
+
+```{r}
+patients_of_interest <- metabric %>%
+  filter(Survival_status == "LIVING", Survival_time > 120) %>%
+  select(Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
+```
+
+Note how each operation takes the output from the previous operation as its
+first argument. This way of coding is embraced wholeheartedly in the tidyverse
+hence the first argument of almost every function that work on data frames has
+the data frame as the first argument. It is also the reason why tidyverse
+functions return a data frame regardless of whether the output could be recast
+as a vector or a single value.
+
+"Piping", the act of chaining operations together, becomes really useful when
+there are several steps involved in filtering and transforming a data set.
+
+The usual way of developing a workflow is to build it up one step at a time,
+testing the output produced at each stage. Let's do that for this case.
+
+We start by considering just the patients who are living.
+
+```{r}
+patients_of_interest <- metabric %>%
+  filter(Survival_status == "LIVING")
+```
+
+We then add another filter for the survival time.
+
+```{r}
+patients_of_interest <- metabric %>%
+  filter(Survival_status == "LIVING") %>%
+  filter(Survival_time > 120)
+```
+
+At each stage we look at the resulting `patients_of_interest` data frame to check
+we're happy with the result.
+
+Finally we only want certain columns, so we add a `select()` operation.
+
+```{r}
+patients_of_interest <- metabric %>%
+  filter(Survival_status == "LIVING") %>%
+  filter(Survival_time > 120) %>%
+  select(Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
+# print out the result
+patients_of_interest
+```
+
+When continuing our workflow across multiple lines, we need to be careful to
+ensure the `%>%` is at the end of the line. If we try to place this at the start
+of the next line, R will think we've finished the workflow prematurely and will
+report an error on what it considers the next statement starting with `%>%`.
+
+```{r eval = FALSE}
+# R considers the following to be 2 separate commands, the first of which ends
+# with the first filter operation and runs successfully.
+# The second statement is the third and last line, is not a valid commmand and
+# so you'll get an error message
+patients_of_interest <- metabric %>%
+  filter(Survival_status == "LIVING")
+  %>% filter(Survival_time > 120)
+```
+
+This is very similar to what we saw with adding layers and other components to
+a ggplot using the `+` operator, where we needed the `+` to be at the end of a
+line.
+
+We'll be using the pipe `%>%` operator throughout the rest of the course so
+you'd better get used to it. But actually we think you'll come to love it as
+much as we do.
+
+
+
