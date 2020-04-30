@@ -1045,7 +1045,7 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 ## 10         2.8                 1                 2  3.56               3.06
 ## # … with 1,894 more rows</code></pre>
 <p>There is a discrepency. Can you see what the problem is?</p>
-<p>It appears that the conversion of tumour size into centimetres was not carried out in the original NPI calculation. This could explain why the plots we created in weeks 1 and 2 that featured the Nottingham prognostic index looked so odd. We’ll see if they look any better with our recalculated values.</p>
+<p>It appears that the tumour size wasn’t correctly converted into centimetres in the original NPI calculation or that the wrong scaling factor for tumour size was used. This could explain why the plots we created in weeks 1 and 2 featuring the Nottingham prognostic index looked so odd. We’ll see if they look any better with our recalculated values.</p>
 <pre class="r"><code>ggplot(data = metabric) +
   geom_point(mapping = aes(x = Age_at_diagnosis, y = NPI), na.rm = TRUE)</code></pre>
 <p><img src="week4_files/figure-html/scatter_plot_1-1.png" width="672" /></p>
@@ -1131,8 +1131,9 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 ## 10 MB-0035    DECEASED        Died of Dis… 1                Positive 
 ## # … with 1,894 more rows, and 2 more variables: PR_status &lt;fct&gt;,
 ## #   HER2_status &lt;fct&gt;</code></pre>
-<p>The <code>mutate_at()</code> function, and the related <code>mutate_if()</code> and <code>mutate_all()</code> functions, are really very powerful but with that comes some complexity. For example, we may come across situations where we’d like to apply the same operation to multiple columns but where there is no available function in R to do what we want.</p>
-<p>Let’s say we want to conver the petal and sepal measurements in the <code>iris</code> data set from centimetres to millimetres. We’d need to use what is known as a lambda expression for this.</p>
+<p>The <code>mutate_at()</code> function, and the related <code>mutate_if()</code> and <code>mutate_all()</code> functions, are really very powerful but with that comes additional complexity.</p>
+<p>For example, we may come across situations where we’d like to apply the same operation to multiple columns but where there is no available function in R to do what we want.</p>
+<p>Let’s say we want to convert the petal and sepal measurements in the <code>iris</code> data set from centimetres to millimetres. We’d need to use what is known as a lambda expression for this.</p>
 <pre class="r"><code>iris %&gt;%
   as_tibble() %&gt;%
   mutate_at(vars(Sepal.Length:Petal.Width), ~(. * 10))</code></pre>

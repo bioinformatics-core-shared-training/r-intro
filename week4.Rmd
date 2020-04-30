@@ -604,10 +604,11 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 
 There is a discrepency. Can you see what the problem is?
 
-It appears that the conversion of tumour size into centimetres was not carried
-out in the original NPI calculation. This could explain why the plots we created
-in weeks 1 and 2 that featured the Nottingham prognostic index looked so odd.
-We'll see if they look any better with our recalculated values.
+It appears that the tumour size wasn't correctly converted into centimetres in
+the original NPI calculation or that the wrong scaling factor for tumour size
+was used. This could explain why the plots we created in weeks 1 and 2 featuring
+the Nottingham prognostic index looked so odd. We'll see if they look any better
+with our recalculated values.
 
 ```{r scatter_plot_1}
 ggplot(data = metabric) +
@@ -673,12 +674,13 @@ metabric %>%
 ```
 
 The `mutate_at()` function, and the related `mutate_if()` and `mutate_all()` 
-functions, are really very powerful but with that comes some complexity. For
-example, we may come across situations where we'd like to apply the same
+functions, are really very powerful but with that comes additional complexity.
+
+For example, we may come across situations where we'd like to apply the same
 operation to multiple columns but where there is no available function in R
 to do what we want.
 
-Let's say we want to conver the petal and sepal measurements in the `iris`
+Let's say we want to convert the petal and sepal measurements in the `iris`
 data set from centimetres to millimetres. We'd need to use what is known as a
 lambda expression for this.
 
