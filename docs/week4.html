@@ -423,7 +423,7 @@ div.tocify {
 <pre class="r"><code>library(tidyverse)
 metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)
 metabric</code></pre>
-<pre><code>## # A tibble: 1,904 x 30
+<pre><code>## # A tibble: 1,904 x 32
 ##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
 ##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
 ##  1 MB-0000         1             75.6         140.  LIVING         
@@ -436,9 +436,10 @@ metabric</code></pre>
 ##  8 MB-0022         1             89.1          99.5 DECEASED       
 ##  9 MB-0028         1             86.4          36.6 DECEASED       
 ## 10 MB-0035         1             84.2          36.3 DECEASED       
-## # … with 1,894 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## # … with 1,894 more rows, and 27 more variables: Vital_status &lt;chr&gt;,
 ## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
 ## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Lymph_nodes_examined_positive &lt;dbl&gt;, Lymph_node_status &lt;dbl&gt;,
 ## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
 ## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
 ## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
@@ -493,7 +494,7 @@ An <strong>observation</strong> contains all values measured on the same unit (l
 <p>For example, to filter the METABRIC data set so that it only contains observations for those patients who died of breast cancer we can use <code>filter()</code> as follows.</p>
 <pre class="r"><code>deceased &lt;- filter(metabric, Vital_status == &quot;Died of Disease&quot;)
 deceased</code></pre>
-<pre><code>## # A tibble: 622 x 30
+<pre><code>## # A tibble: 622 x 32
 ##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
 ##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
 ##  1 MB-0005         1             48.9        164.   DECEASED       
@@ -506,9 +507,10 @@ deceased</code></pre>
 ##  8 MB-0100         1             68.7          8.07 DECEASED       
 ##  9 MB-0102         1             51.4        141.   DECEASED       
 ## 10 MB-0108         1             43.2         42.7  DECEASED       
-## # … with 612 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## # … with 612 more rows, and 27 more variables: Vital_status &lt;chr&gt;,
 ## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
 ## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Lymph_nodes_examined_positive &lt;dbl&gt;, Lymph_node_status &lt;dbl&gt;,
 ## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
 ## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
 ## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
@@ -575,7 +577,7 @@ missing_vital_status[, c(&quot;Patient_ID&quot;, &quot;Survival_status&quot;, &q
 <p><code>filter()</code> only retains rows where the condition if <code>TRUE</code>; both <code>FALSE</code> and <code>NA</code> values are filtered out.</p>
 <p>We can apply more than one condition in our filtering operation, for example the patients who were still alive at the time of the METABRIC study and had survived for more than 10 years (120 months).</p>
 <pre class="r"><code>filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120)</code></pre>
-<pre><code>## # A tibble: 545 x 31
+<pre><code>## # A tibble: 545 x 33
 ##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
 ##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
 ##  1 MB-0000         1             75.6          140. LIVING         
@@ -588,9 +590,10 @@ missing_vital_status[, c(&quot;Patient_ID&quot;, &quot;Survival_status&quot;, &q
 ##  8 MB-0060         1             45.4          141. LIVING         
 ##  9 MB-0062         1             52.1          154. LIVING         
 ## 10 MB-0066         1             61.5          157. LIVING         
-## # … with 535 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
+## # … with 535 more rows, and 28 more variables: Vital_status &lt;chr&gt;,
 ## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
 ## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Lymph_nodes_examined_positive &lt;dbl&gt;, Lymph_node_status &lt;dbl&gt;,
 ## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
 ## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
 ## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
@@ -673,56 +676,57 @@ nrow(selected_patients)</code></pre>
 ## # … with 1,894 more rows</code></pre>
 <p>We can also select a range of columns using <strong><code>:</code></strong>, e.g. to select the patient identifier and all the columns between <code>Tumour_size</code> and <code>Cancer_type</code> we could run the following <code>select()</code> command.</p>
 <pre class="r"><code>select(metabric, Patient_ID, Tumour_size:Cancer_type)</code></pre>
-<pre><code>## # A tibble: 1,904 x 5
-##    Patient_ID Tumour_size Tumour_stage Neoplasm_histolog… Cancer_type      
-##    &lt;chr&gt;            &lt;dbl&gt;        &lt;dbl&gt;              &lt;dbl&gt; &lt;chr&gt;            
-##  1 MB-0000             22            2                  3 Breast Invasive …
-##  2 MB-0002             10            1                  3 Breast Invasive …
-##  3 MB-0005             15            2                  2 Breast Invasive …
-##  4 MB-0006             25            2                  2 Breast Mixed Duc…
-##  5 MB-0008             40            2                  3 Breast Mixed Duc…
-##  6 MB-0010             31            4                  3 Breast Invasive …
-##  7 MB-0014             10            2                  2 Breast Invasive …
-##  8 MB-0022             29            2                  2 Breast Mixed Duc…
-##  9 MB-0028             16            2                  3 Breast Invasive …
-## 10 MB-0035             28            2                  2 Breast Invasive …
-## # … with 1,894 more rows</code></pre>
+<pre><code>## # A tibble: 1,904 x 7
+##    Patient_ID Tumour_size Tumour_stage Neoplasm_histol… Lymph_nodes_exa…
+##    &lt;chr&gt;            &lt;dbl&gt;        &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+##  1 MB-0000             22            2                3               10
+##  2 MB-0002             10            1                3                0
+##  3 MB-0005             15            2                2                1
+##  4 MB-0006             25            2                2                3
+##  5 MB-0008             40            2                3                8
+##  6 MB-0010             31            4                3                0
+##  7 MB-0014             10            2                2                1
+##  8 MB-0022             29            2                2                1
+##  9 MB-0028             16            2                3                1
+## 10 MB-0035             28            2                2                0
+## # … with 1,894 more rows, and 2 more variables: Lymph_node_status &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;</code></pre>
 <p>The help page for <code>select</code> points to some special functions that can be used within <code>select()</code>. We can find all the columns, for example, that contain the term “status” using <code>contains()</code>.</p>
 <pre class="r"><code>select(metabric, contains(&quot;status&quot;))</code></pre>
-<pre><code>## # A tibble: 1,904 x 6
-##    Survival_status Vital_status ER_status PR_status HER2_status
-##    &lt;chr&gt;           &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;      
-##  1 LIVING          Living       Positive  Negative  Negative   
-##  2 LIVING          Living       Positive  Positive  Negative   
-##  3 DECEASED        Died of Dis… Positive  Positive  Negative   
-##  4 LIVING          Living       Positive  Positive  Negative   
-##  5 DECEASED        Died of Dis… Positive  Positive  Negative   
-##  6 DECEASED        Died of Dis… Positive  Positive  Negative   
-##  7 LIVING          Living       Positive  Positive  Negative   
-##  8 DECEASED        Died of Oth… Positive  Negative  Negative   
-##  9 DECEASED        Died of Oth… Positive  Negative  Negative   
-## 10 DECEASED        Died of Dis… Positive  Negative  Negative   
-## # … with 1,894 more rows, and 1 more variable:
+<pre><code>## # A tibble: 1,904 x 7
+##    Survival_status Vital_status Lymph_node_stat… ER_status PR_status
+##    &lt;chr&gt;           &lt;chr&gt;                   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;    
+##  1 LIVING          Living                      3 Positive  Negative 
+##  2 LIVING          Living                      1 Positive  Positive 
+##  3 DECEASED        Died of Dis…                2 Positive  Positive 
+##  4 LIVING          Living                      2 Positive  Positive 
+##  5 DECEASED        Died of Dis…                3 Positive  Positive 
+##  6 DECEASED        Died of Dis…                1 Positive  Positive 
+##  7 LIVING          Living                      2 Positive  Positive 
+##  8 DECEASED        Died of Oth…                2 Positive  Negative 
+##  9 DECEASED        Died of Oth…                2 Positive  Negative 
+## 10 DECEASED        Died of Dis…                1 Positive  Negative 
+## # … with 1,894 more rows, and 2 more variables: HER2_status &lt;chr&gt;,
 ## #   HER2_status_measured_by_SNP6 &lt;chr&gt;</code></pre>
 <p>If we only wanted those ending with “status” we could use <code>ends_with()</code> instead.</p>
 <pre class="r"><code>select(metabric, ends_with(&quot;status&quot;))</code></pre>
-<pre><code>## # A tibble: 1,904 x 5
-##    Survival_status Vital_status         ER_status PR_status HER2_status
-##    &lt;chr&gt;           &lt;chr&gt;                &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;      
-##  1 LIVING          Living               Positive  Negative  Negative   
-##  2 LIVING          Living               Positive  Positive  Negative   
-##  3 DECEASED        Died of Disease      Positive  Positive  Negative   
-##  4 LIVING          Living               Positive  Positive  Negative   
-##  5 DECEASED        Died of Disease      Positive  Positive  Negative   
-##  6 DECEASED        Died of Disease      Positive  Positive  Negative   
-##  7 LIVING          Living               Positive  Positive  Negative   
-##  8 DECEASED        Died of Other Causes Positive  Negative  Negative   
-##  9 DECEASED        Died of Other Causes Positive  Negative  Negative   
-## 10 DECEASED        Died of Disease      Positive  Negative  Negative   
-## # … with 1,894 more rows</code></pre>
+<pre><code>## # A tibble: 1,904 x 6
+##    Survival_status Vital_status Lymph_node_stat… ER_status PR_status
+##    &lt;chr&gt;           &lt;chr&gt;                   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;    
+##  1 LIVING          Living                      3 Positive  Negative 
+##  2 LIVING          Living                      1 Positive  Positive 
+##  3 DECEASED        Died of Dis…                2 Positive  Positive 
+##  4 LIVING          Living                      2 Positive  Positive 
+##  5 DECEASED        Died of Dis…                3 Positive  Positive 
+##  6 DECEASED        Died of Dis…                1 Positive  Positive 
+##  7 LIVING          Living                      2 Positive  Positive 
+##  8 DECEASED        Died of Oth…                2 Positive  Negative 
+##  9 DECEASED        Died of Oth…                2 Positive  Negative 
+## 10 DECEASED        Died of Dis…                1 Positive  Negative 
+## # … with 1,894 more rows, and 1 more variable: HER2_status &lt;chr&gt;</code></pre>
 <p>We can also select those columns we’re not interested in and that shouldn’t be included by prefixing the columns with <strong><code>-</code></strong>.</p>
 <pre class="r"><code>select(metabric, -Cohort)</code></pre>
-<pre><code>## # A tibble: 1,904 x 30
+<pre><code>## # A tibble: 1,904 x 32
 ##    Patient_ID Age_at_diagnosis Survival_time Survival_status Vital_status
 ##    &lt;chr&gt;                 &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;       
 ##  1 MB-0000                75.6         140.  LIVING          Living      
@@ -735,9 +739,10 @@ nrow(selected_patients)</code></pre>
 ##  8 MB-0022                89.1          99.5 DECEASED        Died of Oth…
 ##  9 MB-0028                86.4          36.6 DECEASED        Died of Oth…
 ## 10 MB-0035                84.2          36.3 DECEASED        Died of Dis…
-## # … with 1,894 more rows, and 25 more variables: Chemotherapy &lt;chr&gt;,
+## # … with 1,894 more rows, and 27 more variables: Chemotherapy &lt;chr&gt;,
 ## #   Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;, Tumour_stage &lt;dbl&gt;,
-## #   Neoplasm_histologic_grade &lt;dbl&gt;, Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;,
+## #   Neoplasm_histologic_grade &lt;dbl&gt;, Lymph_nodes_examined_positive &lt;dbl&gt;,
+## #   Lymph_node_status &lt;dbl&gt;, Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;,
 ## #   PR_status &lt;chr&gt;, HER2_status &lt;chr&gt;,
 ## #   HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
 ## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
@@ -761,6 +766,31 @@ selected_columns</code></pre>
 ##  9 MB-0028             16            2 ER+/HER2- High …             5.03
 ## 10 MB-0035             28            2 ER+/HER2- High …             3.06
 ## # … with 1,894 more rows, and 1 more variable: Integrative_cluster &lt;chr&gt;</code></pre>
+<p>You can also <code>select()</code> to completely reorder the columns so they’re in the order of your choosing. The <code>everything()</code> helper function is useful in this context, particularly if what you’re really interested in is bringing one or more columns to the left hand side and then including everything else afterwards in whatever order they were already in.</p>
+<pre class="r"><code>select(metabric, Patient_ID, Survival_status, Tumour_stage, everything())</code></pre>
+<pre><code>## # A tibble: 1,904 x 33
+##    Patient_ID Survival_status Tumour_stage Cohort Age_at_diagnosis
+##    &lt;chr&gt;      &lt;chr&gt;                  &lt;dbl&gt;  &lt;dbl&gt;            &lt;dbl&gt;
+##  1 MB-0000    LIVING                     2      1             75.6
+##  2 MB-0002    LIVING                     1      1             43.2
+##  3 MB-0005    DECEASED                   2      1             48.9
+##  4 MB-0006    LIVING                     2      1             47.7
+##  5 MB-0008    DECEASED                   2      1             77.0
+##  6 MB-0010    DECEASED                   4      1             78.8
+##  7 MB-0014    LIVING                     2      1             56.4
+##  8 MB-0022    DECEASED                   2      1             89.1
+##  9 MB-0028    DECEASED                   2      1             86.4
+## 10 MB-0035    DECEASED                   2      1             84.2
+## # … with 1,894 more rows, and 28 more variables: Survival_time &lt;dbl&gt;,
+## #   Vital_status &lt;chr&gt;, Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;,
+## #   Tumour_size &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Lymph_nodes_examined_positive &lt;dbl&gt;, Lymph_node_status &lt;dbl&gt;,
+## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
+## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
+## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
+## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
+## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
+## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
 <hr />
 </div>
 <div id="chaining-operations-using" class="section level1">
@@ -888,7 +918,7 @@ patients_of_interest &lt;- metabric %&gt;%
 <p>It is sometimes quite useful to sort our data frame based on the values in one or more of the columns, particularly when displaying the contents or saving them to a file. The <code>arrange()</code> function in dplyr provides this sorting capability.</p>
 <p>For example, we can sort the METABRIC patients into order of increasing survival time.</p>
 <pre class="r"><code>arrange(metabric, Survival_time)</code></pre>
-<pre><code>## # A tibble: 1,904 x 31
+<pre><code>## # A tibble: 1,904 x 33
 ##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
 ##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
 ##  1 MB-0284         1             51.4         0     LIVING         
@@ -901,9 +931,10 @@ patients_of_interest &lt;- metabric %&gt;%
 ##  8 MB-5525         3             63.2         2     LIVING         
 ##  9 MB-6092         5             80.6         2.3   DECEASED       
 ## 10 MB-0117         1             60.1         2.4   LIVING         
-## # … with 1,894 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
+## # … with 1,894 more rows, and 28 more variables: Vital_status &lt;chr&gt;,
 ## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
 ## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Lymph_nodes_examined_positive &lt;dbl&gt;, Lymph_node_status &lt;dbl&gt;,
 ## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
 ## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
 ## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
@@ -912,7 +943,7 @@ patients_of_interest &lt;- metabric %&gt;%
 ## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
 <p>Or we might be more interested in the patients that survived the longest so would need the order to be of decreasing survival time. For that we can use the helper function <code>desc()</code> that was specifically created to work with <code>arrange()</code>.</p>
 <pre class="r"><code>arrange(metabric, desc(Survival_time))</code></pre>
-<pre><code>## # A tibble: 1,904 x 31
+<pre><code>## # A tibble: 1,904 x 33
 ##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
 ##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
 ##  1 MB-4189         3             61.0          355. DECEASED       
@@ -925,9 +956,10 @@ patients_of_interest &lt;- metabric %&gt;%
 ##  8 MB-4633         3             67.0          318. LIVING         
 ##  9 MB-4332         3             34.4          308. LIVING         
 ## 10 MB-4418         3             56.1          308. LIVING         
-## # … with 1,894 more rows, and 26 more variables: Vital_status &lt;chr&gt;,
+## # … with 1,894 more rows, and 28 more variables: Vital_status &lt;chr&gt;,
 ## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
 ## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Lymph_nodes_examined_positive &lt;dbl&gt;, Lymph_node_status &lt;dbl&gt;,
 ## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
 ## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
 ## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
@@ -974,6 +1006,153 @@ patients_of_interest</code></pre>
 ## # … with 535 more rows</code></pre>
 <p>Here we’ve sorted first by tumour stage from lowest to highest value and then by the Nottingham prognostic index when there are ties, i.e. where the tumour stage is the same.</p>
 <p>Sorting is commonly used in workflows usually as one of the last steps before presentation or writing out the resulting table to a file.</p>
+<hr />
+</div>
+<div id="modifying-data-using-mutate" class="section level1">
+<h1>Modifying data using <code>mutate()</code></h1>
+<p>In one of the examples of filtering observations using <code>filter()</code> above we created a new logical variable called <code>Deceased</code>.</p>
+<pre class="r"><code>metabric$Deceased &lt;- metabric$Survival_status == &quot;DECEASED&quot;</code></pre>
+<p>This is an example of a rather common type of data manipulation in which we crate a new column based on the values contained in one or more other columns. The <code>dplyr</code> package provides the <code>mutate()</code> function for this purpose.</p>
+<pre class="r"><code>metabric &lt;- mutate(metabric, Deceased = Survival_status == &quot;DECEASED&quot;)</code></pre>
+<p>Both of these methods adds the new column to the end.</p>
+<p>Note that variables names in the <code>mutate()</code> function call do not need to be prefixed by <code>metabric$</code> just as they don’t in any of the <code>dplyr</code> functions.</p>
+<p>We can overwrite a column and this is quite commonly done when we want to change the units. For example, our tumour size values are in millimetres but the formula for the Nottingham prognostic index uses the tumour size in centimetres. We can convert to <code>Tumour_size</code> to centimetres by dividing by 10.</p>
+<pre class="r"><code>metabric &lt;- mutate(metabric, Tumour_size = Tumour_size / 10)</code></pre>
+<p>The formula for the Nottingham prognostic index is:</p>
+<p><strong><code>NPI = (0.2 * S) + N + G</code></strong></p>
+<p>where</p>
+<ul>
+<li><strong>NPI</strong> is the Nottingham prognostic index</li>
+<li><strong>S</strong> is the size of the tumour in centimetres</li>
+<li><strong>N</strong> is the node status (0 nodes = 1, 1-3 nodes = 2, &gt;3 nodes = 3)</li>
+<li><strong>G</strong> is the grade of tumour (Grade I = 1, Grade II = 2, Grade III = 3)</li>
+</ul>
+<p>We’ll recalculate the Nottingham prognostic index using the values in our <code>Tumour_size</code>, <code>Neoplasm_histologic_grade</code> and <code>Lymph_node_status</code> columns in our METABRIC data frame.</p>
+<pre class="r"><code>metabric &lt;- mutate(metabric, NPI = 0.2 * Tumour_size + Lymph_node_status + Neoplasm_histologic_grade)
+select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI, Nottingham_prognostic_index)</code></pre>
+<pre><code>## # A tibble: 1,904 x 5
+##    Tumour_size Lymph_node_status Neoplasm_histolo…   NPI Nottingham_progno…
+##          &lt;dbl&gt;             &lt;dbl&gt;             &lt;dbl&gt; &lt;dbl&gt;              &lt;dbl&gt;
+##  1         2.2                 3                 3  6.44               6.04
+##  2         1                   1                 3  4.2                4.02
+##  3         1.5                 2                 2  4.3                4.03
+##  4         2.5                 2                 2  4.5                4.05
+##  5         4                   3                 3  6.8                6.08
+##  6         3.1                 1                 3  4.62               4.06
+##  7         1                   2                 2  4.2                4.02
+##  8         2.9                 2                 2  4.58               4.06
+##  9         1.6                 2                 3  5.32               5.03
+## 10         2.8                 1                 2  3.56               3.06
+## # … with 1,894 more rows</code></pre>
+<p>There is a discrepency. Can you see what the problem is?</p>
+<p>It appears that the conversion of tumour size into centimetres was not carried out in the original NPI calculation. This could explain why the plots we created in weeks 1 and 2 that featured the Nottingham prognostic index looked so odd. We’ll see if they look any better with our recalculated values.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_point(mapping = aes(x = Age_at_diagnosis, y = NPI), na.rm = TRUE)</code></pre>
+<p><img src="week4_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p>There is still some banding but nothing like the NPI values downloaded from cBioPortal which line up very closely to whole numbers.</p>
+<p>The <strong><code>round()</code></strong> function is really useful for rounding numerical values to a specified number of decimal places. We’ll read in the METABRIC data again and create a small workflow that carries out the tumour size conversion, computes the NPI, rounds the tumour size and the resulting NPI value to 1 decimal place and displays the results in decreasing order of NPI.</p>
+<pre class="r"><code>read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;) %&gt;%
+  mutate(Tumour_size = Tumour_size / 10) %&gt;%
+  mutate(NPI = 0.2 * Tumour_size + Lymph_node_status + Neoplasm_histologic_grade) %&gt;%
+  mutate(Tumour_size = round(Tumour_size, digits = 1)) %&gt;%
+  mutate(NPI = round(NPI, digits = 1)) %&gt;%
+  arrange(desc(NPI)) %&gt;%
+  select(Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI)</code></pre>
+<pre><code>## # A tibble: 1,904 x 4
+##    Tumour_size Lymph_node_status Neoplasm_histologic_grade   NPI
+##          &lt;dbl&gt;             &lt;dbl&gt;                     &lt;dbl&gt; &lt;dbl&gt;
+##  1        18                   3                         3   9.6
+##  2        16                   3                         3   9.2
+##  3        15                   3                         3   9  
+##  4        13                   3                         3   8.6
+##  5        18.2                 2                         3   8.6
+##  6        12                   3                         3   8.4
+##  7        10                   3                         3   8  
+##  8         9.9                 3                         3   8  
+##  9         9.9                 3                         3   8  
+## 10         8.4                 3                         3   7.7
+## # … with 1,894 more rows</code></pre>
+<div id="mutating-multiple-columns" class="section level2">
+<h2>Mutating multiple columns</h2>
+<p>In that last workflow we included the same rounding operation applied to two different variables. It would be nice to be able to carry out just the one <code>mutate()</code> but apply it to both <code>Tumour_size</code> and <code>NPI</code> columns and we can using <strong><code>mutate_at()</code></strong>.</p>
+<pre class="r"><code>metabric %&gt;%
+  mutate_at(vars(Tumour_size, NPI), round, digits = 1) %&gt;%
+  select(Patient_ID, Tumour_size, NPI)</code></pre>
+<pre><code>## # A tibble: 1,904 x 3
+##    Patient_ID Tumour_size   NPI
+##    &lt;chr&gt;            &lt;dbl&gt; &lt;dbl&gt;
+##  1 MB-0000            2.2   6.4
+##  2 MB-0002            1     4.2
+##  3 MB-0005            1.5   4.3
+##  4 MB-0006            2.5   4.5
+##  5 MB-0008            4     6.8
+##  6 MB-0010            3.1   4.6
+##  7 MB-0014            1     4.2
+##  8 MB-0022            2.9   4.6
+##  9 MB-0028            1.6   5.3
+## 10 MB-0035            2.8   3.6
+## # … with 1,894 more rows</code></pre>
+<p>This is slightly more complicated. We had to group the variables for which we want the function to apply using <code>vars()</code>. We then gave the function name as the next argument and finally any additional arguments that the function needs, in this case the number of digits.</p>
+<p>We can use the range operator and the same helper functions as we did for selecting columns using <code>select()</code> inside <code>vars()</code>.</p>
+<p>For example, we might decide that our expression values are given to a much higher degree of precision than is strictly needed.</p>
+<pre class="r"><code>metabric %&gt;%
+  mutate_at(vars(ESR1:MLPH), round, digits = 2) %&gt;%
+  select(Patient_ID, ESR1:MLPH)</code></pre>
+<pre><code>## # A tibble: 1,904 x 9
+##    Patient_ID  ESR1 ERBB2   PGR  TP53 PIK3CA GATA3 FOXA1  MLPH
+##    &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 MB-0000     8.93  9.33  5.68  6.34   5.7   6.93  7.95  9.73
+##  2 MB-0002    10.0   9.73  7.51  6.19   5.76 11.2  11.8  12.5 
+##  3 MB-0005    10.0   9.73  7.38  6.4    6.75  9.29 11.7  10.3 
+##  4 MB-0006    10.4  10.3   6.82  6.87   7.22  8.67 11.9  10.5 
+##  5 MB-0008    11.3   9.96  7.33  6.34   5.82  9.72 11.6  12.2 
+##  6 MB-0010    11.2   9.74  5.95  5.42   6.12  9.79 12.1  11.4 
+##  7 MB-0014    10.8   9.28  7.72  5.99   7.48  8.37 11.5  10.8 
+##  8 MB-0022    10.4   8.61  5.59  6.17   7.59  7.87 10.7   9.95
+##  9 MB-0028    12.5  10.7   5.33  6.22   6.25 10.3  12.2  10.9 
+## 10 MB-0035     7.54 11.5   5.59  6.41   5.99 10.2  12.8  13.5 
+## # … with 1,894 more rows</code></pre>
+<p>Or we could decide that all the columns whose names end with “_status&quot; are in fact categorical variables and should be converted to factors.</p>
+<pre class="r"><code>metabric %&gt;%
+  mutate_at(vars(ends_with(&quot;_status&quot;)), as.factor) %&gt;%
+  select(Patient_ID, ends_with(&quot;_status&quot;))</code></pre>
+<pre><code>## # A tibble: 1,904 x 7
+##    Patient_ID Survival_status Vital_status Lymph_node_stat… ER_status
+##    &lt;chr&gt;      &lt;fct&gt;           &lt;fct&gt;        &lt;fct&gt;            &lt;fct&gt;    
+##  1 MB-0000    LIVING          Living       3                Positive 
+##  2 MB-0002    LIVING          Living       1                Positive 
+##  3 MB-0005    DECEASED        Died of Dis… 2                Positive 
+##  4 MB-0006    LIVING          Living       2                Positive 
+##  5 MB-0008    DECEASED        Died of Dis… 3                Positive 
+##  6 MB-0010    DECEASED        Died of Dis… 1                Positive 
+##  7 MB-0014    LIVING          Living       2                Positive 
+##  8 MB-0022    DECEASED        Died of Oth… 2                Positive 
+##  9 MB-0028    DECEASED        Died of Oth… 2                Positive 
+## 10 MB-0035    DECEASED        Died of Dis… 1                Positive 
+## # … with 1,894 more rows, and 2 more variables: PR_status &lt;fct&gt;,
+## #   HER2_status &lt;fct&gt;</code></pre>
+<p>The <code>mutate_at()</code> function, and the related <code>mutate_if()</code> and <code>mutate_all()</code> functions, are really very powerful but with that comes some complexity. We’ll leave it there for now but point you to the help page for <code>mutate_at</code> if you’re interested in finding out more.</p>
+<hr />
+</div>
+</div>
+<div id="computing-summary-values-using-summarize" class="section level1">
+<h1>Computing summary values using <code>summarize()</code></h1>
+<hr />
+</div>
+<div id="writing-tabular-data-to-files" class="section level1">
+<h1>Writing tabular data to files</h1>
+<hr />
+</div>
+<div id="faceting-with-ggplot2" class="section level1">
+<h1>Faceting with ggplot2</h1>
+<hr />
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<hr />
+</div>
+<div id="assignment" class="section level1">
+<h1>Assignment</h1>
 </div>
 
 

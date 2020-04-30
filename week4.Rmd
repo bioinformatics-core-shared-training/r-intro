@@ -346,6 +346,16 @@ selected_columns <- select(metabric, Patient_ID, starts_with("Tumour_"), `3-gene
 selected_columns
 ```
 
+You can also `select()` to completely reorder the columns so they're in the
+order of your choosing. The `everything()` helper function is useful in this
+context, particularly if what you're really interested in is bringing one or
+more columns to the left hand side and then including everything else
+afterwards in whatever order they were already in.
+
+```{r}
+select(metabric, Patient_ID, Survival_status, Tumour_stage, everything())
+```
+
 ---
 
 # Chaining operations using `%>%`
@@ -538,5 +548,153 @@ stage is the same.
 
 Sorting is commonly used in workflows usually as one of the last steps before
 presentation or writing out the resulting table to a file.
+
+---
+
+# Modifying data using `mutate()`
+
+In one of the examples of filtering observations using `filter()` above we
+created a new logical variable called `Deceased`.
+
+```{r}
+metabric$Deceased <- metabric$Survival_status == "DECEASED"
+```
+
+This is an example of a rather common type of data manipulation in which we
+crate a new column based on the values contained in one or more other columns.
+The `dplyr` package provides the `mutate()` function for this purpose.
+
+```{r}
+metabric <- mutate(metabric, Deceased = Survival_status == "DECEASED")
+```
+
+Both of these methods adds the new column to the end.
+
+Note that variables names in the `mutate()` function call do not need to be
+prefixed by `metabric$` just as they don't in any of the `dplyr` functions.
+
+We can overwrite a column and this is quite commonly done when we want to change
+the units. For example, our tumour size values are in millimetres but the
+formula for the Nottingham prognostic index uses the tumour size in centimetres.
+We can convert to `Tumour_size` to centimetres by dividing by 10.
+
+```{r}
+metabric <- mutate(metabric, Tumour_size = Tumour_size / 10)
+```
+
+The formula for the Nottingham prognostic index is:
+
+**`NPI = (0.2 * S) + N + G`**
+
+where
+
+* **NPI** is the Nottingham prognostic index
+* **S** is the size of the tumour in centimetres
+* **N** is the node status (0 nodes = 1, 1-3 nodes = 2, >3 nodes = 3)
+* **G** is the grade of tumour (Grade I = 1, Grade II = 2, Grade III = 3)
+
+We'll recalculate the Nottingham prognostic index using the values in our
+`Tumour_size`, `Neoplasm_histologic_grade` and `Lymph_node_status` columns in
+our METABRIC data frame.
+
+```{r}
+metabric <- mutate(metabric, NPI = 0.2 * Tumour_size + Lymph_node_status + Neoplasm_histologic_grade)
+select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI, Nottingham_prognostic_index)
+```
+
+There is a discrepency. Can you see what the problem is?
+
+It appears that the conversion of tumour size into centimetres was not carried
+out in the original NPI calculation. This could explain why the plots we created
+in weeks 1 and 2 that featured the Nottingham prognostic index looked so odd.
+We'll see if they look any better with our recalculated values.
+
+```{r}
+ggplot(data = metabric) +
+  geom_point(mapping = aes(x = Age_at_diagnosis, y = NPI), na.rm = TRUE)
+```
+
+There is still some banding but nothing like the NPI values downloaded from
+cBioPortal which line up very closely to whole numbers.
+
+The **`round()`** function is really useful for rounding numerical values to a
+specified number of decimal places. We'll read in the METABRIC data again and
+create a small workflow that carries out the tumour size conversion, computes
+the NPI, rounds the tumour size and the resulting NPI value to 1 decimal place
+and displays the results in decreasing order of NPI.
+
+```{r message = FALSE}
+read_csv("data/metabric_clinical_and_expression_data.csv") %>%
+  mutate(Tumour_size = Tumour_size / 10) %>%
+  mutate(NPI = 0.2 * Tumour_size + Lymph_node_status + Neoplasm_histologic_grade) %>%
+  mutate(Tumour_size = round(Tumour_size, digits = 1)) %>%
+  mutate(NPI = round(NPI, digits = 1)) %>%
+  arrange(desc(NPI)) %>%
+  select(Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI)
+```
+
+## Mutating multiple columns
+
+In that last workflow we included the same rounding operation applied to two
+different variables. It would be nice to be able to carry out just the one
+`mutate()` but apply it to both `Tumour_size` and `NPI` columns and we can using
+**`mutate_at()`**.
+
+```{r}
+metabric %>%
+  mutate_at(vars(Tumour_size, NPI), round, digits = 1) %>%
+  select(Patient_ID, Tumour_size, NPI)
+```
+
+This is slightly more complicated. We had to group the variables for which we
+want the function to apply using `vars()`. We then gave the function name as the
+next argument and finally any additional arguments that the function needs, in
+this case the number of digits.
+
+We can use the range operator and the same helper functions as we did for
+selecting columns using `select()` inside `vars()`.
+
+For example, we might decide that our expression values are given to a much
+higher degree of precision than is strictly needed.
+
+```{r}
+metabric %>%
+  mutate_at(vars(ESR1:MLPH), round, digits = 2) %>%
+  select(Patient_ID, ESR1:MLPH)
+```
+
+Or we could decide that all the columns whose names end with "_status" are in
+fact categorical variables and should be converted to factors.
+
+```{r}
+metabric %>%
+  mutate_at(vars(ends_with("_status")), as.factor) %>%
+  select(Patient_ID, ends_with("_status"))
+```
+
+The `mutate_at()` function, and the related `mutate_if()` and `mutate_all()` 
+functions, are really very powerful but with that comes some complexity. We'll
+leave it there for now but point you to the help page for `mutate_at` if you're
+interested in finding out more.
+
+---
+
+# Computing summary values using `summarize()`
+
+---
+
+# Writing tabular data to files
+
+---
+
+# Faceting with ggplot2
+
+---
+
+# Summary
+
+---
+
+# Assignment
 
 
