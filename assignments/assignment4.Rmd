@@ -1,0 +1,140 @@
+---
+title: "Assignment 4"
+---
+
+The week's assignment will test your ability to manipulate the METABRIC data set
+by changing the values of existing columns or adding new columns by computing
+new variables from existing ones.
+
+We are expecting you to use the 5 main dplyr 'verb' functions: `select()`,
+`filter()`, `arrange()`, `mutate()` and `summarize()`. Please use the pipe
+operator, `%>%`, in cases where more than one operation is required to achieve
+the outcome requested.
+
+```{r message = FALSE, warning = FALSE}
+library(tidyverse)
+metabric <- read_csv("../data/metabric_clinical_and_expression_data.csv")
+```
+
+---
+
+**1. Investigate the subset of long-surviving breast cancer patients that didn't receive chemo or radiotherapy**
+
+First obtain the subset of patients that received neither chemotherapy or
+radiotherapy and survived for more than 20 years.
+
+```{r}
+
+```
+
+Now look at the breakdown of these patients in terms of ER status. Compare that
+with the proportion of the entire METABRIC cohort that are ER positive and ER
+negative. What does this tell you?
+
+```{r}
+
+```
+
+**Extension**
+
+Create a contingency table and perform a Chi-squared test or a Fisher's exact
+test (whichever is most appropriate) to determine if there is a significant
+difference between the untreated, long-surviving patients and the others.
+
+```{r}
+
+```
+
+_Hint: look at the help page for the function for the Chi-squared or Fisher's
+exact test to see what form the contingency table needs to take_
+
+---
+
+**2. Which patients have spent the largest proportion of their lives dealing with breast cancer?**
+
+```{r}
+
+```
+
+---
+
+**3. Convert the expression values for each of the genes into standardized z-scores**
+
+Some genes are generally expressed at higher levels than others. This can make
+comparisons of changes between groups for a set of genes somewhat difficult,
+particularly if the expression for those genes are on very different scales. The
+expression values in our METABRIC are on a log~2~ scale which helps to reduce
+the range of values but another method for representing expression measurements
+is to standardize these to produce z-scores.
+
+Standardization of a set of measurements involves subtracting the mean from each
+and dividing by the standard deviation. This will produce values with a mean of
+0 and a standard deviation of 1.
+
+Create a modified version of the `metabric` data frame containing a new column
+with the standardized expression values (z-scores) for the ESR1 gene.
+
+```{r}
+
+```
+
+Check that you've done this correctly by calculating the mean and standard
+deviation of your new z-score variable.
+
+```{r}
+
+```
+
+Add another column to your modified `metabric` data frame containing a z-score
+for GATA3 and then create a scatter plot of the z-scores of GATA3 against ESR1.
+Modify your plot to facet by the PAM50 classification.
+
+```{r}
+
+```
+
+**Extension 1**
+
+Standardize the expression values for all genes in a single operation with a
+lambda expression, overwriting their original values, and round the resulting
+values to 3 significant figures.
+
+```{r}
+
+```
+
+Check you have done this correctly by computing the mean and standard deviation for
+each column, again using a single operation.
+
+```{r}
+
+```
+
+**Extension 2**
+
+Create a plot comparing the distribution of standardized expression values for
+TP53 against a normal distribution.
+
+```{r}
+
+```
+
+_Hint: use `stat_function()`_
+
+---
+
+**4. Which Star Wars characters need to go on a diet?**
+
+Compute the body mass index (BMI) of characters in the `starwars` tibble.
+
+```{r}
+
+```
+
+Filter for human characters that are overweight (BMI > 25) and display in
+decreasing order of BMI.
+
+```{r}
+
+```
+
