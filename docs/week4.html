@@ -1166,12 +1166,16 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 ## 10 MB-0035    DECEASED        Died of Dis… 1                Positive 
 ## # … with 1,894 more rows, and 2 more variables: PR_status &lt;fct&gt;,
 ## #   HER2_status &lt;fct&gt;</code></pre>
+</div>
+<div id="anonymous-functions" class="section level2">
+<h2>Anonymous functions</h2>
 <p>The <code>mutate_at()</code> function, and the related <code>mutate_if()</code> and <code>mutate_all()</code> functions, are really very powerful but with that comes additional complexity.</p>
 <p>For example, we may come across situations where we’d like to apply the same operation to multiple columns but where there is no available function in R to do what we want.</p>
-<p>Let’s say we want to convert the petal and sepal measurements in the <code>iris</code> data set from centimetres to millimetres. We’d need to use what is known as a lambda expression for this.</p>
+<p>Let’s say we want to convert the petal and sepal measurements in the <code>iris</code> data set from centimetres to millimetres. We’d need to use what is known as an anonymous function for this. Anonymous functions are also known as lambda expressions. Usually, an anonymous function is a concise formula used when there is no equivalent function available in R.</p>
+<p>There is no ‘multiply by 10’ function so we use an anonymous function instead (anonymous because it has no name, it’s an <em>in situ</em> function only used in our <code>mutate_</code> function call.</p>
 <pre class="r"><code>iris %&gt;%
   as_tibble() %&gt;%
-  mutate_at(vars(Sepal.Length:Petal.Width), ~(. * 10))</code></pre>
+  mutate_at(vars(Sepal.Length:Petal.Width), ~ . * 10)</code></pre>
 <pre><code>## # A tibble: 150 x 5
 ##    Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 ##           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;  
@@ -1186,7 +1190,7 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 ##  9           44          29           14           2 setosa 
 ## 10           49          31           15           1 setosa 
 ## # … with 140 more rows</code></pre>
-<p>The <strong><code>~</code></strong> denotes that we’re using a lambda expression and the <code>.</code> is a placeholder for the column being operated on. In this case, we’re multiplying each of the columns between <code>Sepal.Length</code> and <code>Petal.Width</code> inclusive by 10.</p>
+<p>The <strong><code>~</code></strong> denotes that we’re using an anonymous function and the <code>.</code> is a placeholder for the column being operated on. In this case, we’re multiplying each of the columns between <code>Sepal.Length</code> and <code>Petal.Width</code> inclusive by 10.</p>
 <p>If you think this is getting fairly complicated you’d be right. We’ll leave it there for now but point you to the help page for <code>mutate_at</code> if you’re interested in finding out more.</p>
 <hr />
 </div>
@@ -1338,6 +1342,16 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
 ##   FOXA1_average MLPH_average FOXA1_stdev MLPH_stdev
 ##           &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
 ## 1          10.8         11.4        1.75       1.69</code></pre>
+</div>
+<div id="anonymous-functions-1" class="section level2">
+<h2>Anonymous functions</h2>
+<p>The <code>mutate_</code> functions and <code>summarize_</code> functions work in a very similar manner, very much in line with the coherent and consistent framework provided provided by <code>dplyr</code> and the entire tidyverse. For example, we could use an anonymous function in a <code>summarize_at()</code> function applied to multiple variables. In the assignment from last week, we asked you to compute the correlation of the expression for FOXA1 against all other genes to see which was most strongly correlated. Here is how we could do this in a single <code>summarize_at()</code> statement using an anonymous function.</p>
+<pre class="r"><code>summarize_at(metabric, vars(ESR1:MLPH, -FOXA1), ~ cor(., FOXA1))</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##    ESR1 ERBB2   PGR    TP53 PIK3CA GATA3  MLPH
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 0.724 0.280 0.390 -0.0700 -0.149 0.781 0.898</code></pre>
+<p>Notice how we selected all genes between ESR1, the first gene column in our data frame, and MLPH, the last gene column, but then excluded FOXA1 as we’re not all that interested in the correlation of FOXA1 with itself (we know the answer is 1).</p>
 <hr />
 </div>
 </div>

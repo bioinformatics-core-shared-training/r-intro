@@ -687,6 +687,8 @@ metabric %>%
   select(Patient_ID, ends_with("_status"))
 ```
 
+## Anonymous functions
+
 The `mutate_at()` function, and the related `mutate_if()` and `mutate_all()` 
 functions, are really very powerful but with that comes additional complexity.
 
@@ -695,16 +697,22 @@ operation to multiple columns but where there is no available function in R
 to do what we want.
 
 Let's say we want to convert the petal and sepal measurements in the `iris`
-data set from centimetres to millimetres. We'd need to use what is known as a
-lambda expression for this.
+data set from centimetres to millimetres. We'd need to use what is known as an
+anonymous function for this. Anonymous functions are also known as lambda
+expressions. Usually, an anonymous function is a concise formula used when there
+is no equivalent function available in R.
+
+There is no 'multiply by 10' function so we use an anonymous function instead
+(anonymous because it has no name, it's an _in situ_ function only used in our
+`mutate_` function call.
 
 ```{r}
 iris %>%
   as_tibble() %>%
-  mutate_at(vars(Sepal.Length:Petal.Width), ~(. * 10))
+  mutate_at(vars(Sepal.Length:Petal.Width), ~ . * 10)
 ```
 
-The **`~`** denotes that we're using a lambda expression and the `.` is a
+The **`~`** denotes that we're using an anonymous function and the `.` is a
 placeholder for the column being operated on. In this case, we're multiplying
 each of the columns between `Sepal.Length` and `Petal.Width` inclusive by 10.
 
@@ -844,6 +852,26 @@ some control over these.
 ```{r}
 summarise_at(metabric, vars(FOXA1, MLPH), list(average = mean, stdev = sd))
 ```
+
+## Anonymous functions
+
+The `mutate_` functions and `summarize_` functions work in a very similar
+manner, very much in line with the coherent and consistent framework provided
+provided by `dplyr` and the entire tidyverse. For example, we could use an
+anonymous function in a `summarize_at()` function applied to multiple variables.
+In the assignment from last week, we asked you to compute the correlation of the
+expression for FOXA1 against all other genes to see which was most strongly
+correlated. Here is how we could do this in a single `summarize_at()` statement
+using an anonymous function.
+
+```{r}
+summarize_at(metabric, vars(ESR1:MLPH, -FOXA1), ~ cor(., FOXA1))
+```
+
+Notice how we selected all genes between ESR1, the first gene column in our
+data frame, and MLPH, the last gene column, but then excluded FOXA1 as we're not
+all that interested in the correlation of FOXA1 with itself (we know the answer
+is 1).
 
 ---
 
