@@ -657,7 +657,7 @@ nrow(selected_patients)</code></pre>
 ##  9 MB-0028    DECEASED        Died of Other Causes
 ## 10 MB-0035    DECEASED        Died of Disease     
 ## # … with 1,894 more rows</code></pre>
-<p>Notice the similarities with the <code>filter()</code> function. The first argument is the data frame we are operating on and the arguments that follow on are specific to the operation in question, in this case, the variables (columns) to select. Note that the variables do not need to be put in quotes, and the returned value is another data frame.</p>
+<p>Notice the similarities with the <code>filter()</code> function. The first argument is the data frame we are operating on and the arguments that follow on are specific to the operation in question, in this case, the variables (columns) to select. Note that the variables do not need to be put in quotes, and the returned value is another data frame, even if only one column was selected.</p>
 <p>We can alter the order of the variables (columns).</p>
 <pre class="r"><code>select(metabric, Patient_ID, Vital_status, Survival_status)</code></pre>
 <pre><code>## # A tibble: 1,904 x 3
@@ -766,7 +766,7 @@ selected_columns</code></pre>
 ##  9 MB-0028             16            2 ER+/HER2- High …             5.03
 ## 10 MB-0035             28            2 ER+/HER2- High …             3.06
 ## # … with 1,894 more rows, and 1 more variable: Integrative_cluster &lt;chr&gt;</code></pre>
-<p>You can also <code>select()</code> to completely reorder the columns so they’re in the order of your choosing. The <code>everything()</code> helper function is useful in this context, particularly if what you’re really interested in is bringing one or more columns to the left hand side and then including everything else afterwards in whatever order they were already in.</p>
+<p>You can also use <code>select()</code> to completely reorder the columns so they’re in the order of your choosing. The <code>everything()</code> helper function is useful in this context, particularly if what you’re really interested in is bringing one or more columns to the left hand side and then including everything else afterwards in whatever order they were already in.</p>
 <pre class="r"><code>select(metabric, Patient_ID, Survival_status, Tumour_stage, everything())</code></pre>
 <pre><code>## # A tibble: 1,904 x 33
 ##    Patient_ID Survival_status Tumour_stage Cohort Age_at_diagnosis
@@ -829,25 +829,12 @@ patient_details_of_interest</code></pre>
 ##  9 MB-0062             154.            1                        4.03
 ## 10 MB-0066             157.            2                        4.03
 ## # … with 535 more rows</code></pre>
-<p>Here we’ve use an intermediate variable, <code>patients_of_interest</code>, which we only needed to get to the final result. We could just have used the same name to avoid cluttering our environment and overwritten the results from the <code>filter()</code> operation with those of the <code>select()</code> operation.</p>
+<p>Here we’ve use an intermediate variable, <code>patients_of_interest</code>, which we only needed in order to get to the final result. We could just have used the same name to avoid cluttering our environment and overwritten the results from the <code>filter()</code> operation with those of the <code>select()</code> operation.</p>
 <pre class="r"><code>patients_of_interest &lt;- select(patients_of_interest, Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)</code></pre>
 <p>Another less readable way of writing this code is to nest the <code>filter()</code> function call inside the <code>select()</code>. Although this looks very unwieldy and is not easy to follow, nested function calls are very common in a lot of R code you may come across.</p>
 <pre class="r"><code>patients_of_interest &lt;- select(filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120), Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
-patients_of_interest</code></pre>
-<pre><code>## # A tibble: 545 x 4
-##    Patient_ID Survival_time Tumour_stage Nottingham_prognostic_index
-##    &lt;chr&gt;              &lt;dbl&gt;        &lt;dbl&gt;                       &lt;dbl&gt;
-##  1 MB-0000             140.            2                        6.04
-##  2 MB-0006             165.            2                        4.05
-##  3 MB-0014             164.            2                        4.02
-##  4 MB-0039             164.            1                        2.04
-##  5 MB-0045             165.            2                        5.04
-##  6 MB-0053             161.            2                        3.05
-##  7 MB-0054             160.            2                        4.07
-##  8 MB-0060             141.            2                        4.05
-##  9 MB-0062             154.            1                        4.03
-## 10 MB-0066             157.            2                        4.03
-## # … with 535 more rows</code></pre>
+nrow(patients_of_interest)</code></pre>
+<pre><code>## [1] 545</code></pre>
 <p>However, there is another way chaining together a series of operations into a mini workflow that is elegant, intuitive and makes for very readable R code. For that we need to introduce a new operator, the <strong>pipe</strong> operator, <strong><code>%&gt;%</code></strong>.</p>
 <div class="rmdblock">
 <p>
@@ -878,14 +865,17 @@ This allows for chaining of operations into workflows, e.g.
 <code>starwars %&gt;%</code><br/>     <code>filter(species == “Droid”) %&gt;%</code><br/>     <code>select(name, height, mass)</code>
 </p>
 <p>
-The <code>%&gt;%</code> operator comes from the <code>magrittr</code> package (do you get the joke?) and is available when we load the tidyverse using <code>library(tidyverse)</code>.
+The <code>%&gt;%</code> operator comes from the <code>magrittr</code> package (do you get the reference?) and is available when we load the tidyverse using <code>library(tidyverse)</code>.
+</p>
+<p>
+Piping in R was motivated by the Unix pipe, <code>|</code>, in which the output from one process is redirected to be the input for the next. This is so named because the flow from one process or operation to the next resembles a pipeline.
 </p>
 </div>
 <p>We can rewrite the code for our filtering and column selection operations as follows.</p>
 <pre class="r"><code>patients_of_interest &lt;- metabric %&gt;%
   filter(Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120) %&gt;%
   select(Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)</code></pre>
-<p>Note how each operation takes the output from the previous operation as its first argument. This way of coding is embraced wholeheartedly in the tidyverse hence the first argument of almost every function that work on data frames has the data frame as the first argument. It is also the reason why tidyverse functions return a data frame regardless of whether the output could be recast as a vector or a single value.</p>
+<p>Note how each operation takes the output from the previous operation as its first argument. This way of coding is embraced wholeheartedly in the tidyverse hence the first argument of almost every function that works on data frames has the data frame as the first argument. It is also the reason why tidyverse functions return a data frame regardless of whether the output could be recast as a vector or a single value.</p>
 <p>“Piping”, the act of chaining operations together, becomes really useful when there are several steps involved in filtering and transforming a data set.</p>
 <p>The usual way of developing a workflow is to build it up one step at a time, testing the output produced at each stage. Let’s do that for this case.</p>
 <p>We start by considering just the patients who are living.</p>
@@ -982,7 +972,7 @@ patients_of_interest &lt;- metabric %&gt;%
 ## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
 ## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
 ## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
-<p>As with the other tidyverse functions and, in particular, the other 4 key dplyr ‘verbs’, <code>arrange()</code> works brilliantly in workflows in which successive operations are chained using <code>%&gt;%</code>.</p>
+<p>As with the other tidyverse functions and, in particular, the other 4 key dplyr ‘verbs’, <code>arrange()</code> works rather well in workflows in which successive operations are chained using <code>%&gt;%</code>.</p>
 <pre class="r"><code>patients_of_interest &lt;- metabric %&gt;%
   filter(Survival_status == &quot;LIVING&quot;) %&gt;%
   filter(Survival_time &gt; 120) %&gt;%
@@ -1021,7 +1011,7 @@ patients_of_interest</code></pre>
 ## 10 MB-0244             150.            1                        2.02
 ## # … with 535 more rows</code></pre>
 <p>Here we’ve sorted first by tumour stage from lowest to highest value and then by the Nottingham prognostic index when there are ties, i.e. where the tumour stage is the same.</p>
-<p>Sorting is commonly used in workflows usually as one of the last steps before presentation or writing out the resulting table to a file.</p>
+<p>Sorting is most commonly used in workflows as one of the last steps before printing out a data frame or writing out the table to a file.</p>
 <hr />
 </div>
 <div id="modifying-data-using-mutate" class="section level1">
@@ -1062,7 +1052,7 @@ where
 </li>
 </ul>
 </div>
-<p>We’ll recalculate the Nottingham prognostic index using the values in our <code>Tumour_size</code>, <code>Neoplasm_histologic_grade</code> and <code>Lymph_node_status</code> columns in our METABRIC data frame.</p>
+<p>We’ll recalculate the Nottingham prognostic index using the values <code>Tumour_size</code>, <code>Neoplasm_histologic_grade</code> and <code>Lymph_node_status</code> columns in our METABRIC data frame.</p>
 <pre class="r"><code>metabric &lt;- mutate(metabric, NPI = 0.2 * Tumour_size + Lymph_node_status + Neoplasm_histologic_grade)
 select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI, Nottingham_prognostic_index)</code></pre>
 <pre><code>## # A tibble: 1,904 x 5
@@ -1172,7 +1162,7 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 <p>The <code>mutate_at()</code> function, and the related <code>mutate_if()</code> and <code>mutate_all()</code> functions, are really very powerful but with that comes additional complexity.</p>
 <p>For example, we may come across situations where we’d like to apply the same operation to multiple columns but where there is no available function in R to do what we want.</p>
 <p>Let’s say we want to convert the petal and sepal measurements in the <code>iris</code> data set from centimetres to millimetres. We’d need to use what is known as an anonymous function for this. Anonymous functions are also known as lambda expressions. Usually, an anonymous function is a concise formula used when there is no equivalent function available in R.</p>
-<p>There is no ‘multiply by 10’ function so we use an anonymous function instead (anonymous because it has no name, it’s an <em>in situ</em> function only used in our <code>mutate_</code> function call.</p>
+<p>There is no ‘multiply by 10’ function so we use an anonymous function instead – anonymous because it has no name, it’s an <em>in situ</em> function only used in our <code>mutate_</code> function call.</p>
 <pre class="r"><code>iris %&gt;%
   as_tibble() %&gt;%
   mutate_at(vars(Sepal.Length:Petal.Width), ~ . * 10)</code></pre>
@@ -1197,8 +1187,8 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 </div>
 <div id="computing-summary-values-using-summarise" class="section level1">
 <h1>Computing summary values using <code>summarise()</code></h1>
-<p>We’ll cover the fifth of the main dplyr ‘verb’ functions, <strong><code>summarise()</code></strong>, only briefly here. This function computes summary values for one or more variables (columns) in a table. Here we will summarize values for the entire table but this function is much more useful in combination with <code>group_by()</code> in working on groups of observations within the data set. We will look at grouping in week 6 where we’ll use <code>group_by()</code> in combination with both <code>summarize()</code> and <code>mutate()</code>.</p>
-<p>Any function that calculates a single scalar value from a vector can be used with <code>summarize()</code>. For example, the <code>mean()</code> function calculates the arithmetic mean of a numeric vector. Let’s calculate the average ESR1 expression for tumour samples in the METABRIC data set.</p>
+<p>We’ll cover the fifth of the main dplyr ‘verb’ functions, <strong><code>summarise()</code></strong>, only briefly here. This function computes summary values for one or more variables (columns) in a table. Here we will summarise values for the entire table but this function is much more useful in combination with <code>group_by()</code> in working on groups of observations within the data set. We will look at grouping in week 6 where we’ll use <code>group_by()</code> in combination with both <code>summarise()</code> and <code>mutate()</code>.</p>
+<p>Any function that calculates a single scalar value from a vector can be used with <code>summarise()</code>. For example, the <code>mean()</code> function calculates the arithmetic mean of a numeric vector. Let’s calculate the average ESR1 expression for tumour samples in the METABRIC data set.</p>
 <pre class="r"><code>mean(metabric$ESR1)</code></pre>
 <pre><code>## [1] 9.607824</code></pre>
 <p>The equivalent operation using <code>summarise()</code> is:</p>
@@ -1266,7 +1256,7 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
 ##   &lt;dbl&gt; &lt;dbl&gt;
 ## 1  10.8  11.4</code></pre>
 <p>Selecting the columns is done in the same way as for <code>mutate_at()</code> and <code>select()</code>.</p>
-<p><strong><code>summarise_all()</code></strong> summarizes values in all columns.</p>
+<p><strong><code>summarise_all()</code></strong> summarises values in all columns.</p>
 <pre class="r"><code>metabric %&gt;%
   select(ESR1:MLPH) %&gt;%
   summarise_all(mean)</code></pre>
@@ -1274,7 +1264,7 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
 ##    ESR1 ERBB2   PGR  TP53 PIK3CA GATA3 FOXA1  MLPH
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 ## 1  9.61  10.8  6.24  6.20   5.97  9.50  10.8  11.4</code></pre>
-<p>You have to be careful with <code>summarise_all()</code> that all columns can be summarized with the given summary function. For example, what happens if we try to compute an average of a set of character values?</p>
+<p>You have to be careful with <code>summarise_all()</code> that all columns can be summarised with the given summary function. For example, what happens if we try to compute an average of a set of character values?</p>
 <pre class="r"><code>summarise_all(metabric, mean, na.rm = TRUE)</code></pre>
 <pre><code>## Warning in mean.default(Patient_ID, na.rm = TRUE): argument is not numeric
 ## or logical: returning NA</code></pre>
@@ -1331,22 +1321,22 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
 ## #   ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;, GATA3 &lt;dbl&gt;,
 ## #   FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, NPI &lt;dbl&gt;</code></pre>
 <p>It is possible to summarise using more than one function in which case a list of functions needs to be provided.</p>
-<pre class="r"><code>summarise_at(metabric, vars(FOXA1, MLPH), list(mean, sd))</code></pre>
-<pre><code>## # A tibble: 1 x 4
-##   FOXA1_fn1 MLPH_fn1 FOXA1_fn2 MLPH_fn2
-##       &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1      10.8     11.4      1.75     1.69</code></pre>
+<pre class="r"><code>summarise_at(metabric, vars(ESR1, ERBB2, PGR), list(mean, sd))</code></pre>
+<pre><code>## # A tibble: 1 x 6
+##   ESR1_fn1 ERBB2_fn1 PGR_fn1 ESR1_fn2 ERBB2_fn2 PGR_fn2
+##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1     9.61      10.8    6.24     2.13      1.36    1.02</code></pre>
 <p>Pretty neat but I’m not sure about those column headings – fortunately we have some control over these.</p>
-<pre class="r"><code>summarise_at(metabric, vars(FOXA1, MLPH), list(average = mean, stdev = sd))</code></pre>
-<pre><code>## # A tibble: 1 x 4
-##   FOXA1_average MLPH_average FOXA1_stdev MLPH_stdev
-##           &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
-## 1          10.8         11.4        1.75       1.69</code></pre>
+<pre class="r"><code>summarise_at(metabric, vars(ESR1, ERBB2, PGR), list(average = mean, stdev = sd))</code></pre>
+<pre><code>## # A tibble: 1 x 6
+##   ESR1_average ERBB2_average PGR_average ESR1_stdev ERBB2_stdev PGR_stdev
+##          &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+## 1         9.61          10.8        6.24       2.13        1.36      1.02</code></pre>
 </div>
 <div id="anonymous-functions-1" class="section level2">
 <h2>Anonymous functions</h2>
-<p>The <code>mutate_</code> functions and <code>summarize_</code> functions work in a very similar manner, very much in line with the coherent and consistent framework provided provided by <code>dplyr</code> and the entire tidyverse. For example, we could use an anonymous function in a <code>summarize_at()</code> function applied to multiple variables. In the assignment from last week, we asked you to compute the correlation of the expression for FOXA1 against all other genes to see which was most strongly correlated. Here is how we could do this in a single <code>summarize_at()</code> statement using an anonymous function.</p>
-<pre class="r"><code>summarize_at(metabric, vars(ESR1:MLPH, -FOXA1), ~ cor(., FOXA1))</code></pre>
+<p>The <code>mutate_</code> functions and <code>summarise_</code> functions work in a very similar manner, very much in line with the coherent and consistent framework provided provided by <code>dplyr</code> and the entire tidyverse. For example, we could use an anonymous function in a <code>summarise_at()</code> function applied to multiple variables. In the assignment from last week, we asked you to compute the correlation of the expression for FOXA1 against all other genes to see which was most strongly correlated. Here is how we could do this in a single <code>summarise_at()</code> statement using an anonymous function.</p>
+<pre class="r"><code>summarise_at(metabric, vars(ESR1:MLPH, -FOXA1), ~ cor(., FOXA1))</code></pre>
 <pre><code>## # A tibble: 1 x 7
 ##    ESR1 ERBB2   PGR    TP53 PIK3CA GATA3  MLPH
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
@@ -1406,10 +1396,14 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
   facet_grid(Neoplasm_histologic_grade ~ HER2_status)</code></pre>
 <p><img src="week4_files/figure-html/scatter_plot_10-1.png" width="672" /></p>
 <p>Again we can use colour aesthetics alongside faceting to add further information to our visualization.</p>
-<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+<pre class="r"><code>metabric %&gt;%
+  mutate(HER2_status = str_c(&quot;HER2 &quot;, HER2_status)) %&gt;%
+  mutate(Neoplasm_histologic_grade = str_c(&quot;Grade &quot;, Neoplasm_histologic_grade)) %&gt;%
+  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
   geom_point(size = 0.5, alpha = 0.5) +
   facet_grid(Neoplasm_histologic_grade ~ HER2_status)</code></pre>
 <p><img src="week4_files/figure-html/scatter_plot_11-1.png" width="672" /></p>
+<p>We also changed the categories for the variables used for faceting so their meaning is clearer by prefixing the HER2 status values with “HER2” and prefixing the histologic grade with “Grade” using the <code>str_c()</code> function. Notice also how we did these on-the-fly modifications as part of a piped workflow and passed the resulting data frame into the <code>ggplot()</code> function, which no longer required us to specify it’s first argument (<code>data</code>).</p>
 <hr />
 </div>
 <div id="summary" class="section level1">

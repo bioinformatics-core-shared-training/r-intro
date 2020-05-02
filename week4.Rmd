@@ -300,7 +300,7 @@ Notice the similarities with the `filter()` function. The first argument is the
 data frame we are operating on and the arguments that follow on are specific to
 the operation in question, in this case, the variables (columns) to select. Note
 that the variables do not need to be put in quotes, and the returned value is
-another data frame.
+another data frame, even if only one column was selected.
 
 We can alter the order of the variables (columns).
 
@@ -346,7 +346,7 @@ selected_columns <- select(metabric, Patient_ID, starts_with("Tumour_"), `3-gene
 selected_columns
 ```
 
-You can also `select()` to completely reorder the columns so they're in the
+You can also use `select()` to completely reorder the columns so they're in the
 order of your choosing. The `everything()` helper function is useful in this
 context, particularly if what you're really interested in is bringing one or
 more columns to the left hand side and then including everything else
@@ -380,9 +380,9 @@ patient_details_of_interest
 ```
 
 Here we've use an intermediate variable, `patients_of_interest`, which we only
-needed to get to the final result. We could just have used the same name to
-avoid cluttering our environment and overwritten the results from the `filter()`
-operation with those of the `select()` operation.
+needed in order to get to the final result. We could just have used the same
+name to avoid cluttering our environment and overwritten the results from the
+`filter()` operation with those of the `select()` operation.
 
 ```{r eval = FALSE}
 patients_of_interest <- select(patients_of_interest, Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
@@ -395,7 +395,7 @@ you may come across.
 
 ```{r}
 patients_of_interest <- select(filter(metabric, Survival_status == "LIVING", Survival_time > 120), Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
-patients_of_interest
+nrow(patients_of_interest)
 ```
 
 However, there is another way chaining together a series of operations into a
@@ -425,8 +425,12 @@ This allows for chaining of operations into workflows, e.g.
 &nbsp;&nbsp;&nbsp;&nbsp;`filter(species == "Droid") %>%`<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;`select(name, height, mass)`
 
-The `%>%` operator comes from the `magrittr` package (do you get the joke?) and
-is available when we load the tidyverse using `library(tidyverse)`.
+The `%>%` operator comes from the `magrittr` package (do you get the reference?)
+and is available when we load the tidyverse using `library(tidyverse)`.
+
+Piping in R was motivated by the Unix pipe, `|`, in which the output from one
+process is redirected to be the input for the next. This is so named because the
+flow from one process or operation to the next resembles a pipeline.
 ```
 
 We can rewrite the code for our filtering and column selection operations as
@@ -440,7 +444,7 @@ patients_of_interest <- metabric %>%
 
 Note how each operation takes the output from the previous operation as its
 first argument. This way of coding is embraced wholeheartedly in the tidyverse
-hence the first argument of almost every function that work on data frames has
+hence the first argument of almost every function that works on data frames has
 the data frame as the first argument. It is also the reason why tidyverse
 functions return a data frame regardless of whether the output could be recast
 as a vector or a single value.
@@ -528,7 +532,7 @@ arrange(metabric, desc(Survival_time))
 ```
 
 As with the other tidyverse functions and, in particular, the other 4 key dplyr
-'verbs', `arrange()` works brilliantly in workflows in which successive
+'verbs', `arrange()` works rather well in workflows in which successive
 operations are chained using `%>%`.
 
 ```{r}
@@ -552,8 +556,8 @@ Here we've sorted first by tumour stage from lowest to highest value and then
 by the Nottingham prognostic index when there are ties, i.e. where the tumour
 stage is the same.
 
-Sorting is commonly used in workflows usually as one of the last steps before
-presentation or writing out the resulting table to a file.
+Sorting is most commonly used in workflows as one of the last steps before
+printing out a data frame or writing out the table to a file.
 
 ---
 
@@ -607,7 +611,7 @@ where
 * **G** is the grade of tumour (Grade I = 1, Grade II = 2, Grade III = 3)
 ```
 
-We'll recalculate the Nottingham prognostic index using the values in our
+We'll recalculate the Nottingham prognostic index using the values
 `Tumour_size`, `Neoplasm_histologic_grade` and `Lymph_node_status` columns in
 our METABRIC data frame.
 
@@ -702,8 +706,8 @@ anonymous function for this. Anonymous functions are also known as lambda
 expressions. Usually, an anonymous function is a concise formula used when there
 is no equivalent function available in R.
 
-There is no 'multiply by 10' function so we use an anonymous function instead
-(anonymous because it has no name, it's an _in situ_ function only used in our
+There is no 'multiply by 10' function so we use an anonymous function instead --
+anonymous because it has no name, it's an _in situ_ function only used in our
 `mutate_` function call.
 
 ```{r}
@@ -726,14 +730,14 @@ interested in finding out more.
 
 We'll cover the fifth of the main dplyr 'verb' functions, **`summarise()`**,
 only briefly here. This function computes summary values for one or more
-variables (columns) in a table. Here we will summarize values for the entire
+variables (columns) in a table. Here we will summarise values for the entire
 table but this function is much more useful in combination with `group_by()`
 in working on groups of observations within the data set. We will look at
 grouping in week 6 where we'll use `group_by()` in combination with both
-`summarize()` and `mutate()`.
+`summarise()` and `mutate()`.
 
 Any function that calculates a single scalar value from a vector can be used
-with `summarize()`. For example, the `mean()` function calculates the arithmetic
+with `summarise()`. For example, the `mean()` function calculates the arithmetic
 mean of a numeric vector. Let's calculate the average ESR1 expression for tumour
 samples in the METABRIC data set.
 
@@ -813,7 +817,7 @@ summarise_at(metabric, vars(FOXA1, MLPH), mean)
 Selecting the columns is done in the same way as for `mutate_at()` and
 `select()`.
 
-**`summarise_all()`** summarizes values in all columns.
+**`summarise_all()`** summarises values in all columns.
 
 ```{r}
 metabric %>%
@@ -821,7 +825,7 @@ metabric %>%
   summarise_all(mean)
 ```
 
-You have to be careful with `summarise_all()` that all columns can be summarized
+You have to be careful with `summarise_all()` that all columns can be summarised
 with the given summary function. For example, what happens if we try to compute
 an average of a set of character values?
 
@@ -843,29 +847,29 @@ It is possible to summarise using more than one function in which case a list of
 functions needs to be provided.
 
 ```{r}
-summarise_at(metabric, vars(FOXA1, MLPH), list(mean, sd))
+summarise_at(metabric, vars(ESR1, ERBB2, PGR), list(mean, sd))
 ```
 
 Pretty neat but I'm not sure about those column headings -- fortunately we have
 some control over these.
 
 ```{r}
-summarise_at(metabric, vars(FOXA1, MLPH), list(average = mean, stdev = sd))
+summarise_at(metabric, vars(ESR1, ERBB2, PGR), list(average = mean, stdev = sd))
 ```
 
 ## Anonymous functions
 
-The `mutate_` functions and `summarize_` functions work in a very similar
+The `mutate_` functions and `summarise_` functions work in a very similar
 manner, very much in line with the coherent and consistent framework provided
 provided by `dplyr` and the entire tidyverse. For example, we could use an
-anonymous function in a `summarize_at()` function applied to multiple variables.
+anonymous function in a `summarise_at()` function applied to multiple variables.
 In the assignment from last week, we asked you to compute the correlation of the
 expression for FOXA1 against all other genes to see which was most strongly
-correlated. Here is how we could do this in a single `summarize_at()` statement
+correlated. Here is how we could do this in a single `summarise_at()` statement
 using an anonymous function.
 
 ```{r}
-summarize_at(metabric, vars(ESR1:MLPH, -FOXA1), ~ cor(., FOXA1))
+summarise_at(metabric, vars(ESR1:MLPH, -FOXA1), ~ cor(., FOXA1))
 ```
 
 Notice how we selected all genes between ESR1, the first gene column in our
@@ -976,10 +980,20 @@ Again we can use colour aesthetics alongside faceting to add further information
 to our visualization.
 
 ```{r scatter_plot_11}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+metabric %>%
+  mutate(HER2_status = str_c("HER2 ", HER2_status)) %>%
+  mutate(Neoplasm_histologic_grade = str_c("Grade ", Neoplasm_histologic_grade)) %>%
+  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
   geom_point(size = 0.5, alpha = 0.5) +
   facet_grid(Neoplasm_histologic_grade ~ HER2_status)
 ```
+
+We also changed the categories for the variables used for faceting so their
+meaning is clearer by prefixing the HER2 status values with "HER2 " and
+prefixing the histologic grade with "Grade " using the `str_c()` function.
+Notice also how we did these on-the-fly modifications as part of a piped
+workflow and passed the resulting data frame into the `ggplot()` function,
+which no longer required us to specify it's first argument (`data`).
 
 ---
 
