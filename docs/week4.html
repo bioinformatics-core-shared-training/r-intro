@@ -418,7 +418,7 @@ div.tocify {
 <pre class="r"><code>library(tidyverse)</code></pre>
 <p>dplyr is the Swiss army knife in the tidyverse, providing many useful functions for manipulating tabular data in data frames or tibble objects. We’re going to look at the key functions for filtering our data, modifying the contents and computing summary statistics.</p>
 <p>We’ll also look at how we can chain operations together into mini workflows in a way that makes for more readable and maintainable code, introducing the pipe operator, <strong><code>%&gt;%</code></strong>.</p>
-<p>Finally, we’ll return to plotting and look at a powerful feature of ggplot2, <strong>faceting</strong>, that allows you to divide your plots into sub-plots by splitting the observations based on one or more categorical variables.</p>
+<p>Finally, we’ll return to plotting and look at a powerful feature of ggplot2, <strong>faceting</strong>, that allows you to divide your plots into subplots by splitting the observations based on one or more categorical variables.</p>
 <p>We’ll again use the METABRIC data set to illustrate how these operations work.</p>
 <pre class="r"><code>library(tidyverse)
 metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)
@@ -1357,6 +1357,59 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
 </div>
 <div id="faceting-with-ggplot2" class="section level1">
 <h1>Faceting with ggplot2</h1>
+<p>Finally, let’s change tack completely and take a look at a very useful feature of ggplot2 – <strong>faceting</strong>.</p>
+<p>Faceting allows you to split your plot into subplots, or facets, based on one or more categorical variables. Each of the subplots displays a subset of the data.</p>
+<p>There are two faceting functions, <strong><code>facet_wrap()</code></strong> and <strong><code>facet_grid()</code></strong>.</p>
+<p>Let’s create a scatter plot of GATA3 and ESR1 expression values where we’re displaying the PR positive and PR negative patients using different colours. This is a very similar to a plot we created last week.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+  geom_point(size = 0.5, alpha = 0.5)</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_2-1.png" width="672" /></p>
+<p>An alternative is to used faceting with <strong><code>facet_wrap()</code></strong>.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_wrap(~ PR_status)</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_3-1.png" width="672" /></p>
+<p>This produces two plots, side-by-side, one for each of the categories in the <code>PR_status</code> variable, with a banner across the top of each for the category.</p>
+<p>The <code>~ PR_status</code> argument provided to <code>facet_wrap()</code> is known as a formula. Formulae are used to build models in R.</p>
+<p>We can still use separate colours if we prefer things to be, well, colourful.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_wrap(~ PR_status)</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_4-1.png" width="672" /></p>
+<p>Faceting is usually better than displaying groups using different colours when there are more than two or three groups when it can be difficult to really tell which points which belong to each group. A case in point is for the 3-gene classification in the GATA3 vs ESR1 scatter plot we created last week. Let’s create a faceted version of that plot.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_wrap(~ `3-gene_classifier`)</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_5-1.png" width="672" /></p>
+<p>This helps explain why the function is called <code>facet_wrap()</code>. When it has too many subplots to fit across the page, it wraps around to another row. We can control how many rows or columns to use with the <code>nrow</code> and <code>ncol</code> arguments.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_wrap(~ `3-gene_classifier`, nrow = 1)</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_6-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_wrap(~ `3-gene_classifier`, ncol = 2)</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_7-1.png" width="672" /></p>
+<p>We can combine faceting on one variable with a colour aesthetic for another variable. For example, let’s show the tumour stage status using faceting and the HER2 status using colours.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = HER2_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_wrap(~ Neoplasm_histologic_grade)</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_8-1.png" width="672" /></p>
+<p>Instead of this we could facet on more than variable.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_wrap(~ Neoplasm_histologic_grade + HER2_status)</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_9-1.png" width="672" /></p>
+<p>Faceting on two variables is usually better done using the other faceting function, <strong><code>facet_grid()</code></strong>. Note the change in how the formula is written.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_grid(Neoplasm_histologic_grade ~ HER2_status)</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_10-1.png" width="672" /></p>
+<p>Again we can use colour aesthetics alongside faceting to add further information to our visualization.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_grid(Neoplasm_histologic_grade ~ HER2_status)</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_11-1.png" width="672" /></p>
 <hr />
 </div>
 <div id="summary" class="section level1">
