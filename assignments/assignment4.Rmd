@@ -27,9 +27,16 @@ radiotherapy and survived for more than 20 years.
 
 ```
 
-Now look at the breakdown of these patients in terms of ER status. Compare that
-with the proportion of the entire METABRIC cohort that are ER positive and ER
-negative. What does this tell you?
+Now look at the breakdown of these patients in terms of ER status. Count the
+numbers of ER positive and ER negative patients in this subset. Calculate the
+proportion that are ER positive.
+
+```{r}
+
+```
+
+What does this tell us? Calculate the proportion of ER positive patients in the
+whole cohort by way of a comparison.
 
 ```{r}
 
@@ -37,9 +44,10 @@ negative. What does this tell you?
 
 **Extension**
 
-Create a contingency table and perform a Chi-squared test or a Fisher's exact
-test (whichever is most appropriate) to determine if there is a significant
-difference between the untreated, long-surviving patients and the others.
+Create a contingency table of the numbers of ER positive and ER negative
+patients in the two groups (untreated, long-surviving patients and all others)
+and perform a Chi-squared test or a Fisher's exact test (whichever is most
+appropriate) to determine if there is a significant difference.
 
 ```{r}
 
@@ -95,8 +103,8 @@ Modify your plot to facet by the PAM50 classification.
 
 **Extension 1**
 
-Standardize the expression values for all genes in a single operation with a
-lambda expression, overwriting their original values, and round the resulting
+Standardize the expression values for all genes in a single operation using an
+anonymous function, overwriting their original values, and round the resulting
 values to 3 significant figures.
 
 ```{r}
@@ -109,6 +117,9 @@ each column, again using a single operation.
 ```{r}
 
 ```
+
+To be doubly certain, you could also download the expression z-score values for
+these genes from cBioPortal.
 
 **Extension 2**
 
