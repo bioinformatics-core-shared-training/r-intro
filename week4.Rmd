@@ -985,8 +985,19 @@ ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) 
 
 # Summary
 
+In this session we have covered the following concepts:
+
+* Filtering rows in a data frame based on their values
+* Selecting and reordering of columns
+* Sorting rows based on values in one or more columns
+* Modifying a data frame by either adding new columns or modifying existing ones
+* Summarizing the values in one or more columns
+* Building up workflows by chaining operations together using the pipe operator
+* Faceting of ggplot2 visualizations
+
 ---
 
 # Assignment
 
+Assignment: [assignment4.Rmd](assignments/assignment4.Rmd)
 

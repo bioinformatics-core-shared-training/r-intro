@@ -419,7 +419,7 @@ div.tocify {
 <pre class="r"><code>library(tidyverse)
 metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)
 metabric</code></pre>
-<pre><code>## # A tibble: 1,904 x 30
+<pre><code>## # A tibble: 1,904 x 32
 ##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
 ##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
 ##  1 MB-0000         1             75.6         140.  LIVING         
@@ -432,9 +432,10 @@ metabric</code></pre>
 ##  8 MB-0022         1             89.1          99.5 DECEASED       
 ##  9 MB-0028         1             86.4          36.6 DECEASED       
 ## 10 MB-0035         1             84.2          36.3 DECEASED       
-## # … with 1,894 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## # … with 1,894 more rows, and 27 more variables: Vital_status &lt;chr&gt;,
 ## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
 ## #   Tumour_stage &lt;dbl&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Lymph_nodes_examined_positive &lt;dbl&gt;, Lymph_node_status &lt;dbl&gt;,
 ## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
 ## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
 ## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
@@ -843,7 +844,7 @@ levels(metabric$Integrative_cluster)</code></pre>
 <p>So far we’ve constructed ggplots from data, layers (geoms) and aesthetic mappings but do you notice the labels, scales, facet and theme elements? We’ll be looking at how to customize plots later, including changing the labels, altering the scales of axes, and applying a different visual theme.</p>
 <p>The <code>data</code> element is just the metabric tibble that we provided to the <code>ggplot()</code> function.</p>
 <pre class="r"><code>plot$data</code></pre>
-<pre><code>## # A tibble: 1,904 x 30
+<pre><code>## # A tibble: 1,904 x 32
 ##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
 ##    &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
 ##  1 MB-0000         1             75.6         140.  LIVING         
@@ -856,9 +857,10 @@ levels(metabric$Integrative_cluster)</code></pre>
 ##  8 MB-0022         1             89.1          99.5 DECEASED       
 ##  9 MB-0028         1             86.4          36.6 DECEASED       
 ## 10 MB-0035         1             84.2          36.3 DECEASED       
-## # … with 1,894 more rows, and 25 more variables: Vital_status &lt;chr&gt;,
+## # … with 1,894 more rows, and 27 more variables: Vital_status &lt;chr&gt;,
 ## #   Chemotherapy &lt;chr&gt;, Radiotherapy &lt;chr&gt;, Tumour_size &lt;dbl&gt;,
 ## #   Tumour_stage &lt;fct&gt;, Neoplasm_histologic_grade &lt;dbl&gt;,
+## #   Lymph_nodes_examined_positive &lt;dbl&gt;, Lymph_node_status &lt;dbl&gt;,
 ## #   Cancer_type &lt;chr&gt;, ER_status &lt;chr&gt;, PR_status &lt;chr&gt;,
 ## #   HER2_status &lt;chr&gt;, HER2_status_measured_by_SNP6 &lt;chr&gt;, PAM50 &lt;chr&gt;,
 ## #   `3-gene_classifier` &lt;chr&gt;, Nottingham_prognostic_index &lt;dbl&gt;,
