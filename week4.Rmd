@@ -277,23 +277,17 @@ extracting the values as a vector. Selecting several columns using the `[]`
 subsetting operator is a bit more cumbersome. For example, in our look at
 filtering rows, we considered two different variables in our data set that
 are concerned with the living/deceased status of patients. When printing out
-the results we selected just those columns along with the patient identifier.
+the results we selected just those columns along with the patient identifier
+and the newly created `Deceased` column.
 
 ```{r}
-deceased[, c("Patient_ID", "Survival_status", "Vital_status")]
+deceased[, c("Patient_ID", "Survival_status", "Vital_status", "Deceased")]
 ```
 
-There are several reasons why you might find this command a bit obtuse.
-
-- why the `[ ]`?
-- what is the `c()`?
-- the need to remember about row and column indexing
-- `[, ...]` means display all rows
-
-The **`select()`** function from dplyr is more intuitive.
+The **`select()`** function from dplyr is simpler.
 
 ```{r}
-select(metabric, Patient_ID, Survival_status, Vital_status)
+select(metabric, Patient_ID, Survival_status, Vital_status, Deceased)
 ```
 
 Notice the similarities with the `filter()` function. The first argument is the
@@ -305,7 +299,7 @@ another data frame, even if only one column was selected.
 We can alter the order of the variables (columns).
 
 ```{r}
-select(metabric, Patient_ID, Vital_status, Survival_status)
+select(metabric, Patient_ID, Vital_status, Survival_status, Deceased)
 ```
 
 We can also select a range of columns using **`:`**, e.g. to select the patient
@@ -313,7 +307,7 @@ identifier and all the columns between `Tumour_size` and `Cancer_type` we could
 run the following `select()` command.
 
 ```{r}
-select(metabric, Patient_ID, Tumour_size:Cancer_type)
+select(metabric, Patient_ID, Chemotherapy:Tumour_stage)
 ```
 
 The help page for `select` points to some special functions that can be used
@@ -368,7 +362,7 @@ select(metabric, Patient_ID, Classification = `3-gene_classifier`, NPI = Notting
 
 Let's consider again an earlier example in which we filtered the METABRIC data
 set to retain just the patients who were still alive at the time of the study
-and had survived fro more than 10 years (120 months). We used `filter()` to
+and had survived for more than 10 years (120 months). We use `filter()` to
 select the rows corresponding to the patients meeting these criteria and can
 then use `select()` to only display the variables (columns) we're most
 interested in.
@@ -379,7 +373,7 @@ patient_details_of_interest <- select(patients_of_interest, Patient_ID, Survival
 patient_details_of_interest
 ```
 
-Here we've use an intermediate variable, `patients_of_interest`, which we only
+Here we've used an intermediate variable, `patients_of_interest`, which we only
 needed in order to get to the final result. We could just have used the same
 name to avoid cluttering our environment and overwritten the results from the
 `filter()` operation with those of the `select()` operation.
@@ -407,7 +401,7 @@ For that we need to introduce a new operator, the **pipe** operator, **`%>%`**.
 
 The pipe operator takes the output from one operation, i.e. whatever is on the
 left-hand side of `%>%` and passes it in as the first argument to the second
-operation or function.
+operation, or function, on the right-hand side.
 
 **`x %>% f(y)`** is equivalent to **`f(x, y)`**
 
@@ -444,10 +438,10 @@ patients_of_interest <- metabric %>%
 
 Note how each operation takes the output from the previous operation as its
 first argument. This way of coding is embraced wholeheartedly in the tidyverse
-hence the first argument of almost every function that works on data frames has
-the data frame as the first argument. It is also the reason why tidyverse
-functions return a data frame regardless of whether the output could be recast
-as a vector or a single value.
+hence almost every tidyverse function that works on data frames has the data
+frame as its first argument. It is also the reason why tidyverse functions
+return a data frame regardless of whether the output could be recast as a vector
+or a single value.
 
 "Piping", the act of chaining operations together, becomes really useful when
 there are several steps involved in filtering and transforming a data set.
@@ -487,7 +481,8 @@ patients_of_interest
 When continuing our workflow across multiple lines, we need to be careful to
 ensure the `%>%` is at the end of the line. If we try to place this at the start
 of the next line, R will think we've finished the workflow prematurely and will
-report an error on what it considers the next statement starting with `%>%`.
+report an error at what it considers the next statement, i.e. the line that
+begins with `%>%`.
 
 ```{r eval = FALSE}
 # R considers the following to be 2 separate commands, the first of which ends
@@ -524,8 +519,7 @@ arrange(metabric, Survival_time)
 
 Or we might be more interested in the patients that survived the longest so
 would need the order to be of decreasing survival time. For that we can use
-the helper function `desc()` that was specifically created to work with
-`arrange()`.
+the helper function `desc()` that works specifically with `arrange()`.
 
 ```{r}
 arrange(metabric, desc(Survival_time))
@@ -553,8 +547,8 @@ arrange(patients_of_interest, Tumour_stage, Nottingham_prognostic_index)
 ```
 
 Here we've sorted first by tumour stage from lowest to highest value and then
-by the Nottingham prognostic index when there are ties, i.e. where the tumour
-stage is the same.
+by the Nottingham prognostic index for when there are ties, i.e. where the
+tumour stage is the same.
 
 Sorting is most commonly used in workflows as one of the last steps before
 printing out a data frame or writing out the table to a file.
@@ -563,7 +557,7 @@ printing out a data frame or writing out the table to a file.
 
 # Modifying data using `mutate()`
 
-In one of the examples of filtering observations using `filter()` above we
+In one of the examples of filtering observations using `filter()` above, we
 created a new logical variable called `Deceased`.
 
 ```{r}
@@ -585,8 +579,8 @@ prefixed by `metabric$` just as they don't in any of the `dplyr` functions.
 
 We can overwrite a column and this is quite commonly done when we want to change
 the units. For example, our tumour size values are in millimetres but the
-formula for the Nottingham prognostic index uses the tumour size in centimetres.
-We can convert to `Tumour_size` to centimetres by dividing by 10.
+formula for the Nottingham prognostic index needs the tumour size to be in
+centimetres. We can convert to `Tumour_size` to centimetres by dividing by 10.
 
 ```{r}
 metabric <- mutate(metabric, Tumour_size = Tumour_size / 10)
@@ -674,7 +668,7 @@ We can use the range operator and the same helper functions as we did for
 selecting columns using `select()` inside `vars()`.
 
 For example, we might decide that our expression values are given to a much
-higher degree of precision than is strictly needed.
+higher degree of precision than is strictly necessary.
 
 ```{r}
 metabric %>%
@@ -701,14 +695,14 @@ operation to multiple columns but where there is no available function in R
 to do what we want.
 
 Let's say we want to convert the petal and sepal measurements in the `iris`
-data set from centimetres to millimetres. We'd need to use what is known as an
-anonymous function for this. Anonymous functions are also known as lambda
-expressions. Usually, an anonymous function is a concise formula used when there
-is no equivalent function available in R.
+data set from centimetres to millimetres. We'd either need to create a new
+function to do this conversion or we could use what is known as an anonymous
+function, also known as a lambda expression.
 
-There is no 'multiply by 10' function so we use an anonymous function instead --
+There is no 'multiply by 10' function and it seems a bit pointless to create
+one just for this conversion so we'll use an anonymous function instead --
 anonymous because it has no name, it's an _in situ_ function only used in our
-`mutate_` function call.
+`mutate_at()` function call.
 
 ```{r}
 iris %>%
@@ -716,9 +710,10 @@ iris %>%
   mutate_at(vars(Sepal.Length:Petal.Width), ~ . * 10)
 ```
 
-The **`~`** denotes that we're using an anonymous function and the `.` is a
-placeholder for the column being operated on. In this case, we're multiplying
-each of the columns between `Sepal.Length` and `Petal.Width` inclusive by 10.
+The **`~`** denotes that we're using an anonymous function (it is the symbol for
+formulae in R) and the `.` is a placeholder for the column being operated on. In
+this case, we're multiplying each of the columns between `Sepal.Length` and
+`Petal.Width` inclusive by 10.
 
 If you think this is getting fairly complicated you'd be right. We'll leave it
 there for now but point you to the help page for `mutate_at` if you're
@@ -786,7 +781,7 @@ value. Some of the more useful functions include:
 * Count: **`n()`**
 
 Note the `first()`, `last()` and `n()` are only really useful when working on
-groups of observations.
+groups of observations using **`group_by()`**.
 
 **`n()`** is a special function that returns the number of observations; it
 doesn't take a vector argument, i.e. a column.
@@ -805,7 +800,7 @@ summarise(metabric, correlation = cor(FOXA1, MLPH))
 Much like `mutate()` with its `mutate_at()`, `mutate_if()` and `mutate_all()`
 variants, there is a family of `summarise()` functions similarly named for
 applying the same summarization function to multiple columns in a single
-operation. These work in much the same way at their `mutate` cousins.
+operation. These work in much the same way as their `mutate` cousins.
 
 **`summarise_at()`** allows us to select the columns on which to operate using
 an additional `vars()` argument.
@@ -850,8 +845,8 @@ functions needs to be provided.
 summarise_at(metabric, vars(ESR1, ERBB2, PGR), list(mean, sd))
 ```
 
-Pretty neat but I'm not sure about those column headings -- fortunately we have
-some control over these.
+Pretty neat but I'm not sure about those column headings in the output --
+fortunately we have some control over these.
 
 ```{r}
 summarise_at(metabric, vars(ESR1, ERBB2, PGR), list(average = mean, stdev = sd))
@@ -861,9 +856,9 @@ summarise_at(metabric, vars(ESR1, ERBB2, PGR), list(average = mean, stdev = sd))
 
 The `mutate_` functions and `summarise_` functions work in a very similar
 manner, very much in line with the coherent and consistent framework provided
-provided by `dplyr` and the entire tidyverse. For example, we could use an
-anonymous function in a `summarise_at()` function applied to multiple variables.
-In the assignment from last week, we asked you to compute the correlation of the
+by `dplyr` and the entire tidyverse. For example, we could use an anonymous
+function in a `summarise_at()` operation applied to multiple variables. In the
+assignment from last week, we asked you to compute the correlation of the
 expression for FOXA1 against all other genes to see which was most strongly
 correlated. Here is how we could do this in a single `summarise_at()` statement
 using an anonymous function.

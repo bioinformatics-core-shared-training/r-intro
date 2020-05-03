@@ -617,79 +617,71 @@ nrow(selected_patients)</code></pre>
 <div id="selecting-columns-with-select" class="section level1">
 <h1>Selecting columns with <code>select()</code></h1>
 <p>Another way of “slicing and dicing”&quot; our tabular data set is to select just the variables or columns we’re interested in. This can be important particularly when the data set contains a very large number of variables as is the case for the METABRIC data. Notice how when we print the METABRIC data frame it is not possible to display all the columns; we only get the first few and then a long list of the additional ones that weren’t displayed.</p>
-<p>Using the <code>$</code> operator is quite convenient for selecting a single column and extracting the values as a vector. Selecting several columns using the <code>[]</code> subsetting operator is a bit more cumbersome. For example, in our look at filtering rows, we considered two different variables in our data set that are concerned with the living/deceased status of patients. When printing out the results we selected just those columns along with the patient identifier.</p>
-<pre class="r"><code>deceased[, c(&quot;Patient_ID&quot;, &quot;Survival_status&quot;, &quot;Vital_status&quot;)]</code></pre>
-<pre><code>## # A tibble: 1,103 x 3
-##    Patient_ID Survival_status Vital_status        
-##    &lt;chr&gt;      &lt;chr&gt;           &lt;chr&gt;               
-##  1 MB-0005    DECEASED        Died of Disease     
-##  2 MB-0008    DECEASED        Died of Disease     
-##  3 MB-0010    DECEASED        Died of Disease     
-##  4 MB-0022    DECEASED        Died of Other Causes
-##  5 MB-0028    DECEASED        Died of Other Causes
-##  6 MB-0035    DECEASED        Died of Disease     
-##  7 MB-0036    DECEASED        Died of Disease     
-##  8 MB-0046    DECEASED        Died of Other Causes
-##  9 MB-0079    DECEASED        Died of Disease     
-## 10 MB-0083    DECEASED        Died of Disease     
+<p>Using the <code>$</code> operator is quite convenient for selecting a single column and extracting the values as a vector. Selecting several columns using the <code>[]</code> subsetting operator is a bit more cumbersome. For example, in our look at filtering rows, we considered two different variables in our data set that are concerned with the living/deceased status of patients. When printing out the results we selected just those columns along with the patient identifier and the newly created <code>Deceased</code> column.</p>
+<pre class="r"><code>deceased[, c(&quot;Patient_ID&quot;, &quot;Survival_status&quot;, &quot;Vital_status&quot;, &quot;Deceased&quot;)]</code></pre>
+<pre><code>## # A tibble: 1,103 x 4
+##    Patient_ID Survival_status Vital_status         Deceased
+##    &lt;chr&gt;      &lt;chr&gt;           &lt;chr&gt;                &lt;lgl&gt;   
+##  1 MB-0005    DECEASED        Died of Disease      TRUE    
+##  2 MB-0008    DECEASED        Died of Disease      TRUE    
+##  3 MB-0010    DECEASED        Died of Disease      TRUE    
+##  4 MB-0022    DECEASED        Died of Other Causes TRUE    
+##  5 MB-0028    DECEASED        Died of Other Causes TRUE    
+##  6 MB-0035    DECEASED        Died of Disease      TRUE    
+##  7 MB-0036    DECEASED        Died of Disease      TRUE    
+##  8 MB-0046    DECEASED        Died of Other Causes TRUE    
+##  9 MB-0079    DECEASED        Died of Disease      TRUE    
+## 10 MB-0083    DECEASED        Died of Disease      TRUE    
 ## # … with 1,093 more rows</code></pre>
-<p>There are several reasons why you might find this command a bit obtuse.</p>
-<ul>
-<li>why the <code>[ ]</code>?</li>
-<li>what is the <code>c()</code>?</li>
-<li>the need to remember about row and column indexing</li>
-<li><code>[, ...]</code> means display all rows</li>
-</ul>
-<p>The <strong><code>select()</code></strong> function from dplyr is more intuitive.</p>
-<pre class="r"><code>select(metabric, Patient_ID, Survival_status, Vital_status)</code></pre>
-<pre><code>## # A tibble: 1,904 x 3
-##    Patient_ID Survival_status Vital_status        
-##    &lt;chr&gt;      &lt;chr&gt;           &lt;chr&gt;               
-##  1 MB-0000    LIVING          Living              
-##  2 MB-0002    LIVING          Living              
-##  3 MB-0005    DECEASED        Died of Disease     
-##  4 MB-0006    LIVING          Living              
-##  5 MB-0008    DECEASED        Died of Disease     
-##  6 MB-0010    DECEASED        Died of Disease     
-##  7 MB-0014    LIVING          Living              
-##  8 MB-0022    DECEASED        Died of Other Causes
-##  9 MB-0028    DECEASED        Died of Other Causes
-## 10 MB-0035    DECEASED        Died of Disease     
+<p>The <strong><code>select()</code></strong> function from dplyr is simpler.</p>
+<pre class="r"><code>select(metabric, Patient_ID, Survival_status, Vital_status, Deceased)</code></pre>
+<pre><code>## # A tibble: 1,904 x 4
+##    Patient_ID Survival_status Vital_status         Deceased
+##    &lt;chr&gt;      &lt;chr&gt;           &lt;chr&gt;                &lt;lgl&gt;   
+##  1 MB-0000    LIVING          Living               FALSE   
+##  2 MB-0002    LIVING          Living               FALSE   
+##  3 MB-0005    DECEASED        Died of Disease      TRUE    
+##  4 MB-0006    LIVING          Living               FALSE   
+##  5 MB-0008    DECEASED        Died of Disease      TRUE    
+##  6 MB-0010    DECEASED        Died of Disease      TRUE    
+##  7 MB-0014    LIVING          Living               FALSE   
+##  8 MB-0022    DECEASED        Died of Other Causes TRUE    
+##  9 MB-0028    DECEASED        Died of Other Causes TRUE    
+## 10 MB-0035    DECEASED        Died of Disease      TRUE    
 ## # … with 1,894 more rows</code></pre>
 <p>Notice the similarities with the <code>filter()</code> function. The first argument is the data frame we are operating on and the arguments that follow on are specific to the operation in question, in this case, the variables (columns) to select. Note that the variables do not need to be put in quotes, and the returned value is another data frame, even if only one column was selected.</p>
 <p>We can alter the order of the variables (columns).</p>
-<pre class="r"><code>select(metabric, Patient_ID, Vital_status, Survival_status)</code></pre>
-<pre><code>## # A tibble: 1,904 x 3
-##    Patient_ID Vital_status         Survival_status
-##    &lt;chr&gt;      &lt;chr&gt;                &lt;chr&gt;          
-##  1 MB-0000    Living               LIVING         
-##  2 MB-0002    Living               LIVING         
-##  3 MB-0005    Died of Disease      DECEASED       
-##  4 MB-0006    Living               LIVING         
-##  5 MB-0008    Died of Disease      DECEASED       
-##  6 MB-0010    Died of Disease      DECEASED       
-##  7 MB-0014    Living               LIVING         
-##  8 MB-0022    Died of Other Causes DECEASED       
-##  9 MB-0028    Died of Other Causes DECEASED       
-## 10 MB-0035    Died of Disease      DECEASED       
+<pre class="r"><code>select(metabric, Patient_ID, Vital_status, Survival_status, Deceased)</code></pre>
+<pre><code>## # A tibble: 1,904 x 4
+##    Patient_ID Vital_status         Survival_status Deceased
+##    &lt;chr&gt;      &lt;chr&gt;                &lt;chr&gt;           &lt;lgl&gt;   
+##  1 MB-0000    Living               LIVING          FALSE   
+##  2 MB-0002    Living               LIVING          FALSE   
+##  3 MB-0005    Died of Disease      DECEASED        TRUE    
+##  4 MB-0006    Living               LIVING          FALSE   
+##  5 MB-0008    Died of Disease      DECEASED        TRUE    
+##  6 MB-0010    Died of Disease      DECEASED        TRUE    
+##  7 MB-0014    Living               LIVING          FALSE   
+##  8 MB-0022    Died of Other Causes DECEASED        TRUE    
+##  9 MB-0028    Died of Other Causes DECEASED        TRUE    
+## 10 MB-0035    Died of Disease      DECEASED        TRUE    
 ## # … with 1,894 more rows</code></pre>
 <p>We can also select a range of columns using <strong><code>:</code></strong>, e.g. to select the patient identifier and all the columns between <code>Tumour_size</code> and <code>Cancer_type</code> we could run the following <code>select()</code> command.</p>
-<pre class="r"><code>select(metabric, Patient_ID, Tumour_size:Cancer_type)</code></pre>
-<pre><code>## # A tibble: 1,904 x 7
-##    Patient_ID Tumour_size Tumour_stage Neoplasm_histol… Lymph_nodes_exa…
-##    &lt;chr&gt;            &lt;dbl&gt;        &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
-##  1 MB-0000             22            2                3               10
-##  2 MB-0002             10            1                3                0
-##  3 MB-0005             15            2                2                1
-##  4 MB-0006             25            2                2                3
-##  5 MB-0008             40            2                3                8
-##  6 MB-0010             31            4                3                0
-##  7 MB-0014             10            2                2                1
-##  8 MB-0022             29            2                2                1
-##  9 MB-0028             16            2                3                1
-## 10 MB-0035             28            2                2                0
-## # … with 1,894 more rows, and 2 more variables: Lymph_node_status &lt;dbl&gt;,
-## #   Cancer_type &lt;chr&gt;</code></pre>
+<pre class="r"><code>select(metabric, Patient_ID, Chemotherapy:Tumour_stage)</code></pre>
+<pre><code>## # A tibble: 1,904 x 5
+##    Patient_ID Chemotherapy Radiotherapy Tumour_size Tumour_stage
+##    &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;              &lt;dbl&gt;        &lt;dbl&gt;
+##  1 MB-0000    NO           YES                   22            2
+##  2 MB-0002    NO           YES                   10            1
+##  3 MB-0005    YES          NO                    15            2
+##  4 MB-0006    YES          YES                   25            2
+##  5 MB-0008    YES          YES                   40            2
+##  6 MB-0010    NO           YES                   31            4
+##  7 MB-0014    YES          YES                   10            2
+##  8 MB-0022    NO           YES                   29            2
+##  9 MB-0028    NO           YES                   16            2
+## 10 MB-0035    NO           NO                    28            2
+## # … with 1,894 more rows</code></pre>
 <p>The help page for <code>select</code> points to some special functions that can be used within <code>select()</code>. We can find all the columns, for example, that contain the term “status” using <code>contains()</code>.</p>
 <pre class="r"><code>select(metabric, contains(&quot;status&quot;))</code></pre>
 <pre><code>## # A tibble: 1,904 x 7
@@ -810,7 +802,7 @@ selected_columns</code></pre>
 </div>
 <div id="chaining-operations-using" class="section level1">
 <h1>Chaining operations using <code>%&gt;%</code></h1>
-<p>Let’s consider again an earlier example in which we filtered the METABRIC data set to retain just the patients who were still alive at the time of the study and had survived fro more than 10 years (120 months). We used <code>filter()</code> to select the rows corresponding to the patients meeting these criteria and can then use <code>select()</code> to only display the variables (columns) we’re most interested in.</p>
+<p>Let’s consider again an earlier example in which we filtered the METABRIC data set to retain just the patients who were still alive at the time of the study and had survived for more than 10 years (120 months). We use <code>filter()</code> to select the rows corresponding to the patients meeting these criteria and can then use <code>select()</code> to only display the variables (columns) we’re most interested in.</p>
 <pre class="r"><code>patients_of_interest &lt;- filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120)
 patient_details_of_interest &lt;- select(patients_of_interest, Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
 patient_details_of_interest</code></pre>
@@ -828,7 +820,7 @@ patient_details_of_interest</code></pre>
 ##  9 MB-0062             154.            1                        4.03
 ## 10 MB-0066             157.            2                        4.03
 ## # … with 535 more rows</code></pre>
-<p>Here we’ve use an intermediate variable, <code>patients_of_interest</code>, which we only needed in order to get to the final result. We could just have used the same name to avoid cluttering our environment and overwritten the results from the <code>filter()</code> operation with those of the <code>select()</code> operation.</p>
+<p>Here we’ve used an intermediate variable, <code>patients_of_interest</code>, which we only needed in order to get to the final result. We could just have used the same name to avoid cluttering our environment and overwritten the results from the <code>filter()</code> operation with those of the <code>select()</code> operation.</p>
 <pre class="r"><code>patients_of_interest &lt;- select(patients_of_interest, Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)</code></pre>
 <p>Another less readable way of writing this code is to nest the <code>filter()</code> function call inside the <code>select()</code>. Although this looks very unwieldy and is not easy to follow, nested function calls are very common in a lot of R code you may come across.</p>
 <pre class="r"><code>patients_of_interest &lt;- select(filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120), Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)
@@ -840,7 +832,7 @@ nrow(patients_of_interest)</code></pre>
 <strong>The pipe operator <code>%&gt;%</code></strong>
 </p>
 <p>
-The pipe operator takes the output from one operation, i.e. whatever is on the left-hand side of <code>%&gt;%</code> and passes it in as the first argument to the second operation or function.
+The pipe operator takes the output from one operation, i.e. whatever is on the left-hand side of <code>%&gt;%</code> and passes it in as the first argument to the second operation, or function, on the right-hand side.
 </p>
 <p>
 <strong><code>x %&gt;% f(y)</code></strong> is equivalent to <strong><code>f(x, y)</code></strong>
@@ -874,7 +866,7 @@ Piping in R was motivated by the Unix pipe, <code>|</code>, in which the output 
 <pre class="r"><code>patients_of_interest &lt;- metabric %&gt;%
   filter(Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120) %&gt;%
   select(Patient_ID, Survival_time, Tumour_stage, Nottingham_prognostic_index)</code></pre>
-<p>Note how each operation takes the output from the previous operation as its first argument. This way of coding is embraced wholeheartedly in the tidyverse hence the first argument of almost every function that works on data frames has the data frame as the first argument. It is also the reason why tidyverse functions return a data frame regardless of whether the output could be recast as a vector or a single value.</p>
+<p>Note how each operation takes the output from the previous operation as its first argument. This way of coding is embraced wholeheartedly in the tidyverse hence almost every tidyverse function that works on data frames has the data frame as its first argument. It is also the reason why tidyverse functions return a data frame regardless of whether the output could be recast as a vector or a single value.</p>
 <p>“Piping”, the act of chaining operations together, becomes really useful when there are several steps involved in filtering and transforming a data set.</p>
 <p>The usual way of developing a workflow is to build it up one step at a time, testing the output produced at each stage. Let’s do that for this case.</p>
 <p>We start by considering just the patients who are living.</p>
@@ -906,7 +898,7 @@ patients_of_interest</code></pre>
 ##  9 MB-0062             154.            1                        4.03
 ## 10 MB-0066             157.            2                        4.03
 ## # … with 535 more rows</code></pre>
-<p>When continuing our workflow across multiple lines, we need to be careful to ensure the <code>%&gt;%</code> is at the end of the line. If we try to place this at the start of the next line, R will think we’ve finished the workflow prematurely and will report an error on what it considers the next statement starting with <code>%&gt;%</code>.</p>
+<p>When continuing our workflow across multiple lines, we need to be careful to ensure the <code>%&gt;%</code> is at the end of the line. If we try to place this at the start of the next line, R will think we’ve finished the workflow prematurely and will report an error at what it considers the next statement, i.e. the line that begins with <code>%&gt;%</code>.</p>
 <pre class="r"><code># R considers the following to be 2 separate commands, the first of which ends
 # with the first filter operation and runs successfully.
 # The second statement is the third and last line, is not a valid commmand and
@@ -946,7 +938,7 @@ patients_of_interest &lt;- metabric %&gt;%
 ## #   Cellularity &lt;chr&gt;, Integrative_cluster &lt;chr&gt;, Mutation_count &lt;dbl&gt;,
 ## #   ESR1 &lt;dbl&gt;, ERBB2 &lt;dbl&gt;, PGR &lt;dbl&gt;, TP53 &lt;dbl&gt;, PIK3CA &lt;dbl&gt;,
 ## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;, Deceased &lt;lgl&gt;</code></pre>
-<p>Or we might be more interested in the patients that survived the longest so would need the order to be of decreasing survival time. For that we can use the helper function <code>desc()</code> that was specifically created to work with <code>arrange()</code>.</p>
+<p>Or we might be more interested in the patients that survived the longest so would need the order to be of decreasing survival time. For that we can use the helper function <code>desc()</code> that works specifically with <code>arrange()</code>.</p>
 <pre class="r"><code>arrange(metabric, desc(Survival_time))</code></pre>
 <pre><code>## # A tibble: 1,904 x 33
 ##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
@@ -1009,19 +1001,19 @@ patients_of_interest</code></pre>
 ##  9 MB-2564             285.            1                        2.02
 ## 10 MB-0244             150.            1                        2.02
 ## # … with 535 more rows</code></pre>
-<p>Here we’ve sorted first by tumour stage from lowest to highest value and then by the Nottingham prognostic index when there are ties, i.e. where the tumour stage is the same.</p>
+<p>Here we’ve sorted first by tumour stage from lowest to highest value and then by the Nottingham prognostic index for when there are ties, i.e. where the tumour stage is the same.</p>
 <p>Sorting is most commonly used in workflows as one of the last steps before printing out a data frame or writing out the table to a file.</p>
 <hr />
 </div>
 <div id="modifying-data-using-mutate" class="section level1">
 <h1>Modifying data using <code>mutate()</code></h1>
-<p>In one of the examples of filtering observations using <code>filter()</code> above we created a new logical variable called <code>Deceased</code>.</p>
+<p>In one of the examples of filtering observations using <code>filter()</code> above, we created a new logical variable called <code>Deceased</code>.</p>
 <pre class="r"><code>metabric$Deceased &lt;- metabric$Survival_status == &quot;DECEASED&quot;</code></pre>
 <p>This is an example of a rather common type of data manipulation in which we crate a new column based on the values contained in one or more other columns. The <code>dplyr</code> package provides the <code>mutate()</code> function for this purpose.</p>
 <pre class="r"><code>metabric &lt;- mutate(metabric, Deceased = Survival_status == &quot;DECEASED&quot;)</code></pre>
 <p>Both of these methods adds the new column to the end.</p>
 <p>Note that variables names in the <code>mutate()</code> function call do not need to be prefixed by <code>metabric$</code> just as they don’t in any of the <code>dplyr</code> functions.</p>
-<p>We can overwrite a column and this is quite commonly done when we want to change the units. For example, our tumour size values are in millimetres but the formula for the Nottingham prognostic index uses the tumour size in centimetres. We can convert to <code>Tumour_size</code> to centimetres by dividing by 10.</p>
+<p>We can overwrite a column and this is quite commonly done when we want to change the units. For example, our tumour size values are in millimetres but the formula for the Nottingham prognostic index needs the tumour size to be in centimetres. We can convert to <code>Tumour_size</code> to centimetres by dividing by 10.</p>
 <pre class="r"><code>metabric &lt;- mutate(metabric, Tumour_size = Tumour_size / 10)</code></pre>
 <div class="rmdblock">
 <p>
@@ -1118,7 +1110,7 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 ## # … with 1,894 more rows</code></pre>
 <p>This is slightly more complicated. We had to group the variables for which we want the function to apply using <code>vars()</code>. We then gave the function name as the next argument and finally any additional arguments that the function needs, in this case the number of digits.</p>
 <p>We can use the range operator and the same helper functions as we did for selecting columns using <code>select()</code> inside <code>vars()</code>.</p>
-<p>For example, we might decide that our expression values are given to a much higher degree of precision than is strictly needed.</p>
+<p>For example, we might decide that our expression values are given to a much higher degree of precision than is strictly necessary.</p>
 <pre class="r"><code>metabric %&gt;%
   mutate_at(vars(ESR1:MLPH), round, digits = 2) %&gt;%
   select(Patient_ID, ESR1:MLPH)</code></pre>
@@ -1160,8 +1152,8 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 <h2>Anonymous functions</h2>
 <p>The <code>mutate_at()</code> function, and the related <code>mutate_if()</code> and <code>mutate_all()</code> functions, are really very powerful but with that comes additional complexity.</p>
 <p>For example, we may come across situations where we’d like to apply the same operation to multiple columns but where there is no available function in R to do what we want.</p>
-<p>Let’s say we want to convert the petal and sepal measurements in the <code>iris</code> data set from centimetres to millimetres. We’d need to use what is known as an anonymous function for this. Anonymous functions are also known as lambda expressions. Usually, an anonymous function is a concise formula used when there is no equivalent function available in R.</p>
-<p>There is no ‘multiply by 10’ function so we use an anonymous function instead – anonymous because it has no name, it’s an <em>in situ</em> function only used in our <code>mutate_</code> function call.</p>
+<p>Let’s say we want to convert the petal and sepal measurements in the <code>iris</code> data set from centimetres to millimetres. We’d either need to create a new function to do this conversion or we could use what is known as an anonymous function, also known as a lambda expression.</p>
+<p>There is no ‘multiply by 10’ function and it seems a bit pointless to create one just for this conversion so we’ll use an anonymous function instead – anonymous because it has no name, it’s an <em>in situ</em> function only used in our <code>mutate_at()</code> function call.</p>
 <pre class="r"><code>iris %&gt;%
   as_tibble() %&gt;%
   mutate_at(vars(Sepal.Length:Petal.Width), ~ . * 10)</code></pre>
@@ -1179,7 +1171,7 @@ select(metabric, Tumour_size, Lymph_node_status, Neoplasm_histologic_grade, NPI,
 ##  9           44          29           14           2 setosa 
 ## 10           49          31           15           1 setosa 
 ## # … with 140 more rows</code></pre>
-<p>The <strong><code>~</code></strong> denotes that we’re using an anonymous function and the <code>.</code> is a placeholder for the column being operated on. In this case, we’re multiplying each of the columns between <code>Sepal.Length</code> and <code>Petal.Width</code> inclusive by 10.</p>
+<p>The <strong><code>~</code></strong> denotes that we’re using an anonymous function (it is the symbol for formulae in R) and the <code>.</code> is a placeholder for the column being operated on. In this case, we’re multiplying each of the columns between <code>Sepal.Length</code> and <code>Petal.Width</code> inclusive by 10.</p>
 <p>If you think this is getting fairly complicated you’d be right. We’ll leave it there for now but point you to the help page for <code>mutate_at</code> if you’re interested in finding out more.</p>
 <hr />
 </div>
@@ -1233,7 +1225,7 @@ Count: <strong><code>n()</code></strong>
 </li>
 </ul>
 <p>
-Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only really useful when working on groups of observations.
+Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only really useful when working on groups of observations using <strong><code>group_by()</code></strong>.
 </p>
 <p>
 <strong><code>n()</code></strong> is a special function that returns the number of observations; it doesn’t take a vector argument, i.e. a column.
@@ -1247,7 +1239,7 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
 ## 1       0.898</code></pre>
 <div id="summarizing-multiple-columns" class="section level2">
 <h2>Summarizing multiple columns</h2>
-<p>Much like <code>mutate()</code> with its <code>mutate_at()</code>, <code>mutate_if()</code> and <code>mutate_all()</code> variants, there is a family of <code>summarise()</code> functions similarly named for applying the same summarization function to multiple columns in a single operation. These work in much the same way at their <code>mutate</code> cousins.</p>
+<p>Much like <code>mutate()</code> with its <code>mutate_at()</code>, <code>mutate_if()</code> and <code>mutate_all()</code> variants, there is a family of <code>summarise()</code> functions similarly named for applying the same summarization function to multiple columns in a single operation. These work in much the same way as their <code>mutate</code> cousins.</p>
 <p><strong><code>summarise_at()</code></strong> allows us to select the columns on which to operate using an additional <code>vars()</code> argument.</p>
 <pre class="r"><code>summarise_at(metabric, vars(FOXA1, MLPH), mean)</code></pre>
 <pre><code>## # A tibble: 1 x 2
@@ -1325,7 +1317,7 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
 ##   ESR1_fn1 ERBB2_fn1 PGR_fn1 ESR1_fn2 ERBB2_fn2 PGR_fn2
 ##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
 ## 1     9.61      10.8    6.24     2.13      1.36    1.02</code></pre>
-<p>Pretty neat but I’m not sure about those column headings – fortunately we have some control over these.</p>
+<p>Pretty neat but I’m not sure about those column headings in the output – fortunately we have some control over these.</p>
 <pre class="r"><code>summarise_at(metabric, vars(ESR1, ERBB2, PGR), list(average = mean, stdev = sd))</code></pre>
 <pre><code>## # A tibble: 1 x 6
 ##   ESR1_average ERBB2_average PGR_average ESR1_stdev ERBB2_stdev PGR_stdev
@@ -1334,7 +1326,7 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
 </div>
 <div id="anonymous-functions-1" class="section level2">
 <h2>Anonymous functions</h2>
-<p>The <code>mutate_</code> functions and <code>summarise_</code> functions work in a very similar manner, very much in line with the coherent and consistent framework provided provided by <code>dplyr</code> and the entire tidyverse. For example, we could use an anonymous function in a <code>summarise_at()</code> function applied to multiple variables. In the assignment from last week, we asked you to compute the correlation of the expression for FOXA1 against all other genes to see which was most strongly correlated. Here is how we could do this in a single <code>summarise_at()</code> statement using an anonymous function.</p>
+<p>The <code>mutate_</code> functions and <code>summarise_</code> functions work in a very similar manner, very much in line with the coherent and consistent framework provided by <code>dplyr</code> and the entire tidyverse. For example, we could use an anonymous function in a <code>summarise_at()</code> operation applied to multiple variables. In the assignment from last week, we asked you to compute the correlation of the expression for FOXA1 against all other genes to see which was most strongly correlated. Here is how we could do this in a single <code>summarise_at()</code> statement using an anonymous function.</p>
 <pre class="r"><code>summarise_at(metabric, vars(ESR1:MLPH, -FOXA1), ~ cor(., FOXA1))</code></pre>
 <pre><code>## # A tibble: 1 x 7
 ##    ESR1 ERBB2   PGR    TP53 PIK3CA GATA3  MLPH
