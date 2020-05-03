@@ -975,7 +975,7 @@ Again we can use colour aesthetics alongside faceting to add further information
 to our visualization.
 
 ```{r scatter_plot_11}
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PAM50)) +
   geom_point(size = 0.5, alpha = 0.5) +
   facet_grid(Neoplasm_histologic_grade ~ HER2_status)
 ```
@@ -988,7 +988,7 @@ plot.
 grade_labels <- c("1" = "Grade I", "2" = "Grade II", "3" = "Grade III")
 her2_status_labels <- c("Positive" = "HER2 positive", "Negative" = "HER2 negative")
 
-ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PAM50)) +
   geom_point(size = 0.5, alpha = 0.5) +
   facet_grid(Neoplasm_histologic_grade ~ HER2_status,
              labeller = labeller(
