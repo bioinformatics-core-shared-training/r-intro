@@ -404,11 +404,11 @@ div.tocify {
 <li><strong><code>select()</code></strong> for selecting a subset of variables, i.e. selecting columns in your table</li>
 <li><strong><code>filter()</code></strong> for selecting observations based on their values, i.e. selecting rows in your table</li>
 <li><strong><code>arrange()</code></strong> for sorting the observations in your table</li>
-<li><strong><code>mutate()</code></strong> for creating a new variable, or modifying an existing variable</li>
+<li><strong><code>mutate()</code></strong> for creating a new variable or modifying an existing variable</li>
 <li><strong><code>summarise()</code></strong> for collapsing values in one of more columns to a single summary value</li>
 </ul></li>
 <li>Chain operations together into a workflow using pipes</li>
-<li>Learn about faceting in ggplot2 to create separate subplots</li>
+<li>Learn about faceting in ggplot2 to split your data into separate categories and create a series of sub-plots arranged in a grid</li>
 </ul>
 </blockquote>
 <hr />
@@ -416,12 +416,11 @@ div.tocify {
 <h1>Data manipulation with dplyr</h1>
 <p><strong>dplyr</strong> is one of the packages that gets loaded as part of the tidyverse.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<p>dplyr is the Swiss army knife in the tidyverse, providing many useful functions for manipulating tabular data in data frames or tibble objects. We’re going to look at the key functions for filtering our data, modifying the contents and computing summary statistics.</p>
-<p>We’ll also look at how we can chain operations together into mini workflows in a way that makes for more readable and maintainable code, introducing the pipe operator, <strong><code>%&gt;%</code></strong>.</p>
+<p>dplyr is the Swiss army knife in the tidyverse, providing many useful functions for manipulating tabular data in data frames or tibbles. We’re going to look at the key functions for filtering our data, modifying the contents and computing summary statistics.</p>
+<p>We’ll also introduce the pipe operator, <strong><code>%&gt;%</code></strong>, for chaining operations together into mini workflows in a way that makes for more readable and maintainable code.</p>
 <p>Finally, we’ll return to plotting and look at a powerful feature of ggplot2, <strong>faceting</strong>, that allows you to divide your plots into subplots by splitting the observations based on one or more categorical variables.</p>
 <p>We’ll again use the METABRIC data set to illustrate how these operations work.</p>
-<pre class="r"><code>library(tidyverse)
-metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)
+<pre class="r"><code>metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)
 metabric</code></pre>
 <pre><code>## # A tibble: 1,904 x 32
 ##    Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
@@ -450,7 +449,7 @@ metabric</code></pre>
 </div>
 <div id="data-semantics" class="section level1">
 <h1>Data semantics</h1>
-<p>We use the terms ‘observation’ and ‘variable’ a lot in this course. As a reminder from week 2, when we talk about an observation, we’re talking about a set of values measured for the same unit or thing, e.g. a person or a gene, and when we talk about a variable we are really talking about the attribute that we are measuring or recording, e.g. height, temperature or expression value.</p>
+<p>We use the terms ‘observation’ and ‘variable’ a lot in this course. As a reminder from week 2, when we talk about an observation, we’re talking about a set of values measured for the same unit or thing, e.g. a person or a date, and when we talk about a variable we are really talking about the attribute that we are measuring or recording, e.g. height, temperature or expression value.</p>
 <p><strong>Observations are represented as rows</strong> in our data frames or tibbles, while the <strong>columns correspond to variables</strong>.</p>
 <div class="rmdblock">
 <p>
@@ -463,7 +462,7 @@ A data set is a collection of <strong>values</strong>, usually either numbers (i
 A <strong>variable</strong> contains all values that measure the same underlying attribute (like height, temperature, duration) across units.
 </p>
 <p>
-An <strong>observation</strong> contains all values measured on the same unit (like a person, or a day) across attributes.
+An <strong>observation</strong> contains all values measured on the same unit (like a person or a day) across attributes.
 </p>
 </div>
 <hr />
@@ -522,7 +521,7 @@ deceased</code></pre>
 <pre class="r"><code>filter(metabric, Vital_status == &quot;Died of Disease&quot;)
 # is equivalent to
 metabric[metabric$Vital_status == &quot;Died of Disease&quot;, ]</code></pre>
-<p>Both achieve the same result but the dplyr filter method is arguably easier to read. We haven’t had to write <code>metabric</code> twice for one thing, we just referred to the variable name as it is, unquoted and without any fuss.</p>
+<p>Both achieve the same result but the dplyr filter method is arguably a little easier to read. We haven’t had to write <code>metabric</code> twice for one thing; we just referred to the variable name as it is, unquoted and without any fuss.</p>
 <p>Let’s have a look at the various categories in the <code>Vital_status</code> variable.</p>
 <pre class="r"><code>table(metabric$Vital_status)</code></pre>
 <pre><code>## 
@@ -540,9 +539,9 @@ nrow(deceased)</code></pre>
 <pre class="r"><code>deceased &lt;- filter(metabric, str_starts(Vital_status, &quot;Died&quot;))
 nrow(deceased)</code></pre>
 <pre><code>## [1] 1102</code></pre>
-<p>Note that <code>str_starts()</code> returns a logical vector - this is important since the criterion for filtering must evaluate to <code>TRUE</code> or <code>FALSE</code> values for each row.</p>
-<p>Unsurprisingly there is an equivalent function, <code>str_ends()</code>, for matching the end of text (character) values and <code>str_detect()</code> is another useful function that determines whether values match a regular expression. Regular expressions are a language for search patterns used very frequently in computer programming and really worth getting to grips with but sadly these are beyond the scope of this course.</p>
-<p>Filtering based on a logical variable is the most simple type of filtering of all. We don’t have any logical variables in our METABRIC data set so we’ll create one from the binary <code>Survival_status</code> variable.</p>
+<p>Note that <code>str_starts()</code> returns a logical vector - this is important since the filtering condition must evaluate to <code>TRUE</code> or <code>FALSE</code> values for each row.</p>
+<p>Unsurprisingly there is an equivalent function, <code>str_ends()</code>, for matching the end of text (character) values and <code>str_detect()</code> is another useful function that determines whether values match a regular expression. Regular expressions are a language for search patterns used frequently in computer programming and really worth getting to grips with but sadly these are beyond the scope of this course.</p>
+<p>Filtering based on a logical variable is the most simple type of filtering of all. We don’t have any logical variables in our METABRIC data set so we’ll create one from the binary <code>Survival_status</code> variable to use as an example.</p>
 <pre class="r"><code># create a new logical variable called &#39;Deceased&#39;
 metabric$Deceased &lt;- metabric$Survival_status == &quot;DECEASED&quot;
 #
@@ -550,30 +549,30 @@ metabric$Deceased &lt;- metabric$Survival_status == &quot;DECEASED&quot;
 deceased &lt;- filter(metabric, Deceased)
 #
 # only display those columns we&#39;re interested in
-deceased[, c(&quot;Patient_ID&quot;, &quot;Survival_status&quot;, &quot;Vital_status&quot;)]</code></pre>
-<pre><code>## # A tibble: 1,103 x 3
-##    Patient_ID Survival_status Vital_status        
-##    &lt;chr&gt;      &lt;chr&gt;           &lt;chr&gt;               
-##  1 MB-0005    DECEASED        Died of Disease     
-##  2 MB-0008    DECEASED        Died of Disease     
-##  3 MB-0010    DECEASED        Died of Disease     
-##  4 MB-0022    DECEASED        Died of Other Causes
-##  5 MB-0028    DECEASED        Died of Other Causes
-##  6 MB-0035    DECEASED        Died of Disease     
-##  7 MB-0036    DECEASED        Died of Disease     
-##  8 MB-0046    DECEASED        Died of Other Causes
-##  9 MB-0079    DECEASED        Died of Disease     
-## 10 MB-0083    DECEASED        Died of Disease     
+deceased[, c(&quot;Patient_ID&quot;, &quot;Survival_status&quot;, &quot;Vital_status&quot;, &quot;Deceased&quot;)]</code></pre>
+<pre><code>## # A tibble: 1,103 x 4
+##    Patient_ID Survival_status Vital_status         Deceased
+##    &lt;chr&gt;      &lt;chr&gt;           &lt;chr&gt;                &lt;lgl&gt;   
+##  1 MB-0005    DECEASED        Died of Disease      TRUE    
+##  2 MB-0008    DECEASED        Died of Disease      TRUE    
+##  3 MB-0010    DECEASED        Died of Disease      TRUE    
+##  4 MB-0022    DECEASED        Died of Other Causes TRUE    
+##  5 MB-0028    DECEASED        Died of Other Causes TRUE    
+##  6 MB-0035    DECEASED        Died of Disease      TRUE    
+##  7 MB-0036    DECEASED        Died of Disease      TRUE    
+##  8 MB-0046    DECEASED        Died of Other Causes TRUE    
+##  9 MB-0079    DECEASED        Died of Disease      TRUE    
+## 10 MB-0083    DECEASED        Died of Disease      TRUE    
 ## # … with 1,093 more rows</code></pre>
 <p>We can use the <strong><code>!</code></strong> operator to filter those patients who are not deceased.</p>
 <pre class="r"><code>filter(metabric, !Deceased)</code></pre>
-<p>The eagle-eyed will have spotted that filtering on our newly created Deceased logical variable gave a slightly different number of observations (patients) who are considered to be deceased. We get one extra row. This is because we have a missing value for the Vital status of one of the patients. We can filter for this using the <strong><code>is.na()</code></strong> function.</p>
+<p>The eagle-eyed will have spotted that filtering on our newly created Deceased logical variable gave a slightly different number of observations (patients) who are considered to be deceased, compared with the filtering operations shown above based on the <code>Vital_status</code> variable. We get one extra row. This is because we have a missing value for the vital status of one of the patients. We can filter for this using the <strong><code>is.na()</code></strong> function.</p>
 <pre class="r"><code>missing_vital_status &lt;- filter(metabric, is.na(Vital_status))
-missing_vital_status[, c(&quot;Patient_ID&quot;, &quot;Survival_status&quot;, &quot;Vital_status&quot;)]</code></pre>
-<pre><code>## # A tibble: 1 x 3
-##   Patient_ID Survival_status Vital_status
-##   &lt;chr&gt;      &lt;chr&gt;           &lt;chr&gt;       
-## 1 MB-5130    DECEASED        &lt;NA&gt;</code></pre>
+missing_vital_status[, c(&quot;Patient_ID&quot;, &quot;Survival_status&quot;, &quot;Vital_status&quot;, &quot;Deceased&quot;)]</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   Patient_ID Survival_status Vital_status Deceased
+##   &lt;chr&gt;      &lt;chr&gt;           &lt;chr&gt;        &lt;lgl&gt;   
+## 1 MB-5130    DECEASED        &lt;NA&gt;         TRUE</code></pre>
 <p><code>filter()</code> only retains rows where the condition if <code>TRUE</code>; both <code>FALSE</code> and <code>NA</code> values are filtered out.</p>
 <p>We can apply more than one condition in our filtering operation, for example the patients who were still alive at the time of the METABRIC study and had survived for more than 10 years (120 months).</p>
 <pre class="r"><code>filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120)</code></pre>
@@ -1396,14 +1395,23 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
   facet_grid(Neoplasm_histologic_grade ~ HER2_status)</code></pre>
 <p><img src="week4_files/figure-html/scatter_plot_10-1.png" width="672" /></p>
 <p>Again we can use colour aesthetics alongside faceting to add further information to our visualization.</p>
-<pre class="r"><code>metabric %&gt;%
-  mutate(HER2_status = str_c(&quot;HER2 &quot;, HER2_status)) %&gt;%
-  mutate(Neoplasm_histologic_grade = str_c(&quot;Grade &quot;, Neoplasm_histologic_grade)) %&gt;%
-  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
   geom_point(size = 0.5, alpha = 0.5) +
   facet_grid(Neoplasm_histologic_grade ~ HER2_status)</code></pre>
 <p><img src="week4_files/figure-html/scatter_plot_11-1.png" width="672" /></p>
-<p>We also changed the categories for the variables used for faceting so their meaning is clearer by prefixing the HER2 status values with “HER2” and prefixing the histologic grade with “Grade” using the <code>str_c()</code> function. Notice also how we did these on-the-fly modifications as part of a piped workflow and passed the resulting data frame into the <code>ggplot()</code> function, which no longer required us to specify it’s first argument (<code>data</code>).</p>
+<p>Finally, we can use a <code>labeller</code> to change the labels for each of the categorical values so that these are more meaningful in the context of this plot.</p>
+<pre class="r"><code>grade_labels &lt;- c(&quot;1&quot; = &quot;Grade I&quot;, &quot;2&quot; = &quot;Grade II&quot;, &quot;3&quot; = &quot;Grade III&quot;)
+her2_status_labels &lt;- c(&quot;Positive&quot; = &quot;HER2 positive&quot;, &quot;Negative&quot; = &quot;HER2 negative&quot;)
+
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_grid(Neoplasm_histologic_grade ~ HER2_status,
+             labeller = labeller(
+               Neoplasm_histologic_grade = grade_labels,
+               HER2_status = her2_status_labels
+              )
+            )</code></pre>
+<p><img src="week4_files/figure-html/scatter_plot_12-1.png" width="672" /></p>
 <hr />
 </div>
 <div id="summary" class="section level1">

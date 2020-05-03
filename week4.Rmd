@@ -8,10 +8,10 @@ title: "Week 4 -- Data manipulation with dplyr"
 >     * **`select()`** for selecting a subset of variables, i.e. selecting columns in your table
 >     * **`filter()`** for selecting observations based on their values, i.e. selecting rows in your table
 >     * **`arrange()`** for sorting the observations in your table 
->     * **`mutate()`** for creating a new variable, or modifying an existing variable
+>     * **`mutate()`** for creating a new variable or modifying an existing variable
 >     * **`summarise()`** for collapsing values in one of more columns to a single summary value
 > * Chain operations together into a workflow using pipes
-> * Learn about faceting in ggplot2 to create separate subplots
+> * Learn about faceting in ggplot2 to split your data into separate categories and create a series of sub-plots arranged in a grid
 
 ---
 
@@ -24,13 +24,13 @@ library(tidyverse)
 ```
 
 dplyr is the Swiss army knife in the tidyverse, providing many useful functions
-for manipulating tabular data in data frames or tibble objects. We're going to
-look at the key functions for filtering our data, modifying the contents and
-computing summary statistics.
+for manipulating tabular data in data frames or tibbles. We're going to look at
+the key functions for filtering our data, modifying the contents and computing
+summary statistics.
 
-We'll also look at how we can chain operations together into mini workflows in
-a way that makes for more readable and maintainable code, introducing the pipe
-operator, **`%>%`**.
+We'll also introduce the pipe operator, **`%>%`**, for chaining operations
+together into mini workflows in a way that makes for more readable and
+maintainable code.
 
 Finally, we'll return to plotting and look at a powerful feature of ggplot2,
 **faceting**, that allows you to divide your plots into subplots by splitting
@@ -39,7 +39,6 @@ the observations based on one or more categorical variables.
 We'll again use the METABRIC data set to illustrate how these operations work.
 
 ```{r message = FALSE}
-library(tidyverse)
 metabric <- read_csv("data/metabric_clinical_and_expression_data.csv")
 metabric
 ```
@@ -50,7 +49,7 @@ metabric
 
 We use the terms 'observation' and 'variable' a lot in this course. As a
 reminder from week 2, when we talk about an observation, we're talking about a
-set of values measured for the same unit or thing, e.g. a person or a gene, and
+set of values measured for the same unit or thing, e.g. a person or a date, and
 when we talk about a variable we are really talking about the attribute that we
 are measuring or recording, e.g. height, temperature or expression value.
 
@@ -68,7 +67,7 @@ two ways. Every value belongs to a variable and an observation.
 A **variable** contains all values that measure the same underlying attribute
 (like height, temperature, duration) across units.
 
-An **observation** contains all values measured on the same unit (like a person,
+An **observation** contains all values measured on the same unit (like a person
 or a day) across attributes.
 ```
 
@@ -131,9 +130,9 @@ filter(metabric, Vital_status == "Died of Disease")
 metabric[metabric$Vital_status == "Died of Disease", ]
 ```
 
-Both achieve the same result but the dplyr filter method is arguably easier to
-read. We haven't had to write `metabric` twice for one thing, we just referred
-to the variable name as it is, unquoted and without any fuss.
+Both achieve the same result but the dplyr filter method is arguably a little
+easier to read. We haven't had to write `metabric` twice for one thing; we just
+referred to the variable name as it is, unquoted and without any fuss.
 
 Let's have a look at the various categories in the `Vital_status` variable.
 
@@ -170,18 +169,18 @@ nrow(deceased)
 ```
 
 Note that `str_starts()` returns a logical vector - this is important since the
-criterion for filtering must evaluate to `TRUE` or `FALSE` values for each row.
+filtering condition must evaluate to `TRUE` or `FALSE` values for each row.
 
 Unsurprisingly there is an equivalent function, `str_ends()`, for matching the
 end of text (character) values and `str_detect()` is another useful function
 that determines whether values match a regular expression. Regular expressions
-are a language for search patterns used very frequently in computer programming
-and really worth getting to grips with but sadly these are beyond the scope of
-this course.
+are a language for search patterns used frequently in computer programming and
+really worth getting to grips with but sadly these are beyond the scope of this
+course.
 
 Filtering based on a logical variable is the most simple type of filtering of
 all. We don't have any logical variables in our METABRIC data set so we'll
-create one from the binary `Survival_status` variable.
+create one from the binary `Survival_status` variable to use as an example.
 
 ```{r}
 # create a new logical variable called 'Deceased'
@@ -191,7 +190,7 @@ metabric$Deceased <- metabric$Survival_status == "DECEASED"
 deceased <- filter(metabric, Deceased)
 #
 # only display those columns we're interested in
-deceased[, c("Patient_ID", "Survival_status", "Vital_status")]
+deceased[, c("Patient_ID", "Survival_status", "Vital_status", "Deceased")]
 ```
 
 We can use the **`!`** operator to filter those patients who are not
@@ -203,13 +202,14 @@ filter(metabric, !Deceased)
 
 The eagle-eyed will have spotted that filtering on our newly created Deceased
 logical variable gave a slightly different number of observations (patients) who
-are considered to be deceased. We get one extra row. This is because we have a
-missing value for the Vital status of one of the patients. We can filter for this
-using the **`is.na()`** function.
+are considered to be deceased, compared with the filtering operations shown
+above based on the `Vital_status` variable. We get one extra row. This is
+because we have a missing value for the vital status of one of the patients. We
+can filter for this using the **`is.na()`** function.
 
 ```{r}
 missing_vital_status <- filter(metabric, is.na(Vital_status))
-missing_vital_status[, c("Patient_ID", "Survival_status", "Vital_status")]
+missing_vital_status[, c("Patient_ID", "Survival_status", "Vital_status", "Deceased")]
 ```
 
 `filter()` only retains rows where the condition if `TRUE`; both `FALSE` and
@@ -980,20 +980,28 @@ Again we can use colour aesthetics alongside faceting to add further information
 to our visualization.
 
 ```{r scatter_plot_11}
-metabric %>%
-  mutate(HER2_status = str_c("HER2 ", HER2_status)) %>%
-  mutate(Neoplasm_histologic_grade = str_c("Grade ", Neoplasm_histologic_grade)) %>%
-  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
   geom_point(size = 0.5, alpha = 0.5) +
   facet_grid(Neoplasm_histologic_grade ~ HER2_status)
 ```
 
-We also changed the categories for the variables used for faceting so their
-meaning is clearer by prefixing the HER2 status values with "HER2 " and
-prefixing the histologic grade with "Grade " using the `str_c()` function.
-Notice also how we did these on-the-fly modifications as part of a piped
-workflow and passed the resulting data frame into the `ggplot()` function,
-which no longer required us to specify it's first argument (`data`).
+Finally, we can use a `labeller` to change the labels for each of the
+categorical values so that these are more meaningful in the context of this
+plot.
+
+```{r scatter_plot_12}
+grade_labels <- c("1" = "Grade I", "2" = "Grade II", "3" = "Grade III")
+her2_status_labels <- c("Positive" = "HER2 positive", "Negative" = "HER2 negative")
+
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_grid(Neoplasm_histologic_grade ~ HER2_status,
+             labeller = labeller(
+               Neoplasm_histologic_grade = grade_labels,
+               HER2_status = her2_status_labels
+              )
+            )
+```
 
 ---
 
