@@ -86,7 +86,7 @@ We will be looking at the 5 key dplyr functions this week:
 In looking at each of these in turn, we'll be applying these to the entire data
 set. It is possible to combine these with the `group_by()` function to instead
 operate on separate groups within our data set but this is something we'll cover
-in detail in week 6.
+in detail next week.
 
 The dplyr operations are commonly referred to as "verbs" in a data manipulation
 grammar. These verbs have a common syntax and work together in a consistent and
@@ -728,8 +728,7 @@ only briefly here. This function computes summary values for one or more
 variables (columns) in a table. Here we will summarise values for the entire
 table but this function is much more useful in combination with `group_by()`
 in working on groups of observations within the data set. We will look at
-grouping in week 6 where we'll use `group_by()` in combination with both
-`summarise()` and `mutate()`.
+summarizing groups of observations next week.
 
 Any function that calculates a single scalar value from a vector can be used
 with `summarise()`. For example, the `mean()` function calculates the arithmetic
