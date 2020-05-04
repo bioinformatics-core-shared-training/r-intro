@@ -1,0 +1,264 @@
+---
+title: "Week 4 -- Live Coding script"
+---
+
+```{r setup}
+options(tibble.print_max = 1, tibble.print_min = 1, max.print=10, 
+        tibble.max_extra_cols=1)
+```
+
+
+## Intro 
+
+* So far:
+    - introduced basic R for working with data
+    - introduced `ggplot2` - easier for plotting than base R
+* `ggplot2` is part of tidyverse.
+* History of tidyverse v base R - it's much easier!!!!
+* Today:
+    - core tidyverse package **dplyr**
+    - **pipe**
+    - facetting *maybe not in this session*??
+
+Let's start by loading the the tidyverse package and the metabric data
+
+```{r, message=FALSE}
+library(tidyverse)
+metabric <- read_csv("data/metabric_clinical_and_expression_data.csv")
+```
+
+## Data semantics
+
+**Observations** = **Rows**
+**Variables** = **Columns**
+
+## Filtering rows
+
+##### Sometimes we want to ***keep*** only certain rows from a data frame (DON'T SAY "SELECT")
+
+In base R we use `[, ]`
+If we wanted the first five rows:
+
+```{r}
+metabric[1:5,]
+```
+
+More commonly we want to **filter** based on the contents of column
+
+##### e.g. last week we wanted only deceased patients for one of the plots:
+
+```{r, eval=FALSE}
+metabric$Survival_status == "DECEASED"
+
+metabric[metabric$Survival_status=="DECEASED", ]
+```
+
+```{r, echo=FALSE}
+metabric[metabric$Survival_status=="DECEASED", ]
+```
+
+##### This `[]` syntax is not really intuitive
+
+`dplyr` provides a simple function that allows us to **filter** a table in this 
+way
+
+and it's called...**`filter`**
+
+```{r}
+filter(metabric, Survival_status=="DECEASED")
+
+deceased <- filter(metabric, Survival_status=="DECEASED")
+```
+
+##### Talk about grammar of tidyverse - **verbs**
+* Have a common structure and behaviour:
+    * 1st argument is ALWAYS a data frame to work on (`ggplot` from last week)
+    * Additional arguments describe the operation
+    * Variables names - column headers - no quotes
+    * output is ALWAYS a new data frame
+    
+##### Other conditionals...if instead we'd used the `Vital_status` column
+
+```{r}
+unique(metabric$Vital_status)
+```
+
+#### `==` is won't work as there are two catergories for deceased, we could use `%in%`
+
+```{r}
+filter(metabric, Vital_status%in%c("Died of Disease", "Died of Other Causes"))
+```
+
+##### It would be easier to just look for "Died" - `stringr` (it was loaded in tidyverse)
+##### look in the packages
+
+```{r, eval=FALSE}
+str_starts(metabric$Vital_status, "Died")
+
+filter(metabric, str_starts(Vital_status, "Died"))
+```
+
+```{r, echo=FALSE}
+filter(metabric, str_starts(Vital_status, "Died"))
+```
+
+Here you can talk about tidyverse v base - c.f gsub/grep v strsplit argument postion
+
+##### filter by multiple conditions
+
+e.g were still alive and survived > 10 years
+
+```{r}
+filter(metabric, Survival_status == "LIVING", Survival_time > 120)
+```
+
+...same as...
+
+```{r}
+filter(metabric, Survival_status == "LIVING" & Survival_time > 120)
+```
+
+##### **OR**
+
+ER or PR positive...
+
+```{r, eval=FALSE}
+filter(metabric, ER_status == "Positive" | PR_status == "Positive")
+
+filter(metabric, Survival_status == "LIVING" & Survival_time > 120, ER_status == "Positive" | PR_status == "Positive")
+```
+
+```{r, echo=FALSE}
+filter(metabric, Survival_status == "LIVING" & Survival_time > 120, ER_status == "Positive" | PR_status == "Positive")
+```
+
+## Selecting columns
+
+We can't really see the ER and PR status columns to check things, we'd like to 
+change the table to select the columns we're interested in and check that we 
+only have the patients of interest
+
+```{r}
+patients_of_interest <- filter(metabric, 
+                               Survival_status == "LIVING" & Survival_time > 120, 
+                               ER_status == "Positive" | PR_status == "Positive")
+patients_of_interest[,c("Patient_ID", 
+                        "Survival_status", 
+                        "Survival_time", 
+                        "ER_status", 
+                        "PR_status")]
+```
+
+Again the `[]` syntax is a bit clunky and so `dplyr` provides a simple function 
+for selecting columns and it's called...
+**`select`**
+
+```{r eval=FALSE}
+select(patients_of_interest, Patient_ID)
+
+select(patients_of_interest, Patient_ID, Survival_status, Survival_time, ER_status, PR_status)
+```
+
+```{r echo=FALSE}
+select(patients_of_interest, Patient_ID, Survival_status, Survival_time, ER_status, PR_status)
+```
+
+The order of the columns is how they'll come out
+
+```{r}
+select(patients_of_interest, Patient_ID, ER_status, PR_status, Survival_status, Survival_time)
+```
+
+dplyr provides helper functions for choosing columns - see the cheatsheet
+
+```{r, eval=FALSE}
+select(metabric, contains("Status"))
+
+select(metabric, ends_with("Status"))
+```
+
+```{r, echo=FALSE}
+select(metabric, ends_with("Status"))
+```
+
+##### Exclude columns with **`-`**
+
+```{r}
+select(metabric, -Patient_ID)
+```
+
+## Chaining operations - the PIPE - `%>%`
+
+Lets say we want to create a new table that:  
+
+* contains living patients that survive > 10 years   
+* Only has a few columns of interest
+  
+```{r}
+patients <- filter(metabric, Survival_status == "LIVING", Survival_time > 120)
+patient_details <- select(patients, Patient_ID, Survival_status)
+patient_details
+```
+
+##### The intermediate table **patients** is not actually needed
+
+##### We could reuse the same object
+
+```{r}
+patient_details <- filter(metabric, Survival_status == "LIVING", Survival_time > 120)
+patient_details <- select(patient_details, Patient_ID, Survival_status)
+patient_details
+```
+
+##### or (HORROR) nest the commands
+
+```{r}
+patient_details <- select(filter(metabric, Survival_status == "LIVING", Survival_time > 120), 
+                          Patient_ID, Survival_status)
+patient_details
+```
+
+##### this is where the pipe comes in...
+
+##### %>%
+
+Takes the output on the left and puts into the first argument of the command on 
+the right
+
+```{r}
+filter(metabric, Survival_status == "LIVING")
+```
+
+same as
+
+```{r}
+metabric %>%
+  filter(Survival_status == "LIVING")
+```
+
+but then we can extend the chain of functions with more pipes
+
+
+```{r}
+metabric %>%
+  filter(Survival_status == "LIVING") %>% 
+  select(Patient_ID, Survival_time)
+```
+
+The **output** data frame is **flowing** through the pipe to become the 
+**input** for the next command.
+
+There is no need to restate `metabric`, in fact this would be wrong...
+
+* Shortcut for the pipe is <Ctrl>+<Shift>+M (<CMD>+<SHIFT>+M on a MAC)
+
+
+
+
+
+
+
+
+
+
+
