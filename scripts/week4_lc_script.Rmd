@@ -5,6 +5,7 @@ title: "Week 4 -- Live Coding script"
 ```{r setup}
 options(tibble.print_max = 1, tibble.print_min = 1, max.print=10, 
         tibble.max_extra_cols=1)
+knitr::opts_chunk$set(eval=FALSE)
 ```
 
 
@@ -27,14 +28,9 @@ library(tidyverse)
 metabric <- read_csv("data/metabric_clinical_and_expression_data.csv")
 ```
 
-## Data semantics
-
-**Observations** = **Rows**
-**Variables** = **Columns**
-
 ## Filtering rows
 
-##### Sometimes we want to ***keep*** only certain rows from a data frame (DON'T SAY "SELECT")
+##### [DON'T SAY **"SELECT"**] Sometimes we want to ***keep*** only certain rows from a data frame
 
 In base R we use `[, ]`
 If we wanted the first five rows:
@@ -252,13 +248,152 @@ There is no need to restate `metabric`, in fact this would be wrong...
 
 * Shortcut for the pipe is <Ctrl>+<Shift>+M (<CMD>+<SHIFT>+M on a MAC)
 
+##### The `%>%` must be on the end of the line so that R knows to continue
+
+```{r, eval=FALSE}
+patients_of_interest <- metabric %>%
+  filter(Survival_status == "LIVING")
+  %>% filter(Survival_time > 120)
+```
+
+## Creating new columns
+
+The third thing that we may want to do is to creat new columns in our data frame, often based
+on the contents of other columns. E.g. ....
+
+In base `R` we could do something like:
+
+```{r}
+metabric$Deceased <- metabric$Survival_status == "DECEASED"
+```
+
+but it would be great if we had a function to this which would fit with the pipe
+
+`dplyr` provides a simple function that allows us to **create** a new column in 
+a table
+and it's called...**`mutate`** ?!?!?
+Basically, the concept is that we will be taking the contents of existing 
+column(s) and *mutating* it to create the contents of new column
+
+Once again the syntax follows the standard `tidyverse` patterns: data first, 
+column names can be used directly
+
+```{r}
+mutate(metabric, Deceased = Survival_status == "DECEASED")
+```
+
+and we can fit it in with the pipe:
+
+```{r}
+metabric %>%
+  filter(Survival_time > 240) %>% 
+  mutate(Deceased = Survival_status == "DECEASED") %>% 
+  select(Patient_ID, Survival_status, Deceased, Survival_time)
+```
+
+NOTE THE DIFFERENCE BETWEEN TEH `=` and the `==`
+
+You *can* also alter existing columns
+
+```{r}
+metabric %>%
+  filter(Survival_time > 240) %>% 
+  mutate(Deceased = Survival_status == "DECEASED") %>% 
+  mutate(Survival_time = round(Survival_time)) %>% 
+  select(Patient_ID, Survival_status, Deceased, Survival_time)
+```
+
+##### You can mutate multiple columns at once
+
+```{r}
+metabric %>% 
+  select(Patient_ID, Survival_status, Vital_status)
+
+metabric %>% 
+  mutate(Survival_status = as.factor(Survival_status), Vital_status = as.factor(Vital_status)) %>% 
+  select(Patient_ID, Survival_status, Vital_status)
+```
+
+##### Another option is to use **`mutate_at`**
+
+```{r}
+metabric %>% 
+  mutate_at(vars(Survival_status, Vital_status), as.factor) %>% 
+  select(Patient_ID, ends_with("_status"))
+```
+
+##### See help and DOCS for more (including anonymous functions)
+
+## Sorting using **`arrange()`**
+
+mention briefly
+
+```{r}
+metabric %>% 
+  arrange(Age_at_diagnosis)
+```
+
+## Summary values using **`sumarise`**
+
+We've seen at various ways to get summary values from columns in base R
+
+```{r}
+mean(metabric$ESR1)
+summary(metabric)
+```
+
+It'd be handy to have a function we could use within a pipe.
+
+`dplyr` provides a simple function that allows us to **summarise** the contents 
+of a column and it's called...**`summarise`**
+
+Let's say we want the mean survival time for deceased patients:
+
+```{r}
+metabric %>%
+  filter(Survival_status == "DECEASED") %>% 
+  summarise(Survival_time_mean = mean(Survival_time))
+```
+
+##### We can do more than one summary at once
+
+```{r}
+metabric %>%
+  filter(Survival_status == "DECEASED") %>% 
+  summarise(Survival_time_mean = mean(Survival_time), Survival_time_sd = sd(Survival_time))
+```
+
+##### More than one column
+
+```{r}
+metabric %>%
+  filter(Survival_status == "DECEASED") %>% 
+  summarise(Survival_time_mean = mean(Survival_time), ESR1_mean = mean(ESR1))
+```
+
+##### As with mutate there are **`summarise_at`** etc
+
+## Facetting
+
+Split a plot into separate plots based on the contents of a column
 
 
+```{r}
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(mapping=aes(colour = Cancer_type))
+```
 
 
+```{r}
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point() +
+  facet_wrap(~ Cancer_type)
+```
 
-
-
-
+```{r}
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(mapping=aes(colour = Cancer_type)) +
+  facet_wrap(~ Cancer_type)
+```
 
 

@@ -367,7 +367,8 @@ summary {
 
 
 <pre class="r"><code>options(tibble.print_max = 1, tibble.print_min = 1, max.print=10, 
-        tibble.max_extra_cols=1)</code></pre>
+        tibble.max_extra_cols=1)
+knitr::opts_chunk$set(eval=FALSE)</code></pre>
 <div id="intro" class="section level2">
 <h2>Intro</h2>
 <ul>
@@ -389,21 +390,12 @@ summary {
 <pre class="r"><code>library(tidyverse)
 metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;)</code></pre>
 </div>
-<div id="data-semantics" class="section level2">
-<h2>Data semantics</h2>
-<p><strong>Observations</strong> = <strong>Rows</strong> <strong>Variables</strong> = <strong>Columns</strong></p>
-</div>
 <div id="filtering-rows" class="section level2">
 <h2>Filtering rows</h2>
-<div id="sometimes-we-want-to-keep-only-certain-rows-from-a-data-frame-dont-say-select" class="section level5">
-<h5>Sometimes we want to <strong><em>keep</em></strong> only certain rows from a data frame (DON’T SAY “SELECT”)</h5>
+<div id="dont-say-select-sometimes-we-want-to-keep-only-certain-rows-from-a-data-frame" class="section level5">
+<h5>[DON’T SAY <strong>“SELECT”</strong>] Sometimes we want to <strong><em>keep</em></strong> only certain rows from a data frame</h5>
 <p>In base R we use <code>[, ]</code> If we wanted the first five rows:</p>
 <pre class="r"><code>metabric[1:5,]</code></pre>
-<pre><code>## # A tibble: 5 x 32
-##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-## 1 MB-0000         1             75.6          140. LIVING         
-## # … with 4 more rows, and 27 more variables: Vital_status &lt;chr&gt;, …</code></pre>
 <p>More commonly we want to <strong>filter</strong> based on the contents of column</p>
 </div>
 <div id="e.g.last-week-we-wanted-only-deceased-patients-for-one-of-the-plots" class="section level5">
@@ -411,23 +403,14 @@ metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quo
 <pre class="r"><code>metabric$Survival_status == &quot;DECEASED&quot;
 
 metabric[metabric$Survival_status==&quot;DECEASED&quot;, ]</code></pre>
-<pre><code>## # A tibble: 1,103 x 32
-##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-## 1 MB-0005         1             48.9          164. DECEASED       
-## # … with 1,102 more rows, and 27 more variables: Vital_status &lt;chr&gt;, …</code></pre>
 </div>
 <div id="this-syntax-is-not-really-intuitive" class="section level5">
 <h5>This <code>[]</code> syntax is not really intuitive</h5>
 <p><code>dplyr</code> provides a simple function that allows us to <strong>filter</strong> a table in this way</p>
 <p>and it’s called…<strong><code>filter</code></strong></p>
-<pre class="r"><code>filter(metabric, Survival_status==&quot;DECEASED&quot;)</code></pre>
-<pre><code>## # A tibble: 1,103 x 32
-##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-## 1 MB-0005         1             48.9          164. DECEASED       
-## # … with 1,102 more rows, and 27 more variables: Vital_status &lt;chr&gt;, …</code></pre>
-<pre class="r"><code>deceased &lt;- filter(metabric, Survival_status==&quot;DECEASED&quot;)</code></pre>
+<pre class="r"><code>filter(metabric, Survival_status==&quot;DECEASED&quot;)
+
+deceased &lt;- filter(metabric, Survival_status==&quot;DECEASED&quot;)</code></pre>
 </div>
 <div id="talk-about-grammar-of-tidyverse---verbs" class="section level5">
 <h5>Talk about grammar of tidyverse - <strong>verbs</strong></h5>
@@ -444,17 +427,10 @@ metabric[metabric$Survival_status==&quot;DECEASED&quot;, ]</code></pre>
 <div id="other-conditionalsif-instead-wed-used-the-vital_status-column" class="section level5">
 <h5>Other conditionals…if instead we’d used the <code>Vital_status</code> column</h5>
 <pre class="r"><code>unique(metabric$Vital_status)</code></pre>
-<pre><code>## [1] &quot;Living&quot;               &quot;Died of Disease&quot;      &quot;Died of Other Causes&quot;
-## [4] NA</code></pre>
 </div>
 <div id="is-wont-work-as-there-are-two-catergories-for-deceased-we-could-use-in" class="section level4">
 <h4><code>==</code> is won’t work as there are two catergories for deceased, we could use <code>%in%</code></h4>
 <pre class="r"><code>filter(metabric, Vital_status%in%c(&quot;Died of Disease&quot;, &quot;Died of Other Causes&quot;))</code></pre>
-<pre><code>## # A tibble: 1,102 x 32
-##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-## 1 MB-0005         1             48.9          164. DECEASED       
-## # … with 1,101 more rows, and 27 more variables: Vital_status &lt;chr&gt;, …</code></pre>
 <div id="it-would-be-easier-to-just-look-for-died---stringr-it-was-loaded-in-tidyverse" class="section level5">
 <h5>It would be easier to just look for “Died” - <code>stringr</code> (it was loaded in tidyverse)</h5>
 </div>
@@ -463,29 +439,14 @@ metabric[metabric$Survival_status==&quot;DECEASED&quot;, ]</code></pre>
 <pre class="r"><code>str_starts(metabric$Vital_status, &quot;Died&quot;)
 
 filter(metabric, str_starts(Vital_status, &quot;Died&quot;))</code></pre>
-<pre><code>## # A tibble: 1,102 x 32
-##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-## 1 MB-0005         1             48.9          164. DECEASED       
-## # … with 1,101 more rows, and 27 more variables: Vital_status &lt;chr&gt;, …</code></pre>
 <p>Here you can talk about tidyverse v base - c.f gsub/grep v strsplit argument postion</p>
 </div>
 <div id="filter-by-multiple-conditions" class="section level5">
 <h5>filter by multiple conditions</h5>
 <p>e.g were still alive and survived &gt; 10 years</p>
 <pre class="r"><code>filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120)</code></pre>
-<pre><code>## # A tibble: 545 x 32
-##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-## 1 MB-0000         1             75.6          140. LIVING         
-## # … with 544 more rows, and 27 more variables: Vital_status &lt;chr&gt;, …</code></pre>
 <p>…same as…</p>
 <pre class="r"><code>filter(metabric, Survival_status == &quot;LIVING&quot; &amp; Survival_time &gt; 120)</code></pre>
-<pre><code>## # A tibble: 545 x 32
-##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-## 1 MB-0000         1             75.6          140. LIVING         
-## # … with 544 more rows, and 27 more variables: Vital_status &lt;chr&gt;, …</code></pre>
 </div>
 <div id="or" class="section level5">
 <h5><strong>OR</strong></h5>
@@ -493,11 +454,6 @@ filter(metabric, str_starts(Vital_status, &quot;Died&quot;))</code></pre>
 <pre class="r"><code>filter(metabric, ER_status == &quot;Positive&quot; | PR_status == &quot;Positive&quot;)
 
 filter(metabric, Survival_status == &quot;LIVING&quot; &amp; Survival_time &gt; 120, ER_status == &quot;Positive&quot; | PR_status == &quot;Positive&quot;)</code></pre>
-<pre><code>## # A tibble: 413 x 32
-##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-## 1 MB-0000         1             75.6          140. LIVING         
-## # … with 412 more rows, and 27 more variables: Vital_status &lt;chr&gt;, …</code></pre>
 </div>
 </div>
 </div>
@@ -512,44 +468,19 @@ patients_of_interest[,c(&quot;Patient_ID&quot;,
                         &quot;Survival_time&quot;, 
                         &quot;ER_status&quot;, 
                         &quot;PR_status&quot;)]</code></pre>
-<pre><code>## # A tibble: 413 x 5
-##   Patient_ID Survival_status Survival_time ER_status PR_status
-##   &lt;chr&gt;      &lt;chr&gt;                   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;    
-## 1 MB-0000    LIVING                   140. Positive  Negative 
-## # … with 412 more rows</code></pre>
 <p>Again the <code>[]</code> syntax is a bit clunky and so <code>dplyr</code> provides a simple function for selecting columns and it’s called… <strong><code>select</code></strong></p>
 <pre class="r"><code>select(patients_of_interest, Patient_ID)
 
 select(patients_of_interest, Patient_ID, Survival_status, Survival_time, ER_status, PR_status)</code></pre>
-<pre><code>## # A tibble: 413 x 5
-##   Patient_ID Survival_status Survival_time ER_status PR_status
-##   &lt;chr&gt;      &lt;chr&gt;                   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;    
-## 1 MB-0000    LIVING                   140. Positive  Negative 
-## # … with 412 more rows</code></pre>
 <p>The order of the columns is how they’ll come out</p>
 <pre class="r"><code>select(patients_of_interest, Patient_ID, ER_status, PR_status, Survival_status, Survival_time)</code></pre>
-<pre><code>## # A tibble: 413 x 5
-##   Patient_ID ER_status PR_status Survival_status Survival_time
-##   &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                   &lt;dbl&gt;
-## 1 MB-0000    Positive  Negative  LIVING                   140.
-## # … with 412 more rows</code></pre>
 <p>dplyr provides helper functions for choosing columns - see the cheatsheet</p>
 <pre class="r"><code>select(metabric, contains(&quot;Status&quot;))
 
 select(metabric, ends_with(&quot;Status&quot;))</code></pre>
-<pre><code>## # A tibble: 1,904 x 6
-##   Survival_status Vital_status Lymph_node_stat… ER_status PR_status
-##   &lt;chr&gt;           &lt;chr&gt;                   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;    
-## 1 LIVING          Living                      3 Positive  Negative 
-## # … with 1,903 more rows, and 1 more variable: HER2_status &lt;chr&gt;</code></pre>
 <div id="exclude-columns-with--" class="section level5">
 <h5>Exclude columns with <strong><code>-</code></strong></h5>
 <pre class="r"><code>select(metabric, -Patient_ID)</code></pre>
-<pre><code>## # A tibble: 1,904 x 31
-##   Cohort Age_at_diagnosis Survival_time Survival_status Vital_status
-##    &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;       
-## 1      1             75.6          140. LIVING          Living      
-## # … with 1,903 more rows, and 26 more variables: Chemotherapy &lt;chr&gt;, …</code></pre>
 </div>
 </div>
 <div id="chaining-operations---the-pipe--" class="section level2">
@@ -563,11 +494,6 @@ select(metabric, ends_with(&quot;Status&quot;))</code></pre>
 <pre class="r"><code>patients &lt;- filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120)
 patient_details &lt;- select(patients, Patient_ID, Survival_status)
 patient_details</code></pre>
-<pre><code>## # A tibble: 545 x 2
-##   Patient_ID Survival_status
-##   &lt;chr&gt;      &lt;chr&gt;          
-## 1 MB-0000    LIVING         
-## # … with 544 more rows</code></pre>
 <div id="the-intermediate-table-patients-is-not-actually-needed" class="section level5">
 <h5>The intermediate table <strong>patients</strong> is not actually needed</h5>
 </div>
@@ -576,22 +502,12 @@ patient_details</code></pre>
 <pre class="r"><code>patient_details &lt;- filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120)
 patient_details &lt;- select(patient_details, Patient_ID, Survival_status)
 patient_details</code></pre>
-<pre><code>## # A tibble: 545 x 2
-##   Patient_ID Survival_status
-##   &lt;chr&gt;      &lt;chr&gt;          
-## 1 MB-0000    LIVING         
-## # … with 544 more rows</code></pre>
 </div>
 <div id="or-horror-nest-the-commands" class="section level5">
 <h5>or (HORROR) nest the commands</h5>
 <pre class="r"><code>patient_details &lt;- select(filter(metabric, Survival_status == &quot;LIVING&quot;, Survival_time &gt; 120), 
                           Patient_ID, Survival_status)
 patient_details</code></pre>
-<pre><code>## # A tibble: 545 x 2
-##   Patient_ID Survival_status
-##   &lt;chr&gt;      &lt;chr&gt;          
-## 1 MB-0000    LIVING         
-## # … with 544 more rows</code></pre>
 </div>
 <div id="this-is-where-the-pipe-comes-in" class="section level5">
 <h5>this is where the pipe comes in…</h5>
@@ -600,34 +516,110 @@ patient_details</code></pre>
 <h5>%&gt;%</h5>
 <p>Takes the output on the left and puts into the first argument of the command on the right</p>
 <pre class="r"><code>filter(metabric, Survival_status == &quot;LIVING&quot;)</code></pre>
-<pre><code>## # A tibble: 801 x 32
-##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-## 1 MB-0000         1             75.6          140. LIVING         
-## # … with 800 more rows, and 27 more variables: Vital_status &lt;chr&gt;, …</code></pre>
 <p>same as</p>
 <pre class="r"><code>metabric %&gt;%
   filter(Survival_status == &quot;LIVING&quot;)</code></pre>
-<pre><code>## # A tibble: 801 x 32
-##   Patient_ID Cohort Age_at_diagnosis Survival_time Survival_status
-##   &lt;chr&gt;       &lt;dbl&gt;            &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;          
-## 1 MB-0000         1             75.6          140. LIVING         
-## # … with 800 more rows, and 27 more variables: Vital_status &lt;chr&gt;, …</code></pre>
 <p>but then we can extend the chain of functions with more pipes</p>
 <pre class="r"><code>metabric %&gt;%
   filter(Survival_status == &quot;LIVING&quot;) %&gt;% 
   select(Patient_ID, Survival_time)</code></pre>
-<pre><code>## # A tibble: 801 x 2
-##   Patient_ID Survival_time
-##   &lt;chr&gt;              &lt;dbl&gt;
-## 1 MB-0000             140.
-## # … with 800 more rows</code></pre>
 <p>The <strong>output</strong> data frame is <strong>flowing</strong> through the pipe to become the <strong>input</strong> for the next command.</p>
 <p>There is no need to restate <code>metabric</code>, in fact this would be wrong…</p>
 <ul>
 <li>Shortcut for the pipe is <Ctrl>+<Shift>+M (<CMD>+<SHIFT>+M on a MAC)</li>
 </ul>
 </div>
+<div id="the-must-be-on-the-end-of-the-line-so-that-r-knows-to-continue" class="section level5">
+<h5>The <code>%&gt;%</code> must be on the end of the line so that R knows to continue</h5>
+<pre class="r"><code>patients_of_interest &lt;- metabric %&gt;%
+  filter(Survival_status == &quot;LIVING&quot;)
+  %&gt;% filter(Survival_time &gt; 120)</code></pre>
+</div>
+</div>
+<div id="creating-new-columns" class="section level2">
+<h2>Creating new columns</h2>
+<p>The third thing that we may want to do is to creat new columns in our data frame, often based on the contents of other columns. E.g. ….</p>
+<p>In base <code>R</code> we could do something like:</p>
+<pre class="r"><code>metabric$Deceased &lt;- metabric$Survival_status == &quot;DECEASED&quot;</code></pre>
+<p>but it would be great if we had a function to this which would fit with the pipe</p>
+<p><code>dplyr</code> provides a simple function that allows us to <strong>create</strong> a new column in a table and it’s called…<strong><code>mutate</code></strong> ?!?!? Basically, the concept is that we will be taking the contents of existing column(s) and <em>mutating</em> it to create the contents of new column</p>
+<p>Once again the syntax follows the standard <code>tidyverse</code> patterns: data first, column names can be used directly</p>
+<pre class="r"><code>mutate(metabric, Deceased = Survival_status == &quot;DECEASED&quot;)</code></pre>
+<p>and we can fit it in with the pipe:</p>
+<pre class="r"><code>metabric %&gt;%
+  filter(Survival_time &gt; 240) %&gt;% 
+  mutate(Deceased = Survival_status == &quot;DECEASED&quot;) %&gt;% 
+  select(Patient_ID, Survival_status, Deceased, Survival_time)</code></pre>
+<p>NOTE THE DIFFERENCE BETWEEN TEH <code>=</code> and the <code>==</code></p>
+<p>You <em>can</em> also alter existing columns</p>
+<pre class="r"><code>metabric %&gt;%
+  filter(Survival_time &gt; 240) %&gt;% 
+  mutate(Deceased = Survival_status == &quot;DECEASED&quot;) %&gt;% 
+  mutate(Survival_time = round(Survival_time)) %&gt;% 
+  select(Patient_ID, Survival_status, Deceased, Survival_time)</code></pre>
+<div id="you-can-mutate-multiple-columns-at-once" class="section level5">
+<h5>You can mutate multiple columns at once</h5>
+<pre class="r"><code>metabric %&gt;% 
+  select(Patient_ID, Survival_status, Vital_status)
+
+metabric %&gt;% 
+  mutate(Survival_status = as.factor(Survival_status), Vital_status = as.factor(Vital_status)) %&gt;% 
+  select(Patient_ID, Survival_status, Vital_status)</code></pre>
+</div>
+<div id="another-option-is-to-use-mutate_at" class="section level5">
+<h5>Another option is to use <strong><code>mutate_at</code></strong></h5>
+<pre class="r"><code>metabric %&gt;% 
+  mutate_at(vars(Survival_status, Vital_status), as.factor) %&gt;% 
+  select(Patient_ID, ends_with(&quot;_status&quot;))</code></pre>
+</div>
+<div id="see-help-and-docs-for-more-including-anonymous-functions" class="section level5">
+<h5>See help and DOCS for more (including anonymous functions)</h5>
+</div>
+</div>
+<div id="sorting-using-arrange" class="section level2">
+<h2>Sorting using <strong><code>arrange()</code></strong></h2>
+<p>mention briefly</p>
+<pre class="r"><code>metabric %&gt;% 
+  arrange(Age_at_diagnosis)</code></pre>
+</div>
+<div id="summary-values-using-sumarise" class="section level2">
+<h2>Summary values using <strong><code>sumarise</code></strong></h2>
+<p>We’ve seen at various ways to get summary values from columns in base R</p>
+<pre class="r"><code>mean(metabric$ESR1)
+summary(metabric)</code></pre>
+<p>It’d be handy to have a function we could use within a pipe.</p>
+<p><code>dplyr</code> provides a simple function that allows us to <strong>summarise</strong> the contents of a column and it’s called…<strong><code>summarise</code></strong></p>
+<p>Let’s say we want the mean survival time for deceased patients:</p>
+<pre class="r"><code>metabric %&gt;%
+  filter(Survival_status == &quot;DECEASED&quot;) %&gt;% 
+  summarise(Survival_time_mean = mean(Survival_time))</code></pre>
+<div id="we-can-do-more-than-one-summary-at-once" class="section level5">
+<h5>We can do more than one summary at once</h5>
+<pre class="r"><code>metabric %&gt;%
+  filter(Survival_status == &quot;DECEASED&quot;) %&gt;% 
+  summarise(Survival_time_mean = mean(Survival_time), Survival_time_sd = sd(Survival_time))</code></pre>
+</div>
+<div id="more-than-one-column" class="section level5">
+<h5>More than one column</h5>
+<pre class="r"><code>metabric %&gt;%
+  filter(Survival_status == &quot;DECEASED&quot;) %&gt;% 
+  summarise(Survival_time_mean = mean(Survival_time), ESR1_mean = mean(ESR1))</code></pre>
+</div>
+<div id="as-with-mutate-there-are-summarise_at-etc" class="section level5">
+<h5>As with mutate there are <strong><code>summarise_at</code></strong> etc</h5>
+</div>
+</div>
+<div id="facetting" class="section level2">
+<h2>Facetting</h2>
+<p>Split a plot into separate plots based on the contents of a column</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(mapping=aes(colour = Cancer_type))</code></pre>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point() +
+  facet_wrap(~ Cancer_type)</code></pre>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
+  geom_point(mapping=aes(colour = Cancer_type)) +
+  facet_wrap(~ Cancer_type)</code></pre>
 </div>
 
 
