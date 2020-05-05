@@ -1,0 +1,119 @@
+---
+title: "Week 5 -- Grouping and combining data"
+---
+
+> #### Learning objectives
+>
+> * Use `group_by()` with `summarise()` to compute summary values for groups of observations
+> * Use `count()` to count the numbers of observations within categories
+> * Combine data from two tables based on a common identifier (`join` operations)
+> * Customize plots created using ggplot2 by changing labels, scales and colours
+
+---
+
+# Grouping and combining data
+
+In this session, we'll look at some more useful functions provided by the
+**dplyr** package, the 'workhorse' in the tidyverse family for manipulating
+tabular data. Continuing from last week, we'll see how we can summarise data
+for groups of observations within different categories. We'll also show how
+dplyr allows us to combine data for the same observational unit, e.g. person
+or date, that comes from different sources and is read into R in different
+tables.
+
+We'll also look at how to customize the plots we create using **ggplot2**, in
+particular how we can add or change titles and labels, how we can adjust the
+way the axes are displayed and how we can use a colour scheme of our choosing.
+
+**dplyr** and **ggplot2** are core component packages within the tidyverse and
+both get loaded as part of the tidyverse.
+
+```{r}
+library(tidyverse)
+```
+
+To demonstrate how these grouping and combining functions work and to illustrate
+customization of plots, we'll again use the METABRIC data set.
+
+```{r message = FALSE}
+metabric <- read_csv("data/metabric_clinical_and_expression_data.csv")
+metabric
+```
+
+---
+
+# Grouping of observations
+
+In the previous session, we introduced the `summarise()` function for computing
+a summary value for one or more variables from all rows in a table (data frame
+or tibble). For example, we computed the mean expression of ESR1, the estrogen
+receptor alpha gene, as follows.
+
+```{r}
+summarise(metabric, mean(ESR1))
+```
+
+While the `summarise()` function is useful on its own, it becomes really
+powerful when applied to groups of observations within a dataset. For example,
+we might be more interested in the mean ESR1 expression in ER negative and ER
+positive patients. We could take each of these groups in turn, filter the data
+frame to only contain the rows for a given ER status, then apply the
+`summarise()` function to compute the mean expression, but that would be
+somewhat cumbersome and even more so if we chose to do this for a categorical
+variable with more than two states, e.g. for each of the integrative clusters.
+Fortunately, the **`group_by()`** function allows this to be done in one simple
+step.
+
+```{r}
+metabric %>%
+  group_by(ER_status) %>%
+  summarise(mean(ESR1))
+```
+
+We get an additional column in our output for the categorical variable
+(`ER_status`) and a row for each category.
+
+Well, I suppose we should expect this result since ER status is all about
+whether the cancer cells have estrogen receptors or not which presumably must be
+related to whether the ESR1 gene is expressed at a high level or not. Note that
+the expression values are on a log~2~ scale so on average ER-positive breast
+cancers express ESR1 at around 20 times the level of ER-negative breast cancers.
+
+Let's have a look at how ESR1 expression varies between the integrative cluster
+subtypes defined by the METABRIC study.
+
+```{r}
+metabric %>%
+  group_by(Integrative_cluster) %>%
+  summarise(ESR1 = mean(ESR1))
+```
+
+As before we can summarize multiple observations, e.g. the mean expression for
+other genes of interest.
+
+```{r}
+metabric %>%
+  group_by(PAM50) %>%
+  summarise_at(vars(ESR1, PGR, ERBB2), mean)
+```
+
+We can also refine our groups by using more than one categorical variable. Let's
+subdivide the PAM50 groups by ER status by way of example.
+
+```{r}
+metabric %>%
+  group_by(PAM50, ER_status) %>%
+  summarise(ESR1_mean = mean(ESR1))
+```
+
+It might be quite useful to know how many observations are in each group. We
+can use a special function, **`n()`**, that just counts the number of row rather
+than computing a summary value from one of the columns.
+
+```{r}
+metabric %>%
+  group_by(PAM50, ER_status) %>%
+  summarise(N = n(), ESR1_mean = mean(ESR1))
+```
+
+
