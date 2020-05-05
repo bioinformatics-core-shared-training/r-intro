@@ -372,6 +372,9 @@ div.tocify {
     <li>
       <a href="week4.html">Week 4 - Data manipulation using dplyr</a>
     </li>
+    <li>
+      <a href="week5.html">Week 5 - Grouping and combining data</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -440,8 +443,10 @@ metabric</code></pre>
 ## #   GATA3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
 <hr />
 </div>
-<div id="grouping-of-observations" class="section level1">
-<h1>Grouping of observations</h1>
+<div id="grouping-data" class="section level1">
+<h1>Grouping data</h1>
+<div id="summaries-for-groups-of-observations" class="section level2">
+<h2>Summaries for groups of observations</h2>
 <p>In the previous session, we introduced the <code>summarise()</code> function for computing a summary value for one or more variables from all rows in a table (data frame or tibble). For example, we computed the mean expression of ESR1, the estrogen receptor alpha gene, as follows.</p>
 <pre class="r"><code>summarise(metabric, mean(ESR1))</code></pre>
 <pre><code>## # A tibble: 1 x 1
@@ -531,6 +536,7 @@ metabric</code></pre>
 ## 10 NC          Positive      6     10.9 
 ## 11 Normal      Negative     20      6.78
 ## 12 Normal      Positive    120      9.95</code></pre>
+</div>
 </div>
 
 

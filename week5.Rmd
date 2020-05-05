@@ -42,7 +42,9 @@ metabric
 
 ---
 
-# Grouping of observations
+# Grouping data
+
+## Summaries for groups of observations
 
 In the previous session, we introduced the `summarise()` function for computing
 a summary value for one or more variables from all rows in a table (data frame
