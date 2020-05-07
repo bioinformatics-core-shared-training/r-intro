@@ -1,0 +1,194 @@
+
+---
+title: "Assignment 4"
+---
+
+The week's assignment will test your ability to manipulate the METABRIC data set
+by changing the values of existing columns or adding new columns by computing
+new variables from existing ones.
+
+We are expecting you to use the 5 main dplyr 'verb' functions: `select()`,
+`filter()`, `arrange()`, `mutate()` and `summarize()`. Please use the pipe
+operator, `%>%`, in cases where more than one operation is required to achieve
+the outcome requested.
+
+```{r message = FALSE, warning = FALSE}
+library(tidyverse)
+metabric <- read_csv("../data/metabric_clinical_and_expression_data.csv")
+```
+
+---
+
+**1. Investigate the subset of long-surviving breast cancer patients that didn't receive chemo or radiotherapy**
+
+First obtain the subset of patients that received neither chemotherapy or
+radiotherapy and survived for more than 20 years.
+
+```{r}
+patients_of_interest <- filter(metabric, Chemotherapy == "NO", Radiotherapy == "NO", Survival_time / 12 > 20)
+# alternative using separate steps
+patients_of_interest <- metabric %>%
+  filter(Chemotherapy == "NO") %>%
+  filter(Radiotherapy == "NO") %>%
+  mutate(Survival_time_years = Survival_time / 12) %>%
+  filter(Survival_time_years > 20)
+#
+patients_of_interest
+```
+
+Now look at the breakdown of these patients in terms of ER status. Count the
+numbers of ER positive and ER negative patients in this subset. Calculate the
+proportion that are ER positive.
+
+```{r}
+table(patients_of_interest$ER_status)
+mean(patients_of_interest$ER_status == "Positive")
+```
+
+What does this tell us? Calculate the proportion of ER positive patients in the
+whole cohort by way of a comparison.
+
+```{r}
+table(metabric$ER_status)
+mean(metabric$ER_status == "Positive")
+```
+
+**Extension**
+
+Create a contingency table of the numbers of ER positive and ER negative
+patients in the two groups (untreated, long-surviving patients and all others)
+and perform a Chi-squared test or a Fisher's exact test (whichever is most
+appropriate) to determine if there is a significant difference.
+
+```{r}
+# hard-coded values - almost certainly a better way of doing this
+contingency_table <- matrix(c(8, 445 - 8, 62, 1459 - 62), ncol = 2)
+contingency_table
+fisher.test(contingency_table)
+#
+# alternative using table() having created a categorical variable for our untreated, long-survival status
+metabric <- mutate(metabric, untreated_long_survival = Chemotherapy == "NO" & Radiotherapy == "NO" & Survival_time / 12 > 20)
+contingency_table <- table(metabric$untreated_long_survival, metabric$ER_status)
+fisher.test(contingency_table)
+#
+# or can call fisher.test() using the categorical variables directly
+fisher.test(metabric$untreated_long_survival, metabric$ER_status)
+```
+
+_Hint: look at the help page for the function for the Chi-squared or Fisher's
+exact test to see what form the contingency table needs to take_
+
+---
+
+**2. Which patients have spent the largest proportion of their lives dealing with breast cancer?**
+
+```{r}
+metabric %>%
+  mutate(Survival_time_years = Survival_time / 12) %>%
+  mutate(Age = Age_at_diagnosis + Survival_time_years) %>%
+  mutate(Proportion_of_life_since_diagnosis = Survival_time_years / Age) %>%
+  select(Patient_ID, Age, Age_at_diagnosis, Survival_time_years, Proportion_of_life_since_diagnosis) %>%
+  arrange(desc(Proportion_of_life_since_diagnosis)) %>%
+  mutate_if(is.numeric, round, digits = 2)
+```
+
+---
+
+**3. Convert the expression values for each of the genes into standardized z-scores**
+
+Some genes are generally expressed at higher levels than others. This can make
+comparisons of changes between groups for a set of genes somewhat difficult,
+particularly if the expression for those genes are on very different scales. The
+expression values in our METABRIC are on a log~2~ scale which helps to reduce
+the range of values but another method for representing expression measurements
+is to standardize these to produce z-scores.
+
+Standardization of a set of measurements involves subtracting the mean from each
+and dividing by the standard deviation. This will produce values with a mean of
+0 and a standard deviation of 1.
+
+Create a modified version of the `metabric` data frame containing a new column
+with the standardized expression values (z-scores) for the ESR1 gene.
+
+```{r}
+metabric_z_scores <- mutate(metabric, ESR1_z_score = (ESR1 - mean(ESR1)) / sd(ESR1))
+```
+
+Check that you've done this correctly by calculating the mean and standard
+deviation of your new z-score variable.
+
+```{r}
+summarise(metabric_z_scores, mean = mean(ESR1_z_score), sd = sd(ESR1_z_score))
+```
+
+Add another column to your modified `metabric` data frame containing a z-score
+for GATA3 and then create a scatter plot of the z-scores of GATA3 against ESR1.
+Modify your plot to facet by the PAM50 classification.
+
+```{r}
+metabric_z_scores <- mutate(metabric_z_scores, GATA3_z_score = (GATA3 - mean(GATA3)) / sd(GATA3))
+ggplot(data = metabric_z_scores) +
+  geom_point(mapping = aes(x = GATA3_z_score, y = ESR1_z_score)) +
+  facet_wrap(~ PAM50)
+```
+
+**Extension 1**
+
+Standardize the expression values for all genes in a single operation using an
+anonymous function, overwriting their original values, and round the resulting
+values to 3 significant figures.
+
+```{r}
+metabric_z_scores <- metabric %>%
+  mutate_at(vars(ESR1:MLPH), ~ (. - mean(.)) / sd(.)) %>%
+  mutate_at(vars(ESR1:MLPH), signif, digits = 3)
+metabric_z_scores %>%
+  select(Patient_ID, ESR1:MLPH)
+```
+
+Check you have done this correctly by computing the mean and standard deviation for
+each column, again using a single operation.
+
+```{r}
+summarize_at(metabric_z_scores, vars(ESR1:PGR), list(mean = mean, sd = sd))
+```
+
+To be doubly certain, you could also download the expression z-score values for
+these genes from cBioPortal.
+
+**Extension 2**
+
+Create a plot comparing the distribution of standardized expression values for
+TP53 against a normal distribution.
+
+```{r}
+ggplot(data = metabric_z_scores) +
+  geom_density(mapping = aes(x = TP53)) +
+  stat_function(fun = dnorm, colour = "blue")
+```
+
+_Hint: use `stat_function()`_
+
+---
+
+**4. Which Star Wars characters need to go on a diet?**
+
+Compute the body mass index (BMI) of characters in the `starwars` tibble.
+
+```{r}
+starwars <- starwars %>%
+  mutate(height = height / 100) %>%
+  mutate(BMI = mass / height ^ 2)
+```
+
+Filter for human characters that are overweight (BMI > 25) and display in
+decreasing order of BMI.
+
+```{r}
+starwars %>%
+  filter(species == "Human") %>%
+  filter(BMI > 25) %>%
+  arrange(desc(BMI)) %>%
+  select(name, height, mass, BMI)
+```
+

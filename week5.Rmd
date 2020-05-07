@@ -1,0 +1,333 @@
+---
+title: "Week 5 -- Grouping and combining data"
+---
+
+> #### Learning objectives
+>
+> * Use `group_by()` with `summarise()` to compute summary values for groups of observations
+> * Use `count()` to count the numbers of observations within categories
+> * Combine data from two tables based on a common identifier (`join` operations)
+> * Customize plots created using ggplot2 by changing labels, scales and colours
+
+---
+
+# Grouping and combining data
+
+In this session, we'll look at some more useful functions provided by the
+**dplyr** package, the 'workhorse' in the tidyverse family for manipulating
+tabular data. Continuing from last week, we'll see how we can summarise data
+for groups of observations within different categories. We'll also show how
+dplyr allows us to combine data for the same observational unit, e.g. person
+or date, that comes from different sources and is read into R in different
+tables.
+
+We'll also look at how to customize the plots we create using **ggplot2**, in
+particular how we can add or change titles and labels, how we can adjust the
+way the axes are displayed and how we can use a colour scheme of our choosing.
+
+**dplyr** and **ggplot2** are core component packages within the tidyverse and
+both get loaded as part of the tidyverse.
+
+```{r}
+library(tidyverse)
+```
+
+To demonstrate how these grouping and combining functions work and to illustrate
+customization of plots, we'll again use the METABRIC data set.
+
+```{r message = FALSE}
+metabric <- read_csv("data/metabric_clinical_and_expression_data.csv")
+metabric
+```
+
+---
+
+# Grouping observations
+
+## Summaries for groups
+
+In the previous session we introduced the `summarise()` function for computing
+a summary value for one or more variables from all rows in a table (data frame
+or tibble). For example, we computed the mean expression of ESR1, the estrogen
+receptor alpha gene, as follows.
+
+```{r}
+summarise(metabric, mean(ESR1))
+```
+
+While the `summarise()` function is useful on its own, it becomes really
+powerful when applied to groups of observations within a dataset. For example,
+we might be more interested in the mean ESR1 expression value in ER positive and
+ER negative tumours. We could take each of these groups in turn, filter the data
+frame to only contain the rows for a given ER status, then apply the
+`summarise()` function to compute the mean expression, but that would be
+somewhat cumbersome. Even more so if we chose to do this for a categorical
+variable with more than two states, e.g. for each of the integrative clusters.
+Fortunately, the **`group_by()`** function allows this to be done in one simple
+step.
+
+```{r}
+metabric %>%
+  group_by(ER_status) %>%
+  summarise(mean(ESR1))
+```
+
+We get an additional column in our output for the categorical variable,
+`ER_status`, and a row for each category.
+
+We should expect this result since ER status is all about whether the cancer
+cells have estrogen receptors or not, which presumably must be related to
+whether the ESR1 gene is expressed at a high or a low level. Note that the
+expression values are on a log~2~ scale so on average ER-positive breast cancers
+express ESR1 at around 20 times the level of ER-negative breast cancers.
+
+Let's have a look at how ESR1 expression varies between the integrative cluster
+subtypes defined by the METABRIC study.
+
+```{r}
+metabric %>%
+  group_by(Integrative_cluster) %>%
+  summarise(ESR1 = mean(ESR1))
+```
+
+As before we can summarize multiple observations, e.g. the mean expression for
+other genes of interest, this time splitting the observations on the PAM50
+classification.
+
+```{r}
+metabric %>%
+  group_by(PAM50) %>%
+  summarise_at(vars(ESR1, PGR, ERBB2), mean)
+```
+
+We can also refine our groups by using more than one categorical variable. Let's
+subdivide the PAM50 groups by HER2 status to illustrate this.
+
+```{r}
+metabric %>%
+  group_by(PAM50, HER2_status) %>%
+  summarise(ESR1_mean = mean(ESR1))
+```
+
+It can be quite useful to know how many observations are within each group. We
+can use a special function, **`n()`**, that just counts the number of rows rather
+than computing a summary value from one of the columns.
+
+```{r}
+metabric %>%
+  group_by(PAM50, HER2_status) %>%
+  summarise(N = n(), ESR1_mean = mean(ESR1))
+```
+
+## Counts
+
+Counting observations within groups is such a common operation that dplyr
+provides a **`count()`** function to do just that. So we could count the number
+of patient samples in each of the PAM50 classes as follows.
+
+```{r}
+count(metabric, PAM50)
+```
+
+If we wanted to subdivide our categories by HER2 status, we can add this as an
+additional categorical variable just as we did with the previous `group_by()`
+examples.
+
+```{r}
+count(metabric, PAM50, HER2_status)
+```
+
+The count column is named 'n' by default but you can change this.
+
+```{r}
+count(metabric, PAM50, HER2_status, name = "Samples")
+```
+
+`count()` is equivalent to grouping observations with `group_by()` and calling
+`summarize()` using the special `n()` function to count the number of rows. So
+the above statement could have been written in a more long-winded way as
+follows.
+
+```{r eval = FALSE}
+metabric %>%
+  group_by(PAM50, HER2_status) %>%
+  summarize(Samples = n())
+```
+
+Summarizing with `n()` is useful when showing the number of observations in a
+group alongside a summary value, such as the mean of some measurement, so you
+can see if you're drawing conclusions from very few data points.
+
+## Missing values
+
+Many summarization functions return `NA` if any of the values are missing, i.e.
+are `NA`. As an example, we'll compute the average size of ER-negative and
+ER-positive tumours.
+
+```{r}
+metabric %>%
+  group_by(ER_status) %>%
+  summarize(N = n(), `Average tumour size` = mean(Tumour_size))
+```
+
+The `mean()` function and many similar summarization functions have an
+`na.rm` argument that can be set to `TRUE` to exclude those missing values from
+the calculation.
+
+```{r}
+metabric %>%
+  group_by(ER_status) %>%
+  summarize(N = n(), `Average tumour size` = mean(Tumour_size, na.rm = TRUE))
+```
+
+An alternative would be to filter out the observations with missing values but
+then the number of samples in each ER status group would take on a different
+meaning, which may or may not be what we actually want.
+
+```{r}
+metabric %>%
+  filter(!is.na(Tumour_size)) %>%
+  group_by(ER_status) %>%
+  summarize(N = n(), `Average tumour size` = mean(Tumour_size))
+```
+
+## Counts and proportions
+
+It may seem a bit odd to think about computing a summary for a logical variable
+but this actually turns out to be quite a useful thing to do, particularly when
+using `sum()` to count the number of `TRUE` values and `mean()` to get the
+proportion of `TRUE` values.
+
+Following on from the previous example we could add a column to our summary of
+average tumour size for ER-positive and ER-negative patients for the number of
+missing values.
+
+```{r}
+metabric %>%
+  group_by(ER_status) %>%
+  summarize(N = n(), Missing = sum(is.na(Tumour_size)), `Average tumour size` = mean(Tumour_size, na.rm = TRUE))
+```
+
+Why does this work? Well, the `is.na()` function takes a vector and sees which
+values are `NA`, returning a logical vector of `TRUE` where the value was `NA`
+and `FALSE` if not.
+
+```{r}
+test_vector <- c(1, 3, 2, NA, 6, 5, NA, 10)
+is.na(test_vector)
+```
+
+The `sum()` function treats the logical vector as a set of `0`s and `1`s where
+`FALSE` is `0` and `TRUE` is `1`. In effect `sum()` counts the number of `TRUE`
+values.
+
+```{r}
+sum(is.na(test_vector))
+```
+
+Similarly, `mean()` will compute the proportion of the values that are `TRUE`.
+
+```{r}
+mean(is.na(test_vector))
+```
+
+So, let's compute the number and proportion of samples that do not have a
+recorded tumour size in each of the ER-negative and ER-positive groups.
+
+```{r}
+metabric %>%
+  group_by(ER_status) %>%
+  summarize(N = n(), `Missing tumour size` = sum(is.na(Tumour_size)), `Proportion missing` = mean(is.na(Tumour_size)))
+```
+
+We can use `sum()` and `mean()` on any condition that returns a logical vector.
+We could, for example, find the number and proportion of patients that survived
+longer than 10 years (120 months) in each of the ER-negative and ER-positive
+groups.
+
+```{r}
+metabric %>%
+  filter(Survival_status == "DECEASED") %>%
+  group_by(ER_status) %>%
+  summarise(N = n(), N_long_survival = sum(Survival_time > 120), Proportion_long_survival = mean(Survival_time > 120))
+```
+
+# Selecting distinct things
+
+There are occassion where we want to count the number of distinct values in a
+variable or a combination of variables. In this week's assignment, we introduce
+another set of data from the METABRIC study which contains details of the
+mutations detected from targeted sequencing of a panel of 173 genes. We'll read
+this data into R now as this provides a good example of having multiple
+observations on different rows for a single observational unit, in this case
+several mutations found in each tumour sample.
+
+```{r message = FALSE}
+mutations <- read_csv("data/metabric_mutations.csv")
+select(mutations, Patient_ID, Chromosome, Position = Start_Position, Ref = Reference_Allele, Alt = Tumor_Seq_Allele1, Type = Variant_Type, Gene)
+```
+
+We can see from just these few rows that each patient sample has multiple
+mutations and sometimes has more than one mutation in the same gene, as can be
+seen in the first two rows.
+
+If we want to count the number of patients in which mutations were detected we
+could select the distinct set of patient identifiers using the **`distinct()`**
+function.
+
+```{r}
+mutations %>%
+  distinct(Patient_ID) %>%
+  nrow()
+```
+
+Similarly, we could select the distinct set of mutated genes for each patient
+as follows.
+
+```{r}
+mutations %>%
+  distinct(Patient_ID, Gene)
+```
+
+This has reduced the number of rows as only distinct combinations of patient
+and gene are retained. This would be necessary if we wanted to count the number
+patients that have mutations in each gene rather than the number of mutations
+for that gene regardless of the patient.
+
+```{r}
+# number of mutations for each gene
+count(mutations, Gene)
+```
+
+```{r}
+# number of tumour samples in which each gene is mutated
+mutations %>%
+  distinct(Patient_ID, Gene) %>%
+  count(Gene)
+```
+
+The differences in these two tables are for those genes that have more than
+mutation in one or more patient tumour samples.
+
+# Joining data
+
+TODO: examples using bands/instruments
+
+
+TODO: show joining of expression and clinical data to create our metabric data frame
+- create metabric_clinical_data.csv that excludes the gene expression columns
+- use metabric_mrna_expression.txt file downloaded from cBioPortal
+- need to remove STUDY_ID column
+- join based on Patient_ID and SAMPLE_ID columns
+
+mutation data - join that adds a logical column for whether there is an observation or
+not in the second data frame? or resort to Patient_ID %in% esr1_mutations$Patient_ID ?
+
+- boxplot of ESR1 expression vs ESR1 non-silent mutation status
+- stacked bar plots
+- Chi-squared test
+
+
+
+TODO: point to the assignment where we combine the mutation data
+

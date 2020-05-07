@@ -58,11 +58,11 @@ chats and calls within Teams.
 
 3. [Data visualization with ggplot2](week3.html) (27 April) - A common grammar to create scatter plots, bar charts, boxplots, histograms and line graphs for time series data
 
-4. [Data manipulation using dplyr](week4.html) (4 May) - Filtering and modifying tabular data, faceting with ggplot2
+4. [Data manipulation using dplyr](week4.html) (4 May) - Filtering and modifying tabular data, computing summary values, faceting with ggplot2
 
-5. The concept of "tidy data" and data transformations, ggplot2 customization (11 May)
+5. Advanced grouping and summarization operations, joining data from different tables, customizing ggplot2 plots (11 May)
 
-6. Advanced grouping and summarization operations, joining data from different tables, ggplot2 extras (18 May)
+6. The concept of "tidy data", cleaning and reformating data, ggplot2 extras (18 May)
 
 7. **Capstone project** – putting it all together in a typical data analysis including:
 
