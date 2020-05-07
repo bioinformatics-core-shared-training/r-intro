@@ -129,6 +129,12 @@ of patient samples in each of the PAM50 classes as follows.
 count(metabric, PAM50)
 ```
 
+This is much like the `table()` function we've used several times already to
+take a quick look at what values are contained in one of the columns in a data
+frame. They return different data structures however, with `count()` always
+returning a data frame (or tibble) that can then be used in subsequent steps in
+a 'piped' workflow including passing into `ggplot()` to create a graph.
+
 If we wanted to subdivide our categories by HER2 status, we can add this as an
 additional categorical variable just as we did with the previous `group_by()`
 examples.
@@ -155,8 +161,9 @@ metabric %>%
 ```
 
 Summarizing with `n()` is useful when showing the number of observations in a
-group alongside a summary value, such as the mean of some measurement, so you
-can see if you're drawing conclusions from very few data points.
+group alongside a summary value, as we did earlier looking at the mean ESR1
+expression within specified groups, so you can see if you're trying to draw
+conclusions from only a few data points.
 
 ## Missing values
 
@@ -311,7 +318,62 @@ mutation in one or more patient tumour samples.
 
 # Joining data
 
-TODO: examples using bands/instruments
+In many real life situations, data are spread across multiple tables or
+spreadsheets. Usually this occurs because different types of information about a
+subject, e.g. a patient, are collected from different sources. It may be
+desirable for some analyses to combine data from two or more tables into a
+single data frame based on a common column, for example, an attribute that
+uniquely identifies the subject such as a patient identifier.
+
+dplyr provides a set of join functions for combining two data frames based on
+matches within specified columns. These operations are very similar to carrying
+out join operations between tables in a relational database using SQL.
+
+## `left_join`
+
+To illustrate join operations we’ll first consider the most common type, a “left
+join”. In the schematic below the two data frames share a common column, V1. We
+can combine the two data frames into a single data frame by matching rows in the
+first data frame with those in the second data frame that share the same value
+of variable V1.
+
+![dplyr left join](images/dplyr_left_join.png)
+
+`left_join()` returns all rows from the first data frame regardless of whether
+there is a match in the second data frame. Rows with no match are included in
+the resulting data frame but have `NA` values in the additional columns coming
+from the second data frame.
+
+Here’s an example in which details about members of the Beatles and Rolling
+Stones are contained in two tables, using data frames conveniently provided by
+dplyr. The name column identifies each of the band members and is used for
+matching rows from the two tables.
+
+```{r}
+band_members
+band_instruments
+left_join(band_members, band_instruments, by = "name")
+```
+
+We have joined the band members and instruments tables based on the common
+`name` column. Because this is a left join, only observations for band members
+in the 'left' table (`band_members`) are included with information brought in
+from the 'right' table (`band_instruments`) where such exists. There is no entry
+in `band_instruments` for Mick so an `NA` value is inserted into the `plays`
+column that gets added in the combined data frame. Keith is only included in
+the `band_instruments` data frame so doesn't make it into the final output as
+this is based on those band members in the 'left' table.
+
+`right_join()` is similar but returns all rows from the second data frame, i.e.
+the 'right' data frame, that have a match with rows in the first data frame.
+
+```{r}
+right_join(band_members, band_instruments, by = "name")
+```
+
+Unlike `left_join()`, `right_join()` is used very infrequently.
+
+
 
 
 TODO: show joining of expression and clinical data to create our metabric data frame

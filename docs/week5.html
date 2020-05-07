@@ -553,6 +553,7 @@ metabric</code></pre>
 ## 5 LumB          461
 ## 6 NC              6
 ## 7 Normal        140</code></pre>
+<p>This is much like the <code>table()</code> function we’ve used several times already to take a quick look at what values are contained in one of the columns in a data frame. They return different data structures however, with <code>count()</code> always returning a data frame (or tibble) that can then be used in subsequent steps in a ‘piped’ workflow including passing into <code>ggplot()</code> to create a graph.</p>
 <p>If we wanted to subdivide our categories by HER2 status, we can add this as an additional categorical variable just as we did with the previous <code>group_by()</code> examples.</p>
 <pre class="r"><code>count(metabric, PAM50, HER2_status)</code></pre>
 <pre><code>## # A tibble: 13 x 3
@@ -593,7 +594,7 @@ metabric</code></pre>
 <pre class="r"><code>metabric %&gt;%
   group_by(PAM50, HER2_status) %&gt;%
   summarize(Samples = n())</code></pre>
-<p>Summarizing with <code>n()</code> is useful when showing the number of observations in a group alongside a summary value, such as the mean of some measurement, so you can see if you’re drawing conclusions from very few data points.</p>
+<p>Summarizing with <code>n()</code> is useful when showing the number of observations in a group alongside a summary value, as we did earlier looking at the mean ESR1 expression within specified groups, so you can see if you’re trying to draw conclusions from only a few data points.</p>
 </div>
 <div id="missing-values" class="section level2">
 <h2>Missing values</h2>
@@ -750,7 +751,48 @@ mutations %&gt;%
 </div>
 <div id="joining-data" class="section level1">
 <h1>Joining data</h1>
-<p>TODO: examples using bands/instruments</p>
+<p>In many real life situations, data are spread across multiple tables or spreadsheets. Usually this occurs because different types of information about a subject, e.g. a patient, are collected from different sources. It may be desirable for some analyses to combine data from two or more tables into a single data frame based on a common column, for example, an attribute that uniquely identifies the subject such as a patient identifier.</p>
+<p>dplyr provides a set of join functions for combining two data frames based on matches within specified columns. These operations are very similar to carrying out join operations between tables in a relational database using SQL.</p>
+<div id="left_join" class="section level2">
+<h2><code>left_join</code></h2>
+<p>To illustrate join operations we’ll first consider the most common type, a “left join”. In the schematic below the two data frames share a common column, V1. We can combine the two data frames into a single data frame by matching rows in the first data frame with those in the second data frame that share the same value of variable V1.</p>
+<div class="figure">
+<img src="images/dplyr_left_join.png" alt="dplyr left join" />
+<p class="caption">dplyr left join</p>
+</div>
+<p><code>left_join()</code> returns all rows from the first data frame regardless of whether there is a match in the second data frame. Rows with no match are included in the resulting data frame but have <code>NA</code> values in the additional columns coming from the second data frame.</p>
+<p>Here’s an example in which details about members of the Beatles and Rolling Stones are contained in two tables, using data frames conveniently provided by dplyr. The name column identifies each of the band members and is used for matching rows from the two tables.</p>
+<pre class="r"><code>band_members</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   name  band   
+##   &lt;chr&gt; &lt;chr&gt;  
+## 1 Mick  Stones 
+## 2 John  Beatles
+## 3 Paul  Beatles</code></pre>
+<pre class="r"><code>band_instruments</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   name  plays 
+##   &lt;chr&gt; &lt;chr&gt; 
+## 1 John  guitar
+## 2 Paul  bass  
+## 3 Keith guitar</code></pre>
+<pre class="r"><code>left_join(band_members, band_instruments, by = &quot;name&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   name  band    plays 
+##   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; 
+## 1 Mick  Stones  &lt;NA&gt;  
+## 2 John  Beatles guitar
+## 3 Paul  Beatles bass</code></pre>
+<p>We have joined the band members and instruments tables based on the common <code>name</code> column. Because this is a left join, only observations for band members in the ‘left’ table (<code>band_members</code>) are included with information brought in from the ‘right’ table (<code>band_instruments</code>) where such exists. There is no entry in <code>band_instruments</code> for Mick so an <code>NA</code> value is inserted into the <code>plays</code> column that gets added in the combined data frame. Keith is only included in the <code>band_instruments</code> data frame so doesn’t make it into the final output as this is based on those band members in the ‘left’ table.</p>
+<p><code>right_join()</code> is similar but returns all rows from the second data frame, i.e. the ‘right’ data frame, that have a match with rows in the first data frame.</p>
+<pre class="r"><code>right_join(band_members, band_instruments, by = &quot;name&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   name  band    plays 
+##   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; 
+## 1 John  Beatles guitar
+## 2 Paul  Beatles bass  
+## 3 Keith &lt;NA&gt;    guitar</code></pre>
+<p>Unlike <code>left_join()</code>, <code>right_join()</code> is used very infrequently.</p>
 <p>TODO: show joining of expression and clinical data to create our metabric data frame - create metabric_clinical_data.csv that excludes the gene expression columns - use metabric_mrna_expression.txt file downloaded from cBioPortal - need to remove STUDY_ID column - join based on Patient_ID and SAMPLE_ID columns</p>
 <p>mutation data - join that adds a logical column for whether there is an observation or not in the second data frame? or resort to Patient_ID %in% esr1_mutations$Patient_ID ?</p>
 <ul>
@@ -759,6 +801,7 @@ mutations %&gt;%
 <li>Chi-squared test</li>
 </ul>
 <p>TODO: point to the assignment where we combine the mutation data</p>
+</div>
 </div>
 
 
