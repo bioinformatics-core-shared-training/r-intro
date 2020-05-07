@@ -669,9 +669,8 @@ is.na(test_vector)</code></pre>
 ## 1 Negative    250              40                    0.16 
 ## 2 Positive    853             325                    0.381</code></pre>
 </div>
-</div>
-<div id="selecting-distinct-things" class="section level1">
-<h1>Selecting distinct things</h1>
+<div id="selecting-or-counting-distinct-things" class="section level2">
+<h2>Selecting or counting distinct things</h2>
 <p>There are occassion where we want to count the number of distinct values in a variable or a combination of variables. In this week’s assignment, we introduce another set of data from the METABRIC study which contains details of the mutations detected from targeted sequencing of a panel of 173 genes. We’ll read this data into R now as this provides a good example of having multiple observations on different rows for a single observational unit, in this case several mutations found in each tumour sample.</p>
 <pre class="r"><code>mutations &lt;- read_csv(&quot;data/metabric_mutations.csv&quot;)
 select(mutations, Patient_ID, Chromosome, Position = Start_Position, Ref = Reference_Allele, Alt = Tumor_Seq_Allele1, Type = Variant_Type, Gene)</code></pre>
@@ -749,6 +748,7 @@ mutations %&gt;%
 ## # … with 163 more rows</code></pre>
 <p>The differences in these two tables are for those genes that have more than mutation in one or more patient tumour samples.</p>
 </div>
+</div>
 <div id="joining-data" class="section level1">
 <h1>Joining data</h1>
 <p>In many real life situations, data are spread across multiple tables or spreadsheets. Usually this occurs because different types of information about a subject, e.g. a patient, are collected from different sources. It may be desirable for some analyses to combine data from two or more tables into a single data frame based on a common column, for example, an attribute that uniquely identifies the subject such as a patient identifier.</p>
@@ -793,14 +793,232 @@ mutations %&gt;%
 ## 2 Paul  Beatles bass  
 ## 3 Keith &lt;NA&gt;    guitar</code></pre>
 <p>Unlike <code>left_join()</code>, <code>right_join()</code> is used very infrequently.</p>
-<p>TODO: show joining of expression and clinical data to create our metabric data frame - create metabric_clinical_data.csv that excludes the gene expression columns - use metabric_mrna_expression.txt file downloaded from cBioPortal - need to remove STUDY_ID column - join based on Patient_ID and SAMPLE_ID columns</p>
-<p>mutation data - join that adds a logical column for whether there is an observation or not in the second data frame? or resort to Patient_ID %in% esr1_mutations$Patient_ID ?</p>
-<ul>
-<li>boxplot of ESR1 expression vs ESR1 non-silent mutation status</li>
-<li>stacked bar plots</li>
-<li>Chi-squared test</li>
-</ul>
-<p>TODO: point to the assignment where we combine the mutation data</p>
+</div>
+<div id="inner_join" class="section level2">
+<h2><code>inner_join</code></h2>
+<p>Another joining operation is the “inner join” in which only observations that are common to both data frames are included.</p>
+<div class="figure">
+<img src="images/dplyr_inner_join.png" alt="dplyr inner join" />
+<p class="caption">dplyr inner join</p>
+</div>
+<pre class="r"><code>inner_join(band_members, band_instruments, by = &quot;name&quot;)</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   name  band    plays 
+##   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; 
+## 1 John  Beatles guitar
+## 2 Paul  Beatles bass</code></pre>
+<p>In this case when considering observations identified by <code>name</code>, only John and Paul are contained in both the <code>band_members</code> and <code>band_instruments</code> tables, so only these make it into the combined table.</p>
+</div>
+<div id="full_join" class="section level2">
+<h2><code>full_join</code></h2>
+<p>We’ve seen how missing rows from one table can be retained in the joined data frame using <code>left_join</code> or <code>right_join</code> but sometimes data for a given subject may be missing from either of the tables and we still want that subject to appear in the combined table. A <code>full_join</code> will return all rows and all columns from the two tables and where there are no matching values, <code>NA</code> values are used to fill in the missing values.</p>
+<div class="figure">
+<img src="images/dplyr_full_join.png" alt="dplyr full join" />
+<p class="caption">dplyr full join</p>
+</div>
+<pre class="r"><code>full_join(band_members, band_instruments, by = &quot;name&quot;)</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##   name  band    plays 
+##   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; 
+## 1 Mick  Stones  &lt;NA&gt;  
+## 2 John  Beatles guitar
+## 3 Paul  Beatles bass  
+## 4 Keith &lt;NA&gt;    guitar</code></pre>
+<p>Now, with <code>full_join()</code>, we have rows for both Mick and Keith even though they are only in one or other of the tables being joined.</p>
+</div>
+<div id="joining-on-columns-with-different-headers" class="section level2">
+<h2>Joining on columns with different headers</h2>
+<p>It isn’t uncommon for the columns used for joining two tables to have different names in each table. Of course we could rename one of the two columns, e.g. using the dplyr <code>rename()</code> function, but the dplyr join functions allow you to match using differently-named columns as illustrated using another version of the <code>band_instruments</code> data frame.</p>
+<pre class="r"><code>band_instruments2</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   artist plays 
+##   &lt;chr&gt;  &lt;chr&gt; 
+## 1 John   guitar
+## 2 Paul   bass  
+## 3 Keith  guitar</code></pre>
+<pre class="r"><code>left_join(band_members, band_instruments2, by = c(&quot;name&quot; = &quot;artist&quot;))</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   name  band    plays 
+##   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; 
+## 1 Mick  Stones  &lt;NA&gt;  
+## 2 John  Beatles guitar
+## 3 Paul  Beatles bass</code></pre>
+<p>The name for the column used for joining is the one given in the first table, i.e. the ‘left’ table, so <code>name</code> rather than <code>artist</code> in this case.</p>
+</div>
+<div id="multiple-matches-in-join-operations" class="section level2">
+<h2>Multiple matches in join operations</h2>
+<p>You may be wondering what happens if there are multiple rows in one of both of the two tables for the thing that is being joined, for example what would happen if our second table had two entries for instruments that Paul plays.</p>
+<pre class="r"><code>band_instruments3 &lt;- tibble(
+  name =  c(&quot;John&quot;,   &quot;Paul&quot;, &quot;Paul&quot;,   &quot;Keith&quot;),
+  plays = c(&quot;guitar&quot;, &quot;bass&quot;, &quot;guitar&quot;, &quot;guitar&quot;)
+)
+band_instruments3</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   name  plays 
+##   &lt;chr&gt; &lt;chr&gt; 
+## 1 John  guitar
+## 2 Paul  bass  
+## 3 Paul  guitar
+## 4 Keith guitar</code></pre>
+<pre class="r"><code>left_join(band_members, band_instruments3, by = &quot;name&quot;)</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##   name  band    plays 
+##   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; 
+## 1 Mick  Stones  &lt;NA&gt;  
+## 2 John  Beatles guitar
+## 3 Paul  Beatles bass  
+## 4 Paul  Beatles guitar</code></pre>
+<p>We get both entries from the second table added to the first table.</p>
+<p>Let’s add an entry for Paul being in a second band and see what happens then when we combine the two tables, each with two entries for Paul.</p>
+<pre class="r"><code>band_members3 &lt;- tibble(
+  name = c(&quot;Mick&quot;,   &quot;John&quot;,    &quot;Paul&quot;,    &quot;Paul&quot;),
+  band = c(&quot;Stones&quot;, &quot;Beatles&quot;, &quot;Beatles&quot;, &quot;Wings&quot;)
+)
+band_members3</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   name  band   
+##   &lt;chr&gt; &lt;chr&gt;  
+## 1 Mick  Stones 
+## 2 John  Beatles
+## 3 Paul  Beatles
+## 4 Paul  Wings</code></pre>
+<pre class="r"><code>left_join(band_members3, band_instruments3, by = &quot;name&quot;)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   name  band    plays 
+##   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; 
+## 1 Mick  Stones  &lt;NA&gt;  
+## 2 John  Beatles guitar
+## 3 Paul  Beatles bass  
+## 4 Paul  Beatles guitar
+## 5 Paul  Wings   bass  
+## 6 Paul  Wings   guitar</code></pre>
+<p>The resulting table includes all combinations of band and instrument for Paul.</p>
+</div>
+<div id="joining-by-matching-on-multiple-columns" class="section level2">
+<h2>Joining by matching on multiple columns</h2>
+<p>Sometimes the observations being combined are identified by multiple columns, for example, a forename and a surname. We can specify a vector of column names to be used in the join operation.</p>
+<pre class="r"><code>band_members4 &lt;- tibble(
+  forename = c(&quot;Mick&quot;,   &quot;John&quot;,    &quot;Paul&quot;,      &quot;John&quot;),
+  surname =  c(&quot;Jagger&quot;, &quot;Lennon&quot;,  &quot;McCartney&quot;, &quot;Squire&quot;),
+  band =     c(&quot;Stones&quot;, &quot;Beatles&quot;, &quot;Beatles&quot;,   &quot;Roses&quot;)
+)
+band_instruments4 &lt;- tibble(
+  forename = c(&quot;John&quot;,   &quot;Paul&quot;,      &quot;Keith&quot;,    &quot;John&quot;),
+  surname =  c(&quot;Lennon&quot;, &quot;McCartney&quot;, &quot;Richards&quot;, &quot;Squire&quot;),
+  plays =    c(&quot;guitar&quot;, &quot;bass&quot;,      &quot;guitar&quot;,   &quot;guitar&quot;)
+)
+full_join(band_members4, band_instruments4, by = c(&quot;forename&quot;, &quot;surname&quot;))</code></pre>
+<pre><code>## # A tibble: 5 x 4
+##   forename surname   band    plays 
+##   &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt; 
+## 1 Mick     Jagger    Stones  &lt;NA&gt;  
+## 2 John     Lennon    Beatles guitar
+## 3 Paul     McCartney Beatles bass  
+## 4 John     Squire    Roses   guitar
+## 5 Keith    Richards  &lt;NA&gt;    guitar</code></pre>
+</div>
+<div id="clashing-column-names" class="section level2">
+<h2>Clashing column names</h2>
+<p>Occasionally we may find that there are duplicated columns in the two tables we want to join, columns which are not the variable being used to identify which observations correspond to each other across the tables. These variables may even contain different data but happen to have the same name. In such cases dplyr joins add a suffix to each column in the combined table.</p>
+<pre class="r"><code>band_members5 &lt;- tibble(
+  name = c(&quot;John&quot;, &quot;Paul&quot;, &quot;Ringo&quot;, &quot;George&quot;, &quot;Mick&quot;),
+  birth_year = c(1940, 1942, 1940, 1943, 1943),
+  band = c(&quot;Beetles&quot;, &quot;Beetles&quot;, &quot;Beetles&quot;, &quot;Beetles&quot;, &quot;Stones&quot;)
+)
+band_instruments5 &lt;- tibble(
+  name = c(&quot;John&quot;, &quot;Paul&quot;, &quot;Ringo&quot;, &quot;George&quot;),
+  birth_year = c(1940, 1942, 1940, 1943),
+  instrument = c(&quot;guitar&quot;, &quot;bass&quot;, &quot;drums&quot;, &quot;guitar&quot;)
+)
+left_join(band_members5, band_instruments5, by = &quot;name&quot;)</code></pre>
+<pre><code>## # A tibble: 5 x 5
+##   name   birth_year.x band    birth_year.y instrument
+##   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;     
+## 1 John           1940 Beetles         1940 guitar    
+## 2 Paul           1942 Beetles         1942 bass      
+## 3 Ringo          1940 Beetles         1940 drums     
+## 4 George         1943 Beetles         1943 guitar    
+## 5 Mick           1943 Stones            NA &lt;NA&gt;</code></pre>
+<p>Care should be taken to rename or remove the duplicated columns that aren’t used for joining.</p>
+</div>
+<div id="filtering-joins" class="section level2">
+<h2>Filtering joins</h2>
+<p>A variation on the join operations we’ve considered are <code>semi_join()</code> and <code>anti_join()</code> that filter the rows in one table based on matches or lack of matches to rows in another table.</p>
+<p><code>semi_join()</code> returns all rows from the first table where there are matches in the other table.</p>
+<pre class="r"><code>semi_join(band_members, band_instruments, by = &quot;name&quot;)</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   name  band   
+##   &lt;chr&gt; &lt;chr&gt;  
+## 1 John  Beatles
+## 2 Paul  Beatles</code></pre>
+<p><code>anti_join()</code> returns all rows where there is no match in the other table, i.e. those that are unique to the first table.</p>
+<pre class="r"><code>anti_join(band_members, band_instruments, by = &quot;name&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   name  band  
+##   &lt;chr&gt; &lt;chr&gt; 
+## 1 Mick  Stones</code></pre>
+</div>
+<div id="a-real-example-joining-the-metabric-clinical-and-mrna-expression-data" class="section level2">
+<h2>A real example: joining the METABRIC clinical and mRNA expression data</h2>
+<p>Let’s move on to a real example of joining data from two different tables that we used in putting together the combined METABRIC clinical and expression data set.</p>
+<p>We first read the clinical data into R and then just select a small number of columns to make it easier to see what is going on when combining the data.</p>
+<pre class="r"><code>clinical_data &lt;- read_csv(&quot;data/metabric_clinical_data.csv&quot;)
+clinical_data &lt;- select(clinical_data, Patient_ID, ER_status, PAM50)
+clinical_data</code></pre>
+<pre><code>## # A tibble: 2,509 x 3
+##    Patient_ID ER_status PAM50      
+##    &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;      
+##  1 MB-0000    Positive  claudin-low
+##  2 MB-0002    Positive  LumA       
+##  3 MB-0005    Positive  LumB       
+##  4 MB-0006    Positive  LumB       
+##  5 MB-0008    Positive  LumB       
+##  6 MB-0010    Positive  LumB       
+##  7 MB-0014    Positive  LumB       
+##  8 MB-0020    Negative  Normal     
+##  9 MB-0022    Positive  claudin-low
+## 10 MB-0025    Positive  &lt;NA&gt;       
+## # … with 2,499 more rows</code></pre>
+<p>We then read in the mRNA expression data that was downloaded separately from <a href="https://www.cbioportal.org/study/summary?id=brca_metabric">cBioPortal</a>.</p>
+<pre class="r"><code>mrna_expression_data &lt;- read_tsv(&quot;data/metabric_mrna_expression.txt&quot;)
+mrna_expression_data</code></pre>
+<pre><code>## # A tibble: 2,509 x 10
+##    STUDY_ID      SAMPLE_ID  ESR1 ERBB2   PGR  TP53 PIK3CA GATA3 FOXA1  MLPH
+##    &lt;chr&gt;         &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 brca_metabric MB-0000    8.93  9.33  5.68  6.34   5.70  6.93  7.95  9.73
+##  2 brca_metabric MB-0002   10.0   9.73  7.51  6.19   5.76 11.3  11.8  12.5 
+##  3 brca_metabric MB-0005   10.0   9.73  7.38  6.40   6.75  9.29 11.7  10.3 
+##  4 brca_metabric MB-0006   10.4  10.3   6.82  6.87   7.22  8.67 11.9  10.5 
+##  5 brca_metabric MB-0008   11.3   9.96  7.33  6.34   5.82  9.72 11.6  12.2 
+##  6 brca_metabric MB-0010   11.2   9.74  5.95  5.42   6.12  9.79 12.1  11.4 
+##  7 brca_metabric MB-0014   10.8   9.28  7.72  5.99   7.48  8.37 11.5  10.8 
+##  8 brca_metabric MB-0020   NA    NA    NA    NA     NA    NA    NA    NA   
+##  9 brca_metabric MB-0022   10.4   8.61  5.59  6.17   7.59  7.87 10.7   9.95
+## 10 brca_metabric MB-0025   NA    NA    NA    NA     NA    NA    NA    NA   
+## # … with 2,499 more rows</code></pre>
+<p>Finally, we’ll combine these data using an <code>inner_join()</code>.</p>
+<pre class="r"><code>combined_data &lt;- inner_join(clinical_data, mrna_expression_data, by = c(&quot;Patient_ID&quot; = &quot;SAMPLE_ID&quot;))
+combined_data</code></pre>
+<pre><code>## # A tibble: 2,509 x 12
+##    Patient_ID ER_status PAM50 STUDY_ID  ESR1 ERBB2   PGR  TP53 PIK3CA GATA3
+##    &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+##  1 MB-0000    Positive  clau… brca_me…  8.93  9.33  5.68  6.34   5.70  6.93
+##  2 MB-0002    Positive  LumA  brca_me… 10.0   9.73  7.51  6.19   5.76 11.3 
+##  3 MB-0005    Positive  LumB  brca_me… 10.0   9.73  7.38  6.40   6.75  9.29
+##  4 MB-0006    Positive  LumB  brca_me… 10.4  10.3   6.82  6.87   7.22  8.67
+##  5 MB-0008    Positive  LumB  brca_me… 11.3   9.96  7.33  6.34   5.82  9.72
+##  6 MB-0010    Positive  LumB  brca_me… 11.2   9.74  5.95  5.42   6.12  9.79
+##  7 MB-0014    Positive  LumB  brca_me… 10.8   9.28  7.72  5.99   7.48  8.37
+##  8 MB-0020    Negative  Norm… brca_me… NA    NA    NA    NA     NA    NA   
+##  9 MB-0022    Positive  clau… brca_me… 10.4   8.61  5.59  6.17   7.59  7.87
+## 10 MB-0025    Positive  &lt;NA&gt;  brca_me… NA    NA    NA    NA     NA    NA   
+## # … with 2,499 more rows, and 2 more variables: FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
+<p>Having combined the data from two sources we can now carry out exploratory data analysis that was hitherto not possible.</p>
+<pre class="r"><code>combined_data %&gt;%
+  filter(!is.na(PAM50), !is.na(ESR1)) %&gt;%
+  ggplot(mapping = aes(x = PAM50, y = ESR1, colour = PAM50)) +
+  geom_boxplot(show.legend = FALSE)</code></pre>
+<p><img src="week5_files/figure-html/box_plot_1-1.png" width="672" /></p>
 </div>
 </div>
 

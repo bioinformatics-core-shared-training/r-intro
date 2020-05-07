@@ -259,7 +259,7 @@ metabric %>%
   summarise(N = n(), N_long_survival = sum(Survival_time > 120), Proportion_long_survival = mean(Survival_time > 120))
 ```
 
-# Selecting distinct things
+## Selecting or counting distinct things
 
 There are occassion where we want to count the number of distinct values in a
 variable or a combination of variables. In this week's assignment, we introduce
@@ -373,23 +373,188 @@ right_join(band_members, band_instruments, by = "name")
 
 Unlike `left_join()`, `right_join()` is used very infrequently.
 
+## `inner_join`
 
+Another joining operation is the "inner join" in which only observations that
+are common to both data frames are included.
 
+![dplyr inner join](images/dplyr_inner_join.png)
 
-TODO: show joining of expression and clinical data to create our metabric data frame
-- create metabric_clinical_data.csv that excludes the gene expression columns
-- use metabric_mrna_expression.txt file downloaded from cBioPortal
-- need to remove STUDY_ID column
-- join based on Patient_ID and SAMPLE_ID columns
+```{r}
+inner_join(band_members, band_instruments, by = "name")
+```
 
-mutation data - join that adds a logical column for whether there is an observation or
-not in the second data frame? or resort to Patient_ID %in% esr1_mutations$Patient_ID ?
+In this case when considering observations identified by `name`, only John and
+Paul are contained in both the `band_members` and `band_instruments` tables, so
+only these make it into the combined table.
 
-- boxplot of ESR1 expression vs ESR1 non-silent mutation status
-- stacked bar plots
-- Chi-squared test
+## `full_join`
 
+We've seen how missing rows from one table can be retained in the joined data
+frame using `left_join` or `right_join` but sometimes data for a given subject
+may be missing from either of the tables and we still want that subject to
+appear in the combined table. A `full_join` will return all rows and all columns
+from the two tables and where there are no matching values, `NA` values are used
+to fill in the missing values.
 
+![dplyr full join](images/dplyr_full_join.png)
 
-TODO: point to the assignment where we combine the mutation data
+```{r}
+full_join(band_members, band_instruments, by = "name")
+```
+
+Now, with `full_join()`, we have rows for both Mick and Keith even though they
+are only in one or other of the tables being joined.
+
+## Joining on columns with different headers
+
+It isn't uncommon for the columns used for joining two tables to have different
+names in each table. Of course we could rename one of the two columns, e.g.
+using the dplyr `rename()` function, but the dplyr join functions allow you to
+match using differently-named columns as illustrated using another version of
+the `band_instruments` data frame.
+
+```{r}
+band_instruments2
+left_join(band_members, band_instruments2, by = c("name" = "artist"))
+```
+
+The name for the column used for joining is the one given in the first table,
+i.e. the 'left' table, so `name` rather than `artist` in this case.
+
+## Multiple matches in join operations
+
+You may be wondering what happens if there are multiple rows in one of both of
+the two tables for the thing that is being joined, for example what would happen
+if our second table had two entries for instruments that Paul plays.
+
+```{r}
+band_instruments3 <- tibble(
+  name =  c("John",   "Paul", "Paul",   "Keith"),
+  plays = c("guitar", "bass", "guitar", "guitar")
+)
+band_instruments3
+left_join(band_members, band_instruments3, by = "name")
+```
+
+We get both entries from the second table added to the first table.
+
+Let's add an entry for Paul being in a second band and see what happens then
+when we combine the two tables, each with two entries for Paul.
+
+```{r}
+band_members3 <- tibble(
+  name = c("Mick",   "John",    "Paul",    "Paul"),
+  band = c("Stones", "Beatles", "Beatles", "Wings")
+)
+band_members3
+left_join(band_members3, band_instruments3, by = "name")
+```
+
+The resulting table includes all combinations of band and instrument for Paul.
+
+## Joining by matching on multiple columns
+
+Sometimes the observations being combined are identified by multiple columns,
+for example, a forename and a surname. We can specify a vector of column names
+to be used in the join operation.
+
+```{r}
+band_members4 <- tibble(
+  forename = c("Mick",   "John",    "Paul",      "John"),
+  surname =  c("Jagger", "Lennon",  "McCartney", "Squire"),
+  band =     c("Stones", "Beatles", "Beatles",   "Roses")
+)
+band_instruments4 <- tibble(
+  forename = c("John",   "Paul",      "Keith",    "John"),
+  surname =  c("Lennon", "McCartney", "Richards", "Squire"),
+  plays =    c("guitar", "bass",      "guitar",   "guitar")
+)
+full_join(band_members4, band_instruments4, by = c("forename", "surname"))
+```
+
+## Clashing column names
+
+Occasionally we may find that there are duplicated columns in the two tables we
+want to join, columns which are not the variable being used to identify which
+observations correspond to each other across the tables. These variables may
+even contain different data but happen to have the same name. In such cases
+dplyr joins add a suffix to each column in the combined table.
+
+```{r}
+band_members5 <- tibble(
+  name = c("John", "Paul", "Ringo", "George", "Mick"),
+  birth_year = c(1940, 1942, 1940, 1943, 1943),
+  band = c("Beetles", "Beetles", "Beetles", "Beetles", "Stones")
+)
+band_instruments5 <- tibble(
+  name = c("John", "Paul", "Ringo", "George"),
+  birth_year = c(1940, 1942, 1940, 1943),
+  instrument = c("guitar", "bass", "drums", "guitar")
+)
+left_join(band_members5, band_instruments5, by = "name")
+```
+
+Care should be taken to rename or remove the duplicated columns that aren't used
+for joining.
+
+## Filtering joins
+
+A variation on the join operations we've considered are `semi_join()` and
+`anti_join()` that filter the rows in one table based on matches or lack of
+matches to rows in another table.
+
+`semi_join()` returns all rows from the first table where there are matches
+in the other table.
+
+```{r}
+semi_join(band_members, band_instruments, by = "name")
+```
+
+`anti_join()` returns all rows where there is no match in the other table, i.e.
+those that are unique to the first table.
+
+```{r}
+anti_join(band_members, band_instruments, by = "name")
+```
+
+## A real example: joining the METABRIC clinical and mRNA expression data
+
+Let's move on to a real example of joining data from two different tables that
+we used in putting together the combined METABRIC clinical and expression data
+set.
+
+We first read the clinical data into R and then just select a small number of
+columns to make it easier to see what is going on when combining the data.
+
+```{r message = FALSE}
+clinical_data <- read_csv("data/metabric_clinical_data.csv")
+clinical_data <- select(clinical_data, Patient_ID, ER_status, PAM50)
+clinical_data
+```
+
+We then read in the mRNA expression data that was downloaded separately from
+[cBioPortal](https://www.cbioportal.org/study/summary?id=brca_metabric).
+
+```{r message = FALSE}
+mrna_expression_data <- read_tsv("data/metabric_mrna_expression.txt")
+mrna_expression_data
+```
+
+Finally, we'll combine these data using an `inner_join()`.
+
+```{r}
+combined_data <- inner_join(clinical_data, mrna_expression_data, by = c("Patient_ID" = "SAMPLE_ID"))
+combined_data
+```
+
+Having combined the data from two sources we can now carry out exploratory data
+analysis that was hitherto not possible.
+
+```{r box_plot_1}
+combined_data %>%
+  filter(!is.na(PAM50), !is.na(ESR1)) %>%
+  ggplot(mapping = aes(x = PAM50, y = ESR1, colour = PAM50)) +
+  geom_boxplot(show.legend = FALSE)
+```
 
