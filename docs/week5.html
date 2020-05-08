@@ -747,6 +747,7 @@ mutations %&gt;%
 ## 10 ALK       95
 ## # … with 163 more rows</code></pre>
 <p>The differences in these two tables are for those genes that have more than mutation in one or more patient tumour samples.</p>
+<hr />
 </div>
 </div>
 <div id="joining-data" class="section level1">
@@ -996,7 +997,7 @@ mrna_expression_data</code></pre>
 ##  9 brca_metabric MB-0022   10.4   8.61  5.59  6.17   7.59  7.87 10.7   9.95
 ## 10 brca_metabric MB-0025   NA    NA    NA    NA     NA    NA    NA    NA   
 ## # … with 2,499 more rows</code></pre>
-<p>Finally, we’ll combine these data using an <code>inner_join()</code>.</p>
+<p>Now we have both sets of data loaded into R as data frames, we can combine them into a single data frame using an <code>inner_join()</code>.</p>
 <pre class="r"><code>combined_data &lt;- inner_join(clinical_data, mrna_expression_data, by = c(&quot;Patient_ID&quot; = &quot;SAMPLE_ID&quot;))
 combined_data</code></pre>
 <pre><code>## # A tibble: 2,509 x 12
@@ -1013,12 +1014,119 @@ combined_data</code></pre>
 ##  9 MB-0022    Positive  clau… brca_me… 10.4   8.61  5.59  6.17   7.59  7.87
 ## 10 MB-0025    Positive  &lt;NA&gt;  brca_me… NA    NA    NA    NA     NA    NA   
 ## # … with 2,499 more rows, and 2 more variables: FOXA1 &lt;dbl&gt;, MLPH &lt;dbl&gt;</code></pre>
-<p>Having combined the data from two sources we can now carry out exploratory data analysis that was hitherto not possible.</p>
+<p>Having combined the data, we can carry out exploratory data analysis using elements from both data sets.</p>
 <pre class="r"><code>combined_data %&gt;%
   filter(!is.na(PAM50), !is.na(ESR1)) %&gt;%
   ggplot(mapping = aes(x = PAM50, y = ESR1, colour = PAM50)) +
   geom_boxplot(show.legend = FALSE)</code></pre>
 <p><img src="week5_files/figure-html/box_plot_1-1.png" width="672" /></p>
+<hr />
+</div>
+</div>
+<div id="customizing-plots-with-ggplot2" class="section level1">
+<h1>Customizing plots with ggplot2</h1>
+<p>Finally, we’ll turn our attention back to visualization using ggplot2 and how we can customize our plots by adding or changing titles and labels, changing the scales used on the x and y axes, and choosing colours.</p>
+<div id="titles-and-labels" class="section level2">
+<h2>Titles and labels</h2>
+<p>Adding titles and subtitles to a plot and changing the x- and y-axis labels is very straightforward using the <code>labs()</code> function.</p>
+<pre class="r"><code>plot &lt;- ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  labs(
+    title = &quot;mRNA expression in the METABRIC breast cancer data set&quot;,
+    subtitle = &quot;FOXA1 and MLPH mRNA expression measured using Illumina HT-12 bead arrays&quot;,
+    x = &quot;log2 FOXA1 expression&quot;,
+    y = &quot;log2 MLPH expression&quot;,
+    colour = &quot;ER status&quot;
+  )
+plot</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_1-1.png" width="672" /></p>
+<p>The labels are another component of the plot object that we’ve constructed with aesthetic mappings and layers (geoms). The plot object is a list and contains various elements including those mappings and layers and one element named <code>labels</code>.</p>
+<p><code>labs()</code> is a simple function for creating a list of labels you want to specify as name-value pairs as in the above example. You can name any aesthetic (in this case x and y) to override the default values (the column names) and you can add a title, subtitle and caption if you wish. In addition to changing the x- and y-axis labels, we also removed the underscore from the legend title by setting the label for the colour aesthetic.</p>
+</div>
+<div id="scales" class="section level2">
+<h2>Scales</h2>
+<p>Take a look at the x and y scales in the above plot. ggplot2 has chosen the x and y scales and where to put breaks and ticks.</p>
+<p>Let’s have a look at the elements of the list object we created that specifies how the plot should be displayed.</p>
+<pre class="r"><code>names(plot)</code></pre>
+<pre><code>## [1] &quot;data&quot;        &quot;layers&quot;      &quot;scales&quot;      &quot;mapping&quot;     &quot;theme&quot;      
+## [6] &quot;coordinates&quot; &quot;facet&quot;       &quot;plot_env&quot;    &quot;labels&quot;</code></pre>
+<p>One of the components of the plot is called <code>scales</code>. ggplot2 automatically adds default scales behind the scenes equivalent to the following:</p>
+<pre class="r"><code>plot &lt;- ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_x_continuous() +
+  scale_y_continuous() +
+  scale_colour_discrete()</code></pre>
+<p>Note that we have three aesthetics and ggplot2 adds a scale for each.</p>
+<pre class="r"><code>plot$mapping</code></pre>
+<pre><code>## Aesthetic mapping: 
+## * `x`      -&gt; `FOXA1`
+## * `y`      -&gt; `MLPH`
+## * `colour` -&gt; `ER_status`</code></pre>
+<p>The x and y variables are continuous hence ggplot2 adds a continuous scale for each. Colour is a discrete variable in this case so ggplot2 adds a discrete scale for colour.</p>
+<p>Generalizing, the scales that are required follow the naming scheme:</p>
+<pre><code>scale_&lt;NAME_OF_AESTHETIC&gt;_&lt;NAME_OF_SCALE&gt;</code></pre>
+<p>Look at the help page for <code>scale_y_continuous</code> so see what we can change about the y axis scale.</p>
+<p>First, we’ll change the breaks, i.e. where ggplot2 puts ticks and numeric labels, on the y axis.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_y_continuous(breaks = seq(6, 14, by = 2))</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_2-1.png" width="672" /></p>
+<p><code>seq()</code> is a useful function for generating regular sequences of number. In this case we wanted numbers from 6 to 14 going up in steps of 2.</p>
+<pre class="r"><code>seq(6, 14, by = 2)</code></pre>
+<pre><code>## [1]  6  8 10 12 14</code></pre>
+<p>We could do the same thing for the x axis using <code>scale_x_continuous()</code>.</p>
+<p>We can also adjust the extents of the x or y axis.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_y_continuous(limits = c(4.5, 15))</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_3-1.png" width="672" /></p>
+<p>We can change the minor breaks, e.g. to add more lines that act as guides. These are shown as thin white lines when using the default theme (we’ll take a look at lternative themes next week).</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = seq(4.5, 15, 0.5), limits = c(4, 15))</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_4-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = NULL, limits = c(4, 15))</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_5-1.png" width="672" /></p>
+<p>Or we can remove the minor breaks entirely.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = NULL, limits = c(4, 15))</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_6-1.png" width="672" /></p>
+<p>Similarly we could remove all breaks entirely.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_y_continuous(breaks = NULL)</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_7-1.png" width="672" /></p>
+<p>A more common scenario would be to keep the breaks, because we want to display the labels, but remove the grid lines. Somewhat confusingly the position of grid lines are controlled by a scale but preventing these from being displayed requires changing the theme. We’ll look at how the theme controls how non-data components of a plot can be customized next week but, for now, here’s an example of turning off the display of all grid lines for major and minor breaks for both axes.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_y_continuous(breaks = seq(4, 14, by = 2), limits = c(4, 15)) +
+  theme(panel.grid = element_blank())</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_8-1.png" width="672" /></p>
+<p>By default the scales are expanded by 5% of the range on either side. We can add more space, e.g. 10% (0.1), as follows.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_x_continuous(expand = expand_scale(mult = 0.1)) +
+  scale_y_continuous(expand = expand_scale(mult = 0.1))</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_9-1.png" width="672" /></p>
+<p>We can move draw the axis on the other side of the plot –- not sure why you’d want to do this but with ggplot2 just about anything is possible.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_x_continuous(position = &quot;top&quot;)</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_10-1.png" width="672" /></p>
 </div>
 </div>
 

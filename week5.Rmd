@@ -316,6 +316,8 @@ mutations %>%
 The differences in these two tables are for those genes that have more than
 mutation in one or more patient tumour samples.
 
+---
+
 # Joining data
 
 In many real life situations, data are spread across multiple tables or
@@ -541,20 +543,204 @@ mrna_expression_data <- read_tsv("data/metabric_mrna_expression.txt")
 mrna_expression_data
 ```
 
-Finally, we'll combine these data using an `inner_join()`.
+Now we have both sets of data loaded into R as data frames, we can combine them
+into a single data frame using an `inner_join()`.
 
 ```{r}
 combined_data <- inner_join(clinical_data, mrna_expression_data, by = c("Patient_ID" = "SAMPLE_ID"))
 combined_data
 ```
 
-Having combined the data from two sources we can now carry out exploratory data
-analysis that was hitherto not possible.
+Having combined the data, we can carry out exploratory data analysis using 
+elements from both data sets.
 
 ```{r box_plot_1}
 combined_data %>%
   filter(!is.na(PAM50), !is.na(ESR1)) %>%
   ggplot(mapping = aes(x = PAM50, y = ESR1, colour = PAM50)) +
   geom_boxplot(show.legend = FALSE)
+```
+
+---
+
+# Customizing plots with ggplot2
+
+Finally, we'll turn our attention back to visualization using ggplot2 and how
+we can customize our plots by adding or changing titles and labels, changing the
+scales used on the x and y axes, and choosing colours.
+
+## Titles and labels
+
+Adding titles and subtitles to a plot and changing the x- and y-axis labels is
+very straightforward using the `labs()` function.
+
+```{r scatter_plot_1}
+plot <- ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "mRNA expression in the METABRIC breast cancer data set",
+    subtitle = "FOXA1 and MLPH mRNA expression measured using Illumina HT-12 bead arrays",
+    x = "log2 FOXA1 expression",
+    y = "log2 MLPH expression",
+    colour = "ER status"
+  )
+plot
+```
+
+The labels are another component of the plot object that we've constructed with
+aesthetic mappings and layers (geoms). The plot object is a list and contains
+various elements including those mappings and layers and one element named
+`labels`.
+
+`labs()` is a simple function for creating a list of labels you want to specify
+as name-value pairs as in the above example. You can name any aesthetic (in this
+case x and y) to override the default values (the column names) and you can add a
+title, subtitle and caption if you wish. In addition to changing the x- and
+y-axis labels, we also removed the underscore from the legend title by setting
+the label for the colour aesthetic.
+
+## Scales
+
+Take a look at the x and y scales in the above plot. ggplot2 has chosen the x
+and y scales and where to put breaks and ticks.
+
+Let's have a look at the elements of the list object we created that specifies
+how the plot should be displayed.
+
+```{r}
+names(plot)
+```
+
+One of the components of the plot is called `scales`. ggplot2 automatically
+adds default scales behind the scenes equivalent to the following:
+
+```{r eval = FALSE}
+plot <- ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  scale_x_continuous() +
+  scale_y_continuous() +
+  scale_colour_discrete()
+```
+
+Note that we have three aesthetics and ggplot2 adds a scale for each.
+
+```{r}
+plot$mapping
+```
+
+The x and y variables are continuous hence ggplot2 adds a continuous scale for
+each. Colour is a discrete variable in this case so ggplot2 adds a discrete
+scale for colour.
+
+Generalizing, the scales that are required follow the naming scheme:
+
+```
+scale_<NAME_OF_AESTHETIC>_<NAME_OF_SCALE>
+```
+
+Look at the help page for `scale_y_continuous` so see what we can change about
+the y axis scale.
+
+First, we'll change the breaks, i.e. where ggplot2 puts ticks and numeric
+labels, on the y axis.
+
+```{r scatter_plot_2}
+ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  scale_y_continuous(breaks = seq(6, 14, by = 2))
+```
+
+`seq()` is a useful function for generating regular sequences of number. In this
+case we wanted numbers from 6 to 14 going up in steps of 2.
+
+```{r}
+seq(6, 14, by = 2)
+```
+
+We could do the same thing for the x axis using `scale_x_continuous()`.
+
+We can also adjust the extents of the x or y axis.
+
+```{r scatter_plot_3}
+ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  scale_y_continuous(limits = c(4.5, 15))
+```
+
+We can change the minor breaks, e.g. to add more lines that act as guides. These
+are shown as thin white lines when using the default theme (we'll take a look at 
+lternative themes next week).
+
+```{r scatter_plot_4}
+ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = seq(4.5, 15, 0.5), limits = c(4, 15))
+```
+
+```{r scatter_plot_5}
+ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = NULL, limits = c(4, 15))
+```
+
+Or we can remove the minor breaks entirely.
+
+```{r scatter_plot_6}
+ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = NULL, limits = c(4, 15))
+```
+
+Similarly we could remove all breaks entirely.
+
+```{r scatter_plot_7}
+ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  scale_y_continuous(breaks = NULL)
+```
+
+A more common scenario would be to keep the breaks, because we want to display
+the labels, but remove the grid lines. Somewhat confusingly the position of grid
+lines are controlled by a scale but preventing these from being displayed
+requires changing the theme. We'll look at how the theme controls how non-data
+components of a plot can be customized next week but, for now, here's an example
+of turning off the display of all grid lines for major and minor breaks for both
+axes.
+
+```{r scatter_plot_8}
+ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  scale_y_continuous(breaks = seq(4, 14, by = 2), limits = c(4, 15)) +
+  theme(panel.grid = element_blank())
+```
+
+By default the scales are expanded by 5% of the range on either side. We can add
+more space, e.g. 10% (0.1), as follows.
+
+```{r scatter_plot_9}
+ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  scale_x_continuous(expand = expand_scale(mult = 0.1)) +
+  scale_y_continuous(expand = expand_scale(mult = 0.1))
+```
+
+We can move draw the axis on the other side of the plot –- not sure why you’d
+want to do this but with ggplot2 just about anything is possible.
+
+```{r scatter_plot_10}
+ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  scale_x_continuous(position = "top")
 ```
 
