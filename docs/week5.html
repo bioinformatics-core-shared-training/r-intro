@@ -1067,7 +1067,7 @@ plot</code></pre>
 <p>The x and y variables are continuous hence ggplot2 adds a continuous scale for each. Colour is a discrete variable in this case so ggplot2 adds a discrete scale for colour.</p>
 <p>Generalizing, the scales that are required follow the naming scheme:</p>
 <pre><code>scale_&lt;NAME_OF_AESTHETIC&gt;_&lt;NAME_OF_SCALE&gt;</code></pre>
-<p>Look at the help page for <code>scale_y_continuous</code> so see what we can change about the y axis scale.</p>
+<p>Look at the help page for <code>scale_y_continuous</code> to see what we can change about the y-axis scale.</p>
 <p>First, we’ll change the breaks, i.e. where ggplot2 puts ticks and numeric labels, on the y axis.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
@@ -1109,13 +1109,14 @@ plot</code></pre>
   scale_y_continuous(breaks = seq(4, 14, by = 2), limits = c(4, 14)) +
   theme(panel.grid = element_blank())</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_7-1.png" width="672" /></p>
-<p>By default the scales are expanded by 5% of the range on either side. We can add more space, e.g. 10% (0.1), as follows.</p>
+<p>By default the scales are expanded by 5% of the range on either side. We can add or reduce the space as follows.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_x_continuous(expand = expand_scale(mult = 0.1)) +
+  scale_x_continuous(expand = expand_scale(mult = 0.01)) +
   scale_y_continuous(expand = expand_scale(mult = 0.1))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_8-1.png" width="672" /></p>
+<p>Here we only added 1% (0.01) of the range of GATA3 expression values on either side along the x axis but we added 10% (0.1) of the range of ESR1 expression on either side along the y axis.</p>
 <p>We can move draw the axis on the other side of the plot –- not sure why you’d want to do this but with ggplot2 just about anything is possible.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
@@ -1129,7 +1130,7 @@ plot</code></pre>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_colour_manual(values = c(&quot;green&quot;, &quot;orange&quot;))</code></pre>
+  scale_colour_manual(values = c(&quot;dodgerblue2&quot;, &quot;firebrick2&quot;))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_10-1.png" width="672" /></p>
 <p>Setting colours manually when we only have a two or three categories but when we have a larger number it would be handy to be able to choose from a selection of carefully-constructed colour palettes. Helpfully, ggplot2 provides access to the <a href="http://colorbrewer2.org">ColorBrewer</a> palettes through the functions <code>scale_colour_brewer()</code> and <code>scale_fill_brewer()</code>.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`)) +
@@ -1141,11 +1142,11 @@ plot</code></pre>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_colour_manual(values = c(&quot;green&quot;, &quot;orange&quot;), labels = c(&quot;ER-negative&quot;, &quot;ER-positive&quot;)) +
+  scale_colour_manual(values = c(&quot;dodgerblue2&quot;, &quot;firebrick2&quot;), labels = c(&quot;ER-negative&quot;, &quot;ER-positive&quot;)) +
   labs(colour = NULL)  # remove legend title for colour now that the labels are self-explanatory</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_12-1.png" width="672" /></p>
 <p>What we have done here is to set our own set of mappings from levels in the data to aesthetic values.</p>
-<p>For continuous variables we need to be able to set colours used in the colour gradient. To demonstrate this we’ll correct the Nottingham prognostic index (NPI) values and use this to colour points in the scatter plot of ESR1 vs GATA3 expression on a continuous scale.</p>
+<p>For continuous variables we may wish to be able to change the colours used in the colour gradient. To demonstrate this we’ll correct the Nottingham prognostic index (NPI) values and use this to colour points in the scatter plot of ESR1 vs GATA3 expression on a continuous scale.</p>
 <pre class="r"><code># Nottingham_prognostic_index is incorrectly calculated in the data downloaded from cBioPortal
 metabric &lt;- mutate(metabric, Nottingham_prognostic_index = 0.02 * Tumour_size + Lymph_node_status + Neoplasm_histologic_grade)
 #
@@ -1158,15 +1159,15 @@ metabric %&gt;%
 <pre class="r"><code>metabric %&gt;%
   filter(!is.na(Nottingham_prognostic_index)) %&gt;%
   ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
-  geom_point(size = 0.5) +
-  scale_colour_gradient(low = &quot;yellow&quot;, high = &quot;red&quot;)</code></pre>
+  geom_point(size = 0.75) +
+  scale_colour_gradient(low = &quot;white&quot;, high = &quot;firebrick2&quot;)</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_14-1.png" width="672" /></p>
 <p>In some cases it might make sense to specify two colour gradients either side of a mid-point.</p>
 <pre class="r"><code>metabric %&gt;%
   filter(!is.na(Nottingham_prognostic_index)) %&gt;%
   ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
-  geom_point(size = 0.5) +
-  scale_colour_gradient2(low = &quot;blue&quot;, mid = &quot;grey80&quot;, high = &quot;red&quot;, midpoint = 4.5)</code></pre>
+  geom_point(size = 0.75) +
+  scale_colour_gradient2(low = &quot;dodgerblue1&quot;, mid = &quot;grey90&quot;, high = &quot;firebrick1&quot;, midpoint = 4.5)</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_15-1.png" width="672" /></p>
 <p>As before we can override the default labels and other aspects of the colour scale within the scale function.</p>
 <pre class="r"><code>metabric %&gt;%

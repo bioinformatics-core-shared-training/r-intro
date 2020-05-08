@@ -640,8 +640,8 @@ Generalizing, the scales that are required follow the naming scheme:
 scale_<NAME_OF_AESTHETIC>_<NAME_OF_SCALE>
 ```
 
-Look at the help page for `scale_y_continuous` so see what we can change about
-the y axis scale.
+Look at the help page for `scale_y_continuous` to see what we can change about
+the y-axis scale.
 
 First, we'll change the breaks, i.e. where ggplot2 puts ticks and numeric
 labels, on the y axis.
@@ -717,15 +717,19 @@ ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) 
 ```
 
 By default the scales are expanded by 5% of the range on either side. We can add
-more space, e.g. 10% (0.1), as follows.
+or reduce the space as follows.
 
 ```{r scatter_plot_8}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = "lm") +
-  scale_x_continuous(expand = expand_scale(mult = 0.1)) +
+  scale_x_continuous(expand = expand_scale(mult = 0.01)) +
   scale_y_continuous(expand = expand_scale(mult = 0.1))
 ```
+
+Here we only added 1% (0.01) of the range of GATA3 expression values on either
+side along the x axis but we added 10% (0.1) of the range of ESR1 expression on
+either side along the y axis.
 
 We can move draw the axis on the other side of the plot –- not sure why you’d
 want to do this but with ggplot2 just about anything is possible.
@@ -748,7 +752,7 @@ colours we wish to use using `scale_colour_manual` instead.
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = "lm") +
-  scale_colour_manual(values = c("green", "orange"))
+  scale_colour_manual(values = c("dodgerblue2", "firebrick2"))
 ```
 
 Setting colours manually when we only have a two or three categories but when we
@@ -774,15 +778,15 @@ same time.
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = "lm") +
-  scale_colour_manual(values = c("green", "orange"), labels = c("ER-negative", "ER-positive")) +
+  scale_colour_manual(values = c("dodgerblue2", "firebrick2"), labels = c("ER-negative", "ER-positive")) +
   labs(colour = NULL)  # remove legend title for colour now that the labels are self-explanatory
 ```
 
 What we have done here is to set our own set of mappings from levels in the data
 to aesthetic values.
 
-For continuous variables we need to be able to set colours used in the colour
-gradient. To demonstrate this we'll correct the Nottingham prognostic index
+For continuous variables we may wish to be able to change the colours used in the
+colour gradient. To demonstrate this we'll correct the Nottingham prognostic index
 (NPI) values and use this to colour points in the scatter plot of ESR1 vs GATA3
 expression on a continuous scale.
 
@@ -804,8 +808,8 @@ colour scale.
 metabric %>%
   filter(!is.na(Nottingham_prognostic_index)) %>%
   ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
-  geom_point(size = 0.5) +
-  scale_colour_gradient(low = "yellow", high = "red")
+  geom_point(size = 0.75) +
+  scale_colour_gradient(low = "white", high = "firebrick2")
 ```
 
 In some cases it might make sense to specify two colour gradients either side
@@ -815,8 +819,8 @@ of a mid-point.
 metabric %>%
   filter(!is.na(Nottingham_prognostic_index)) %>%
   ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
-  geom_point(size = 0.5) +
-  scale_colour_gradient2(low = "blue", mid = "grey80", high = "red", midpoint = 4.5)
+  geom_point(size = 0.75) +
+  scale_colour_gradient2(low = "dodgerblue1", mid = "grey90", high = "firebrick1", midpoint = 4.5)
 ```
 
 As before we can override the default labels and other aspects of the colour
