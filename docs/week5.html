@@ -1029,14 +1029,14 @@ combined_data</code></pre>
 <div id="titles-and-labels" class="section level2">
 <h2>Titles and labels</h2>
 <p>Adding titles and subtitles to a plot and changing the x- and y-axis labels is very straightforward using the <code>labs()</code> function.</p>
-<pre class="r"><code>plot &lt;- ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+<pre class="r"><code>plot &lt;- ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
   labs(
     title = &quot;mRNA expression in the METABRIC breast cancer data set&quot;,
-    subtitle = &quot;FOXA1 and MLPH mRNA expression measured using Illumina HT-12 bead arrays&quot;,
-    x = &quot;log2 FOXA1 expression&quot;,
-    y = &quot;log2 MLPH expression&quot;,
+    subtitle = &quot;GATA3 and ESR1 mRNA expression measured using Illumina HT-12 bead arrays&quot;,
+    x = &quot;log2 GATA3 expression&quot;,
+    y = &quot;log2 ESR1 expression&quot;,
     colour = &quot;ER status&quot;
   )
 plot</code></pre>
@@ -1052,8 +1052,8 @@ plot</code></pre>
 <pre><code>## [1] &quot;data&quot;        &quot;layers&quot;      &quot;scales&quot;      &quot;mapping&quot;     &quot;theme&quot;      
 ## [6] &quot;coordinates&quot; &quot;facet&quot;       &quot;plot_env&quot;    &quot;labels&quot;</code></pre>
 <p>One of the components of the plot is called <code>scales</code>. ggplot2 automatically adds default scales behind the scenes equivalent to the following:</p>
-<pre class="r"><code>plot &lt;- ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+<pre class="r"><code>plot &lt;- ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
   scale_x_continuous() +
   scale_y_continuous() +
@@ -1061,72 +1061,125 @@ plot</code></pre>
 <p>Note that we have three aesthetics and ggplot2 adds a scale for each.</p>
 <pre class="r"><code>plot$mapping</code></pre>
 <pre><code>## Aesthetic mapping: 
-## * `x`      -&gt; `FOXA1`
-## * `y`      -&gt; `MLPH`
+## * `x`      -&gt; `GATA3`
+## * `y`      -&gt; `ESR1`
 ## * `colour` -&gt; `ER_status`</code></pre>
 <p>The x and y variables are continuous hence ggplot2 adds a continuous scale for each. Colour is a discrete variable in this case so ggplot2 adds a discrete scale for colour.</p>
 <p>Generalizing, the scales that are required follow the naming scheme:</p>
 <pre><code>scale_&lt;NAME_OF_AESTHETIC&gt;_&lt;NAME_OF_SCALE&gt;</code></pre>
 <p>Look at the help page for <code>scale_y_continuous</code> so see what we can change about the y axis scale.</p>
 <p>First, we’ll change the breaks, i.e. where ggplot2 puts ticks and numeric labels, on the y axis.</p>
-<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_y_continuous(breaks = seq(6, 14, by = 2))</code></pre>
+  scale_y_continuous(breaks = seq(5, 15, by = 2.5))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_2-1.png" width="672" /></p>
-<p><code>seq()</code> is a useful function for generating regular sequences of number. In this case we wanted numbers from 6 to 14 going up in steps of 2.</p>
-<pre class="r"><code>seq(6, 14, by = 2)</code></pre>
-<pre><code>## [1]  6  8 10 12 14</code></pre>
+<p><code>seq()</code> is a useful function for generating regular sequences of number. In this case we wanted numbers from 5 to 15 going up in steps of 2.5.</p>
+<pre class="r"><code>seq(5, 15, by = 2.5)</code></pre>
+<pre><code>## [1]  5.0  7.5 10.0 12.5 15.0</code></pre>
 <p>We could do the same thing for the x axis using <code>scale_x_continuous()</code>.</p>
 <p>We can also adjust the extents of the x or y axis.</p>
-<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_y_continuous(limits = c(4.5, 15))</code></pre>
+  scale_y_continuous(limits = c(4, 14))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_3-1.png" width="672" /></p>
-<p>We can change the minor breaks, e.g. to add more lines that act as guides. These are shown as thin white lines when using the default theme (we’ll take a look at lternative themes next week).</p>
-<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+<p>We can change the minor breaks, e.g. to add more lines that act as guides. These are shown as thin white lines when using the default theme (we’ll take a look at alternative themes next week).</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = seq(4.5, 15, 0.5), limits = c(4, 15))</code></pre>
+  scale_y_continuous(breaks = seq(5, 12.5, by = 2.5), minor_breaks = seq(4, 14, 0.5), limits = c(4, 14))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_4-1.png" width="672" /></p>
-<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
-  geom_smooth(method = &quot;lm&quot;) +
-  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = NULL, limits = c(4, 15))</code></pre>
-<p><img src="week5_files/figure-html/scatter_plot_5-1.png" width="672" /></p>
 <p>Or we can remove the minor breaks entirely.</p>
-<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = NULL, limits = c(4, 15))</code></pre>
-<p><img src="week5_files/figure-html/scatter_plot_6-1.png" width="672" /></p>
+  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = NULL, limits = c(4, 14))</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_5-1.png" width="672" /></p>
 <p>Similarly we could remove all breaks entirely.</p>
-<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
   scale_y_continuous(breaks = NULL)</code></pre>
-<p><img src="week5_files/figure-html/scatter_plot_7-1.png" width="672" /></p>
-<p>A more common scenario would be to keep the breaks, because we want to display the labels, but remove the grid lines. Somewhat confusingly the position of grid lines are controlled by a scale but preventing these from being displayed requires changing the theme. We’ll look at how the theme controls how non-data components of a plot can be customized next week but, for now, here’s an example of turning off the display of all grid lines for major and minor breaks for both axes.</p>
-<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+<p><img src="week5_files/figure-html/scatter_plot_6-1.png" width="672" /></p>
+<p>A more typical scenario would be to keep the breaks, because we want to display the labels, but remove the grid lines. Somewhat confusingly the position of grid lines are controlled by a scale but preventing these from being displayed requires changing the theme. We’ll look at how the theme controls how non-data components of a plot can be customized next week but, for now, here’s an example of turning off the display of all grid lines for major and minor breaks for both axes and also the tick marks.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_y_continuous(breaks = seq(4, 14, by = 2), limits = c(4, 15)) +
+  scale_y_continuous(breaks = seq(4, 14, by = 2), limits = c(4, 14)) +
   theme(panel.grid = element_blank())</code></pre>
-<p><img src="week5_files/figure-html/scatter_plot_8-1.png" width="672" /></p>
+<p><img src="week5_files/figure-html/scatter_plot_7-1.png" width="672" /></p>
 <p>By default the scales are expanded by 5% of the range on either side. We can add more space, e.g. 10% (0.1), as follows.</p>
-<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
   scale_x_continuous(expand = expand_scale(mult = 0.1)) +
   scale_y_continuous(expand = expand_scale(mult = 0.1))</code></pre>
-<p><img src="week5_files/figure-html/scatter_plot_9-1.png" width="672" /></p>
+<p><img src="week5_files/figure-html/scatter_plot_8-1.png" width="672" /></p>
 <p>We can move draw the axis on the other side of the plot –- not sure why you’d want to do this but with ggplot2 just about anything is possible.</p>
-<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = FOXA1, y = MLPH, colour = ER_status)) +
-  geom_point(size = 0.5, alpha = 0.5) +
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
   scale_x_continuous(position = &quot;top&quot;)</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_9-1.png" width="672" /></p>
+</div>
+<div id="colours" class="section level2">
+<h2>Colours</h2>
+<p>The colour asthetic is used with a categorical variable, <code>ER_status</code>, in the scatter plots we’ve been customizing. The default colour scale used by ggplot2 for categorical variables is <code>scale_colour_discrete</code>. We can manually set the colours we wish to use using <code>scale_colour_manual</code> instead.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_colour_manual(values = c(&quot;green&quot;, &quot;orange&quot;))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_10-1.png" width="672" /></p>
+<p>Setting colours manually when we only have a two or three categories but when we have a larger number it would be handy to be able to choose from a selection of carefully-constructed colour palettes. Helpfully, ggplot2 provides access to the <a href="http://colorbrewer2.org">ColorBrewer</a> palettes through the functions <code>scale_colour_brewer()</code> and <code>scale_fill_brewer()</code>.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`)) +
+  geom_point(size = 0.6, alpha = 0.5, na.rm = TRUE) +
+  scale_colour_brewer(palette = &quot;Set1&quot;)</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_11-1.png" width="672" /></p>
+<p>Look at the help page for <code>scale_colour_brewer</code> to see what other colour palettes are available and visit the <a href="http://colorbrewer2.org">ColorBrewer</a> website to see what these look like.</p>
+<p>Interestingly you can set other attributes other than just the colours at the same time.</p>
+<pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
+  geom_point(size = 0.6, alpha = 0.5) +
+  geom_smooth(method = &quot;lm&quot;) +
+  scale_colour_manual(values = c(&quot;green&quot;, &quot;orange&quot;), labels = c(&quot;ER-negative&quot;, &quot;ER-positive&quot;)) +
+  labs(colour = NULL)  # remove legend title for colour now that the labels are self-explanatory</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_12-1.png" width="672" /></p>
+<p>What we have done here is to set our own set of mappings from levels in the data to aesthetic values.</p>
+<p>For continuous variables we need to be able to set colours used in the colour gradient. To demonstrate this we’ll correct the Nottingham prognostic index (NPI) values and use this to colour points in the scatter plot of ESR1 vs GATA3 expression on a continuous scale.</p>
+<pre class="r"><code># Nottingham_prognostic_index is incorrectly calculated in the data downloaded from cBioPortal
+metabric &lt;- mutate(metabric, Nottingham_prognostic_index = 0.02 * Tumour_size + Lymph_node_status + Neoplasm_histologic_grade)
+#
+metabric %&gt;%
+  filter(!is.na(Nottingham_prognostic_index)) %&gt;%
+  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
+  geom_point(size = 0.5)</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_13-1.png" width="672" /></p>
+<p>Higher NPI scores correspond to worse prognosis and lower chance of 5 year survival. We’ll emphasize those points on the scatter plot by adjusting our colour scale.</p>
+<pre class="r"><code>metabric %&gt;%
+  filter(!is.na(Nottingham_prognostic_index)) %&gt;%
+  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
+  geom_point(size = 0.5) +
+  scale_colour_gradient(low = &quot;yellow&quot;, high = &quot;red&quot;)</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_14-1.png" width="672" /></p>
+<p>In some cases it might make sense to specify two colour gradients either side of a mid-point.</p>
+<pre class="r"><code>metabric %&gt;%
+  filter(!is.na(Nottingham_prognostic_index)) %&gt;%
+  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
+  geom_point(size = 0.5) +
+  scale_colour_gradient2(low = &quot;blue&quot;, mid = &quot;grey80&quot;, high = &quot;red&quot;, midpoint = 4.5)</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_15-1.png" width="672" /></p>
+<p>As before we can override the default labels and other aspects of the colour scale within the scale function.</p>
+<pre class="r"><code>metabric %&gt;%
+  filter(!is.na(Nottingham_prognostic_index)) %&gt;%
+  ggplot(mapping = aes(x = GATA3, y = ESR1, colour = Nottingham_prognostic_index)) +
+  geom_point(size = 0.5) +
+  scale_colour_gradient(
+    low = &quot;lightblue&quot;, high = &quot;darkblue&quot;,
+    name = &quot;NPI&quot;,
+    breaks = 2:6,
+    limits = c(1.5, 6.5)
+  )</code></pre>
+<p><img src="week5_files/figure-html/scatter_plot_16-1.png" width="672" /></p>
 </div>
 </div>
 
