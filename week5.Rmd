@@ -834,3 +834,20 @@ metabric %>%
     limits = c(1.5, 6.5)
   )
 ```
+
+---
+
+# Summary
+
+In this session we have covered the following concepts:
+
+* Computing summary values for groups of observations
+* Counting the numbers of observations within categories
+* Combining data from two tables through join operations
+* Customizing plots created using ggplot2 by changing labels, scales and colours
+
+---
+
+# Assignment
+
+Assignment: [assignment5.Rmd](assignments/assignment5.Rmd)
