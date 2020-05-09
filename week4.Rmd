@@ -356,6 +356,9 @@ Finally, columns can be renamed as part of the selection process.
 select(metabric, Patient_ID, Classification = `3-gene_classifier`, NPI = Nottingham_prognostic_index)
 ```
 
+Note that dplyr provides the `rename()` function for when we only want to rename
+a column and not select a subset of columns.
+
 ---
 
 # Chaining operations using `%>%`
@@ -904,8 +907,8 @@ ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
 This produces two plots, side-by-side, one for each of the categories in the
 `PR_status` variable, with a banner across the top of each for the category.
 
-`facet_wrap()` uses the `vars()` to specify the variables just like
-`mutate_at()` and `summarise_at()`.
+The variable(s) used for faceting are specified using `vars()` in a similar way
+to the selection of variables for `mutate_at()` and `summarise_at()`.
 
 We can still use separate colours if we prefer things to be, well, colourful.
 

@@ -801,6 +801,7 @@ selected_columns</code></pre>
 ##  9 MB-0028    ER+/HER2- High Prolif  5.03
 ## 10 MB-0035    ER+/HER2- High Prolif  3.06
 ## # … with 1,894 more rows</code></pre>
+<p>Note that dplyr provides the <code>rename()</code> function for when we only want to rename a column and not select a subset of columns.</p>
 <hr />
 </div>
 <div id="chaining-operations-using" class="section level1">
@@ -1354,7 +1355,7 @@ Note the <code>first()</code>, <code>last()</code> and <code>n()</code> are only
   facet_wrap(vars(PR_status))</code></pre>
 <p><img src="week4_files/figure-html/scatter_plot_3-1.png" width="672" /></p>
 <p>This produces two plots, side-by-side, one for each of the categories in the <code>PR_status</code> variable, with a banner across the top of each for the category.</p>
-<p><code>facet_wrap()</code> uses the <code>vars()</code> to specify the variables just like <code>mutate_at()</code> and <code>summarise_at()</code>.</p>
+<p>The variable(s) used for faceting are specified using <code>vars()</code> in a similar way to the selection of variables for <code>mutate_at()</code> and <code>summarise_at()</code>.</p>
 <p>We can still use separate colours if we prefer things to be, well, colourful.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
   geom_point(size = 0.5, alpha = 0.5) +
