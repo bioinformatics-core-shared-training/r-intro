@@ -57,10 +57,10 @@ summarise(metabric, mean(ESR1))
 
 While the `summarise()` function is useful on its own, it becomes really
 powerful when applied to groups of observations within a dataset. For example,
-we might be more interested in the mean ESR1 expression value in ER positive and
-ER negative tumours. We could take each of these groups in turn, filter the data
-frame to only contain the rows for a given ER status, then apply the
-`summarise()` function to compute the mean expression, but that would be
+we might be more interested in the mean ESR1 expression calculated separately
+for ER positive and ER negative tumours. We could take each group in turn,
+filter the data frame to contain only the rows for a given ER status, then apply
+the `summarise()` function to compute the mean expression, but that would be
 somewhat cumbersome. Even more so if we chose to do this for a categorical
 variable with more than two states, e.g. for each of the integrative clusters.
 Fortunately, the **`group_by()`** function allows this to be done in one simple
@@ -75,11 +75,16 @@ metabric %>%
 We get an additional column in our output for the categorical variable,
 `ER_status`, and a row for each category.
 
-We should expect this result since ER status is all about whether the cancer
-cells have estrogen receptors or not, which presumably must be related to
-whether the ESR1 gene is expressed at a high or a low level. Note that the
-expression values are on a log~2~ scale so on average ER-positive breast cancers
-express ESR1 at around 20 times the level of ER-negative breast cancers.
+Incidentally, we should expect this result of ER-positive tumours having a
+higher expression of ESR1 on average than ER-negative tumours. Simple summaries
+like this are a good way of checking that what we think we know actually holds
+true in the data we're looking at. Note that the expression values are on a
+log~2~scale so ER-positive breast cancers express ESR1 at a level that is
+approximately 20 times greater, on average, than that of ER-negative tumours.
+
+```{r}
+2 ** (10.64 - 6.21)  # equivalent to (2 ** 10.64) / (2 ** 6.21)
+```
 
 Let's have a look at how ESR1 expression varies between the integrative cluster
 subtypes defined by the METABRIC study.
@@ -91,8 +96,8 @@ metabric %>%
 ```
 
 As before we can summarize multiple observations, e.g. the mean expression for
-other genes of interest, this time splitting the observations on the PAM50
-classification.
+other genes of interest, this time using the PAM50 classification to define the
+groups.
 
 ```{r}
 metabric %>%
@@ -110,7 +115,7 @@ metabric %>%
 ```
 
 It can be quite useful to know how many observations are within each group. We
-can use a special function, **`n()`**, that just counts the number of rows rather
+can use a special function, **`n()`**, that counts the number of rows rather
 than computing a summary value from one of the columns.
 
 ```{r}
@@ -132,8 +137,8 @@ count(metabric, PAM50)
 This is much like the `table()` function we've used several times already to
 take a quick look at what values are contained in one of the columns in a data
 frame. They return different data structures however, with `count()` always
-returning a data frame (or tibble) that can then be used in subsequent steps in
-a 'piped' workflow including passing into `ggplot()` to create a graph.
+returning a data frame (or tibble) that can then be passed to subsequent steps
+in a 'piped' workflow.
 
 If we wanted to subdivide our categories by HER2 status, we can add this as an
 additional categorical variable just as we did with the previous `group_by()`
@@ -162,14 +167,14 @@ metabric %>%
 
 Summarizing with `n()` is useful when showing the number of observations in a
 group alongside a summary value, as we did earlier looking at the mean ESR1
-expression within specified groups, so you can see if you're trying to draw
+expression within specified groups; it allows you to see if you're drawing
 conclusions from only a few data points.
 
 ## Missing values
 
 Many summarization functions return `NA` if any of the values are missing, i.e.
-are `NA`. As an example, we'll compute the average size of ER-negative and
-ER-positive tumours.
+the column contains `NA` values. As an example, we'll compute the average size
+of ER-negative and ER-positive tumours.
 
 ```{r}
 metabric %>%
@@ -177,7 +182,7 @@ metabric %>%
   summarize(N = n(), `Average tumour size` = mean(Tumour_size))
 ```
 
-The `mean()` function and many similar summarization functions have an
+The `mean()` function, along with many similar summarization functions, has an
 `na.rm` argument that can be set to `TRUE` to exclude those missing values from
 the calculation.
 
@@ -200,14 +205,14 @@ metabric %>%
 
 ## Counts and proportions
 
-It may seem a bit odd to think about computing a summary for a logical variable
-but this actually turns out to be quite a useful thing to do, particularly when
-using `sum()` to count the number of `TRUE` values and `mean()` to get the
-proportion of `TRUE` values.
+The `sum()` and `mean()` summarization functions are often used with logical
+values. It might seem surprising to compute a summary for a logical variable but
+but this turns out to be quite a useful thing to do, for counting the number of
+`TRUE` values or obtaining the proportion of values that are `TRUE`.
 
 Following on from the previous example we could add a column to our summary of
-average tumour size for ER-positive and ER-negative patients for the number of
-missing values.
+average tumour size for ER-positive and ER-negative patients that contains the
+number of missing values.
 
 ```{r}
 metabric %>%
@@ -238,7 +243,7 @@ Similarly, `mean()` will compute the proportion of the values that are `TRUE`.
 mean(is.na(test_vector))
 ```
 
-So, let's compute the number and proportion of samples that do not have a
+So let's calculate the number and proportion of samples that do not have a
 recorded tumour size in each of the ER-negative and ER-positive groups.
 
 ```{r}
@@ -247,7 +252,7 @@ metabric %>%
   summarize(N = n(), `Missing tumour size` = sum(is.na(Tumour_size)), `Proportion missing` = mean(is.na(Tumour_size)))
 ```
 
-We can use `sum()` and `mean()` on any condition that returns a logical vector.
+We can use `sum()` and `mean()` for any condition that returns a logical vector.
 We could, for example, find the number and proportion of patients that survived
 longer than 10 years (120 months) in each of the ER-negative and ER-positive
 groups.
@@ -261,13 +266,13 @@ metabric %>%
 
 ## Selecting or counting distinct things
 
-There are occassion where we want to count the number of distinct values in a
+There are occassions when we want to count the number of distinct values in a
 variable or a combination of variables. In this week's assignment, we introduce
 another set of data from the METABRIC study which contains details of the
-mutations detected from targeted sequencing of a panel of 173 genes. We'll read
+mutations detected by targeted sequencing of a panel of 173 genes. We'll read
 this data into R now as this provides a good example of having multiple
-observations on different rows for a single observational unit, in this case
-several mutations found in each tumour sample.
+observations in different rows for a single observational unit, in this case
+several mutations detected in each tumour sample.
 
 ```{r message = FALSE}
 mutations <- read_csv("data/metabric_mutations.csv")
@@ -275,8 +280,8 @@ select(mutations, Patient_ID, Chromosome, Position = Start_Position, Ref = Refer
 ```
 
 We can see from just these few rows that each patient sample has multiple
-mutations and sometimes has more than one mutation in the same gene, as can be
-seen in the first two rows.
+mutations and sometimes there are more than one mutation in the same gene within
+a sample, as can be seen in the first two rows at the top of the table above.
 
 If we want to count the number of patients in which mutations were detected we
 could select the distinct set of patient identifiers using the **`distinct()`**
@@ -298,7 +303,7 @@ mutations %>%
 
 This has reduced the number of rows as only distinct combinations of patient
 and gene are retained. This would be necessary if we wanted to count the number
-patients that have mutations in each gene rather than the number of mutations
+of patients that have mutations in each gene rather than the number of mutations
 for that gene regardless of the patient.
 
 ```{r}
@@ -313,8 +318,8 @@ mutations %>%
   count(Gene)
 ```
 
-The differences in these two tables are for those genes that have more than
-mutation in one or more patient tumour samples.
+The genes that differ in these two tables are those that have more than one
+mutation within a patient tumour sample.
 
 ---
 
@@ -668,7 +673,7 @@ We can also adjust the extents of the x or y axis.
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = "lm") +
-  scale_y_continuous(limits = c(4, 14))
+  scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 14))
 ```
 
 We can change the minor breaks, e.g. to add more lines that act as guides. These
