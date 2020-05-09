@@ -898,21 +898,21 @@ An alternative is to use faceting with **`facet_wrap()`**.
 ```{r scatter_plot_3}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
   geom_point(size = 0.5, alpha = 0.5) +
-  facet_wrap(~ PR_status)
+  facet_wrap(vars(PR_status))
 ```
 
 This produces two plots, side-by-side, one for each of the categories in the
 `PR_status` variable, with a banner across the top of each for the category.
 
-The `~ PR_status` argument provided to `facet_wrap()` is known as a formula.
-Formulae are used to build models in R.
+`facet_wrap()` uses the `vars()` to specify the variables just like
+`mutate_at()` and `summarise_at()`.
 
 We can still use separate colours if we prefer things to be, well, colourful.
 
 ```{r scatter_plot_4}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PR_status)) +
   geom_point(size = 0.5, alpha = 0.5) +
-  facet_wrap(~ PR_status)
+  facet_wrap(vars(PR_status))
 ```
 
 Faceting is usually better than displaying groups using different colours when
@@ -924,7 +924,7 @@ create a faceted version of that plot.
 ```{r scatter_plot_5}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`)) +
   geom_point(size = 0.5, alpha = 0.5) +
-  facet_wrap(~ `3-gene_classifier`)
+  facet_wrap(vars(`3-gene_classifier`))
 ```
 
 This helps explain why the function is called `facet_wrap()`. When it has too
@@ -934,13 +934,13 @@ control how many rows or columns to use with the `nrow` and `ncol` arguments.
 ```{r scatter_plot_6}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`)) +
   geom_point(size = 0.5, alpha = 0.5) +
-  facet_wrap(~ `3-gene_classifier`, nrow = 1)
+  facet_wrap(vars(`3-gene_classifier`), nrow = 1)
 ```
 
 ```{r scatter_plot_7}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`)) +
   geom_point(size = 0.5, alpha = 0.5) +
-  facet_wrap(~ `3-gene_classifier`, ncol = 2)
+  facet_wrap(vars(`3-gene_classifier`), ncol = 2)
 ```
 
 We can combine faceting on one variable with a colour aesthetic for another
@@ -950,7 +950,7 @@ status using colours.
 ```{r scatter_plot_8}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = HER2_status)) +
   geom_point(size = 0.5, alpha = 0.5) +
-  facet_wrap(~ Neoplasm_histologic_grade)
+  facet_wrap(vars(Neoplasm_histologic_grade))
 ```
 
 Instead of this we could facet on more than variable.
@@ -958,7 +958,7 @@ Instead of this we could facet on more than variable.
 ```{r scatter_plot_9}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
   geom_point(size = 0.5, alpha = 0.5) +
-  facet_wrap(~ Neoplasm_histologic_grade + HER2_status)
+  facet_wrap(vars(Neoplasm_histologic_grade, HER2_status))
 ```
 
 Faceting on two variables is usually better done using the other faceting
@@ -967,7 +967,7 @@ function, **`facet_grid()`**. Note the change in how the formula is written.
 ```{r scatter_plot_10}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1)) +
   geom_point(size = 0.5, alpha = 0.5) +
-  facet_grid(Neoplasm_histologic_grade ~ HER2_status)
+  facet_grid(vars(Neoplasm_histologic_grade), vars(HER2_status))
 ```
 
 Again we can use colour aesthetics alongside faceting to add further information
@@ -976,7 +976,7 @@ to our visualization.
 ```{r scatter_plot_11}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PAM50)) +
   geom_point(size = 0.5, alpha = 0.5) +
-  facet_grid(Neoplasm_histologic_grade ~ HER2_status)
+  facet_grid(vars(Neoplasm_histologic_grade), vars(HER2_status))
 ```
 
 Finally, we can use a `labeller` to change the labels for each of the
@@ -986,12 +986,31 @@ plot.
 ```{r scatter_plot_12}
 grade_labels <- c("1" = "Grade I", "2" = "Grade II", "3" = "Grade III")
 her2_status_labels <- c("Positive" = "HER2 positive", "Negative" = "HER2 negative")
-
+#
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PAM50)) +
   geom_point(size = 0.5, alpha = 0.5) +
-  facet_grid(Neoplasm_histologic_grade ~ HER2_status,
+  facet_grid(vars(Neoplasm_histologic_grade),
+             vars(HER2_status),
              labeller = labeller(
                Neoplasm_histologic_grade = grade_labels,
+               HER2_status = her2_status_labels
+              )
+            )
+```
+
+This would certainly be necessary if we were to use ER and HER2 status on one
+side of the grid.
+
+```{r scatter_plot_13}
+er_status_labels <- c("Positive" = "ER positive", "Negative" = "ER negative")
+#
+ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = PAM50)) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  facet_grid(vars(Neoplasm_histologic_grade),
+             vars(ER_status, HER2_status),
+             labeller = labeller(
+               Neoplasm_histologic_grade = grade_labels,
+               ER_status = er_status_labels,
                HER2_status = her2_status_labels
               )
             )
