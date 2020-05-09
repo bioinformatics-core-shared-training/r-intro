@@ -464,8 +464,8 @@ metabric</code></pre>
 ## 2 Positive         10.6</code></pre>
 <p>We get an additional column in our output for the categorical variable, <code>ER_status</code>, and a row for each category.</p>
 <p>Incidentally, we should expect this result of ER-positive tumours having a higher expression of ESR1 on average than ER-negative tumours. Simple summaries like this are a good way of checking that what we think we know actually holds true in the data we’re looking at. Note that the expression values are on a log<sub>2</sub>scale so ER-positive breast cancers express ESR1 at a level that is approximately 20 times greater, on average, than that of ER-negative tumours.</p>
-<pre class="r"><code>2 ** (10.64 - 6.21)  # equivalent to (2 ** 10.64) / (2 ** 6.21)</code></pre>
-<pre><code>## [1] 21.55574</code></pre>
+<pre class="r"><code>2 ** (10.6 - 6.21)  # equivalent to (2 ** 10.6) / (2 ** 6.21)</code></pre>
+<pre><code>## [1] 20.96629</code></pre>
 <p>Let’s have a look at how ESR1 expression varies between the integrative cluster subtypes defined by the METABRIC study.</p>
 <pre class="r"><code>metabric %&gt;%
   group_by(Integrative_cluster) %&gt;%
@@ -764,7 +764,8 @@ mutations %&gt;%
 <p class="caption">dplyr left join</p>
 </div>
 <p><code>left_join()</code> returns all rows from the first data frame regardless of whether there is a match in the second data frame. Rows with no match are included in the resulting data frame but have <code>NA</code> values in the additional columns coming from the second data frame.</p>
-<p>Here’s an example in which details about members of the Beatles and Rolling Stones are contained in two tables, using data frames conveniently provided by dplyr. The name column identifies each of the band members and is used for matching rows from the two tables.</p>
+<p>Here’s an example in which details about members of the Beatles and Rolling Stones are contained in two tables, using data frames conveniently provided by dplyr (we’ll look at a real example shortly).</p>
+<p>The name column identifies each of the band members and is used for matching rows from the two tables.</p>
 <pre class="r"><code>band_members</code></pre>
 <pre><code>## # A tibble: 3 x 2
 ##   name  band   
@@ -795,7 +796,7 @@ mutations %&gt;%
 ## 1 John  Beatles guitar
 ## 2 Paul  Beatles bass  
 ## 3 Keith &lt;NA&gt;    guitar</code></pre>
-<p>Unlike <code>left_join()</code>, <code>right_join()</code> is used very infrequently.</p>
+<p><code>right_join()</code> is used very infrequently compared with <code>left_join()</code>.</p>
 </div>
 <div id="inner_join" class="section level2">
 <h2><code>inner_join</code></h2>
@@ -922,7 +923,7 @@ full_join(band_members4, band_instruments4, by = c(&quot;forename&quot;, &quot;s
 </div>
 <div id="clashing-column-names" class="section level2">
 <h2>Clashing column names</h2>
-<p>Occasionally we may find that there are duplicated columns in the two tables we want to join, columns which are not the variable being used to identify which observations correspond to each other across the tables. These variables may even contain different data but happen to have the same name. In such cases dplyr joins add a suffix to each column in the combined table.</p>
+<p>Occasionally we may find that there are duplicated columns in the two tables we want to join, columns that aren’t those used for joining. These variables may even contain different data but happen to have the same name. In such cases dplyr joins add a suffix to each column in the combined table.</p>
 <pre class="r"><code>band_members5 &lt;- tibble(
   name = c(&quot;John&quot;, &quot;Paul&quot;, &quot;Ringo&quot;, &quot;George&quot;, &quot;Mick&quot;),
   birth_year = c(1940, 1942, 1940, 1943, 1943),
@@ -942,7 +943,7 @@ left_join(band_members5, band_instruments5, by = &quot;name&quot;)</code></pre>
 ## 3 Ringo          1940 Beetles         1940 drums     
 ## 4 George         1943 Beetles         1943 guitar    
 ## 5 Mick           1943 Stones            NA &lt;NA&gt;</code></pre>
-<p>Care should be taken to rename or remove the duplicated columns that aren’t used for joining.</p>
+<p>It is advisable to rename or remove the duplicated columns that aren’t used for joining.</p>
 </div>
 <div id="filtering-joins" class="section level2">
 <h2>Filtering joins</h2>
@@ -999,7 +1000,7 @@ mrna_expression_data</code></pre>
 ##  9 brca_metabric MB-0022   10.4   8.61  5.59  6.17   7.59  7.87 10.7   9.95
 ## 10 brca_metabric MB-0025   NA    NA    NA    NA     NA    NA    NA    NA   
 ## # … with 2,499 more rows</code></pre>
-<p>Now we have both sets of data loaded into R as data frames, we can combine them into a single data frame using an <code>inner_join()</code>.</p>
+<p>Now we have both sets of data loaded into R as data frames, we can combine them into a single data frame using an <code>inner_join()</code>. Our resulting table will only contain entries for the patients for which expression data are available.</p>
 <pre class="r"><code>combined_data &lt;- inner_join(clinical_data, mrna_expression_data, by = c(&quot;Patient_ID&quot; = &quot;SAMPLE_ID&quot;))
 combined_data</code></pre>
 <pre><code>## # A tibble: 2,509 x 12
@@ -1043,7 +1044,7 @@ combined_data</code></pre>
   )
 plot</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_1-1.png" width="672" /></p>
-<p>The labels are another component of the plot object that we’ve constructed with aesthetic mappings and layers (geoms). The plot object is a list and contains various elements including those mappings and layers and one element named <code>labels</code>.</p>
+<p>The labels are another component of the plot object that we’ve constructed, along with aesthetic mappings and layers (geoms). The plot object is a list and contains various elements including those mappings and layers and one element named <code>labels</code>.</p>
 <p><code>labs()</code> is a simple function for creating a list of labels you want to specify as name-value pairs as in the above example. You can name any aesthetic (in this case x and y) to override the default values (the column names) and you can add a title, subtitle and caption if you wish. In addition to changing the x- and y-axis labels, we also removed the underscore from the legend title by setting the label for the colour aesthetic.</p>
 </div>
 <div id="scales" class="section level2">
@@ -1066,17 +1067,17 @@ plot</code></pre>
 ## * `x`      -&gt; `GATA3`
 ## * `y`      -&gt; `ESR1`
 ## * `colour` -&gt; `ER_status`</code></pre>
-<p>The x and y variables are continuous hence ggplot2 adds a continuous scale for each. Colour is a discrete variable in this case so ggplot2 adds a discrete scale for colour.</p>
+<p>The x and y variables (<code>GATA3</code> and <code>ESR1</code>) are continuous so ggplot2 adds a continuous scale for each. <code>ER_status</code> is a discrete variable in this case so ggplot2 adds a discrete scale for colour.</p>
 <p>Generalizing, the scales that are required follow the naming scheme:</p>
 <pre><code>scale_&lt;NAME_OF_AESTHETIC&gt;_&lt;NAME_OF_SCALE&gt;</code></pre>
 <p>Look at the help page for <code>scale_y_continuous</code> to see what we can change about the y-axis scale.</p>
-<p>First, we’ll change the breaks, i.e. where ggplot2 puts ticks and numeric labels, on the y axis.</p>
+<p>First we’ll change the breaks, i.e. where ggplot2 puts ticks and numeric labels, on the y axis.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
   scale_y_continuous(breaks = seq(5, 15, by = 2.5))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_2-1.png" width="672" /></p>
-<p><code>seq()</code> is a useful function for generating regular sequences of number. In this case we wanted numbers from 5 to 15 going up in steps of 2.5.</p>
+<p><code>seq()</code> is a useful function for generating regular sequences of numbers. In this case we wanted numbers from 5 to 15 going up in steps of 2.5.</p>
 <pre class="r"><code>seq(5, 15, by = 2.5)</code></pre>
 <pre><code>## [1]  5.0  7.5 10.0 12.5 15.0</code></pre>
 <p>We could do the same thing for the x axis using <code>scale_x_continuous()</code>.</p>
@@ -1084,19 +1085,19 @@ plot</code></pre>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 14))</code></pre>
+  scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 15))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_3-1.png" width="672" /></p>
 <p>We can change the minor breaks, e.g. to add more lines that act as guides. These are shown as thin white lines when using the default theme (we’ll take a look at alternative themes next week).</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_y_continuous(breaks = seq(5, 12.5, by = 2.5), minor_breaks = seq(4, 14, 0.5), limits = c(4, 14))</code></pre>
+  scale_y_continuous(breaks = seq(5, 12.5, by = 2.5), minor_breaks = seq(5, 13.5, 0.5), limits = c(5, 13.5))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_4-1.png" width="672" /></p>
 <p>Or we can remove the minor breaks entirely.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = NULL, limits = c(4, 14))</code></pre>
+  scale_y_continuous(breaks = seq(6, 14, by = 2), minor_breaks = NULL, limits = c(5, 13.5))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_5-1.png" width="672" /></p>
 <p>Similarly we could remove all breaks entirely.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
@@ -1104,22 +1105,22 @@ plot</code></pre>
   geom_smooth(method = &quot;lm&quot;) +
   scale_y_continuous(breaks = NULL)</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_6-1.png" width="672" /></p>
-<p>A more typical scenario would be to keep the breaks, because we want to display the labels, but remove the grid lines. Somewhat confusingly the position of grid lines are controlled by a scale but preventing these from being displayed requires changing the theme. We’ll look at how the theme controls how non-data components of a plot can be customized next week but, for now, here’s an example of turning off the display of all grid lines for major and minor breaks for both axes and also the tick marks.</p>
+<p>A more typical scenario would be to keep the breaks, because we want to display the ticks and their lables, but remove the grid lines. Somewhat confusingly the position of grid lines are controlled by a scale but preventing these from being displayed requires changing the theme. The theme controls the way in which non-data components are displayed – we’ll look at how these can be customized next week. For now, though, here’s an example of turning off the display of all grid lines for major and minor breaks for both axes.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
   scale_y_continuous(breaks = seq(4, 14, by = 2), limits = c(4, 14)) +
   theme(panel.grid = element_blank())</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_7-1.png" width="672" /></p>
-<p>By default the scales are expanded by 5% of the range on either side. We can add or reduce the space as follows.</p>
+<p>By default, the scales are expanded by 5% of the range on either side. We can add or reduce the space as follows.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
   scale_x_continuous(expand = expand_scale(mult = 0.01)) +
-  scale_y_continuous(expand = expand_scale(mult = 0.1))</code></pre>
+  scale_y_continuous(expand = expand_scale(mult = 0.25))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_8-1.png" width="672" /></p>
-<p>Here we only added 1% (0.01) of the range of GATA3 expression values on either side along the x axis but we added 10% (0.1) of the range of ESR1 expression on either side along the y axis.</p>
-<p>We can move draw the axis on the other side of the plot –- not sure why you’d want to do this but with ggplot2 just about anything is possible.</p>
+<p>Here we only added 1% (0.01) of the range of GATA3 expression values on either side along the x axis but we added 25% (0.25) of the range of ESR1 expression on either side along the y axis.</p>
+<p>We can move the axis to the other side of the plot –- not sure why you’d want to do this but with ggplot2 just about anything is possible.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
@@ -1134,20 +1135,20 @@ plot</code></pre>
   geom_smooth(method = &quot;lm&quot;) +
   scale_colour_manual(values = c(&quot;dodgerblue2&quot;, &quot;firebrick2&quot;))</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_10-1.png" width="672" /></p>
-<p>Setting colours manually when we only have a two or three categories but when we have a larger number it would be handy to be able to choose from a selection of carefully-constructed colour palettes. Helpfully, ggplot2 provides access to the <a href="http://colorbrewer2.org">ColorBrewer</a> palettes through the functions <code>scale_colour_brewer()</code> and <code>scale_fill_brewer()</code>.</p>
+<p>Setting colours manually is ok when we only have two or three categories but when we have a larger number it would be handy to be able to choose from a selection of carefully-constructed colour palettes. Helpfully, ggplot2 provides access to the <a href="http://colorbrewer2.org">ColorBrewer</a> palettes through the functions <code>scale_colour_brewer()</code> and <code>scale_fill_brewer()</code>.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`)) +
   geom_point(size = 0.6, alpha = 0.5, na.rm = TRUE) +
   scale_colour_brewer(palette = &quot;Set1&quot;)</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_11-1.png" width="672" /></p>
 <p>Look at the help page for <code>scale_colour_brewer</code> to see what other colour palettes are available and visit the <a href="http://colorbrewer2.org">ColorBrewer</a> website to see what these look like.</p>
-<p>Interestingly you can set other attributes other than just the colours at the same time.</p>
+<p>Interestingly, you can set other attributes other than just the colours at the same time.</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
   scale_colour_manual(values = c(&quot;dodgerblue2&quot;, &quot;firebrick2&quot;), labels = c(&quot;ER-negative&quot;, &quot;ER-positive&quot;)) +
   labs(colour = NULL)  # remove legend title for colour now that the labels are self-explanatory</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_12-1.png" width="672" /></p>
-<p>What we have done here is to set our own set of mappings from levels in the data to aesthetic values.</p>
+<p>We have applied our own set of mappings from levels in the data to aesthetic values.</p>
 <p>For continuous variables we may wish to be able to change the colours used in the colour gradient. To demonstrate this we’ll correct the Nottingham prognostic index (NPI) values and use this to colour points in the scatter plot of ESR1 vs GATA3 expression on a continuous scale.</p>
 <pre class="r"><code># Nottingham_prognostic_index is incorrectly calculated in the data downloaded from cBioPortal
 metabric &lt;- mutate(metabric, Nottingham_prognostic_index = 0.02 * Tumour_size + Lymph_node_status + Neoplasm_histologic_grade)
@@ -1188,12 +1189,12 @@ metabric %&gt;%
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>In this session we have covered the following concepts:</p>
+<p>In this session we have covered the following:</p>
 <ul>
 <li>Computing summary values for groups of observations</li>
 <li>Counting the numbers of observations within categories</li>
 <li>Combining data from two tables through join operations</li>
-<li>Customizing plots created using ggplot2 by changing labels, scales and colours</li>
+<li>Customizing plots created with ggplot2 by changing labels, scales and colours</li>
 </ul>
 <hr />
 </div>

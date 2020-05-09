@@ -83,7 +83,7 @@ log~2~scale so ER-positive breast cancers express ESR1 at a level that is
 approximately 20 times greater, on average, than that of ER-negative tumours.
 
 ```{r}
-2 ** (10.64 - 6.21)  # equivalent to (2 ** 10.64) / (2 ** 6.21)
+2 ** (10.6 - 6.21)  # equivalent to (2 ** 10.6) / (2 ** 6.21)
 ```
 
 Let's have a look at how ESR1 expression varies between the integrative cluster
@@ -353,8 +353,10 @@ from the second data frame.
 
 Here’s an example in which details about members of the Beatles and Rolling
 Stones are contained in two tables, using data frames conveniently provided by
-dplyr. The name column identifies each of the band members and is used for
-matching rows from the two tables.
+dplyr (we'll look at a real example shortly).
+
+The name column identifies each of the band members and is used for matching
+rows from the two tables.
 
 ```{r}
 band_members
@@ -378,7 +380,7 @@ the 'right' data frame, that have a match with rows in the first data frame.
 right_join(band_members, band_instruments, by = "name")
 ```
 
-Unlike `left_join()`, `right_join()` is used very infrequently.
+`right_join()` is used very infrequently compared with `left_join()`.
 
 ## `inner_join`
 
@@ -483,8 +485,7 @@ full_join(band_members4, band_instruments4, by = c("forename", "surname"))
 ## Clashing column names
 
 Occasionally we may find that there are duplicated columns in the two tables we
-want to join, columns which are not the variable being used to identify which
-observations correspond to each other across the tables. These variables may
+want to join, columns that aren't those used for joining. These variables may
 even contain different data but happen to have the same name. In such cases
 dplyr joins add a suffix to each column in the combined table.
 
@@ -502,8 +503,8 @@ band_instruments5 <- tibble(
 left_join(band_members5, band_instruments5, by = "name")
 ```
 
-Care should be taken to rename or remove the duplicated columns that aren't used
-for joining.
+It is advisable to rename or remove the duplicated columns that aren't used for
+joining.
 
 ## Filtering joins
 
@@ -549,7 +550,8 @@ mrna_expression_data
 ```
 
 Now we have both sets of data loaded into R as data frames, we can combine them
-into a single data frame using an `inner_join()`.
+into a single data frame using an `inner_join()`. Our resulting table will only
+contain entries for the patients for which expression data are available.
 
 ```{r}
 combined_data <- inner_join(clinical_data, mrna_expression_data, by = c("Patient_ID" = "SAMPLE_ID"))
@@ -593,10 +595,10 @@ plot <- ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_s
 plot
 ```
 
-The labels are another component of the plot object that we've constructed with
-aesthetic mappings and layers (geoms). The plot object is a list and contains
-various elements including those mappings and layers and one element named
-`labels`.
+The labels are another component of the plot object that we've constructed,
+along with aesthetic mappings and layers (geoms). The plot object is a list and
+contains various elements including those mappings and layers and one element
+named `labels`.
 
 `labs()` is a simple function for creating a list of labels you want to specify
 as name-value pairs as in the above example. You can name any aesthetic (in this
@@ -635,9 +637,9 @@ Note that we have three aesthetics and ggplot2 adds a scale for each.
 plot$mapping
 ```
 
-The x and y variables are continuous hence ggplot2 adds a continuous scale for
-each. Colour is a discrete variable in this case so ggplot2 adds a discrete
-scale for colour.
+The x and y variables (`GATA3` and `ESR1`) are continuous so ggplot2 adds a
+continuous scale for each. `ER_status` is a discrete variable in this case so
+ggplot2 adds a discrete scale for colour.
 
 Generalizing, the scales that are required follow the naming scheme:
 
@@ -648,7 +650,7 @@ scale_<NAME_OF_AESTHETIC>_<NAME_OF_SCALE>
 Look at the help page for `scale_y_continuous` to see what we can change about
 the y-axis scale.
 
-First, we'll change the breaks, i.e. where ggplot2 puts ticks and numeric
+First we'll change the breaks, i.e. where ggplot2 puts ticks and numeric
 labels, on the y axis.
 
 ```{r scatter_plot_2}
@@ -658,8 +660,8 @@ ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) 
   scale_y_continuous(breaks = seq(5, 15, by = 2.5))
 ```
 
-`seq()` is a useful function for generating regular sequences of number. In this
-case we wanted numbers from 5 to 15 going up in steps of 2.5.
+`seq()` is a useful function for generating regular sequences of numbers. In
+this case we wanted numbers from 5 to 15 going up in steps of 2.5.
 
 ```{r}
 seq(5, 15, by = 2.5)
@@ -673,7 +675,7 @@ We can also adjust the extents of the x or y axis.
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = "lm") +
-  scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 14))
+  scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 15))
 ```
 
 We can change the minor breaks, e.g. to add more lines that act as guides. These
@@ -684,7 +686,7 @@ alternative themes next week).
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = "lm") +
-  scale_y_continuous(breaks = seq(5, 12.5, by = 2.5), minor_breaks = seq(4, 14, 0.5), limits = c(4, 14))
+  scale_y_continuous(breaks = seq(5, 12.5, by = 2.5), minor_breaks = seq(5, 13.5, 0.5), limits = c(5, 13.5))
 ```
 
 Or we can remove the minor breaks entirely.
@@ -693,7 +695,7 @@ Or we can remove the minor breaks entirely.
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = "lm") +
-  scale_y_continuous(breaks = seq(4, 14, by = 2), minor_breaks = NULL, limits = c(4, 14))
+  scale_y_continuous(breaks = seq(6, 14, by = 2), minor_breaks = NULL, limits = c(5, 13.5))
 ```
 
 Similarly we could remove all breaks entirely.
@@ -706,12 +708,12 @@ ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) 
 ```
 
 A more typical scenario would be to keep the breaks, because we want to display
-the labels, but remove the grid lines. Somewhat confusingly the position of grid
-lines are controlled by a scale but preventing these from being displayed
-requires changing the theme. We'll look at how the theme controls how non-data
-components of a plot can be customized next week but, for now, here's an example
-of turning off the display of all grid lines for major and minor breaks for both
-axes and also the tick marks.
+the ticks and their lables, but remove the grid lines. Somewhat confusingly the
+position of grid lines are controlled by a scale but preventing these from being
+displayed requires changing the theme. The theme controls the way in which
+non-data components are displayed -- we'll look at how these can be customized
+next week. For now, though, here's an example of turning off the display of all
+grid lines for major and minor breaks for both axes.
 
 ```{r scatter_plot_7}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
@@ -721,23 +723,23 @@ ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) 
   theme(panel.grid = element_blank())
 ```
 
-By default the scales are expanded by 5% of the range on either side. We can add
-or reduce the space as follows.
+By default, the scales are expanded by 5% of the range on either side. We can
+add or reduce the space as follows.
 
 ```{r scatter_plot_8}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = "lm") +
   scale_x_continuous(expand = expand_scale(mult = 0.01)) +
-  scale_y_continuous(expand = expand_scale(mult = 0.1))
+  scale_y_continuous(expand = expand_scale(mult = 0.25))
 ```
 
 Here we only added 1% (0.01) of the range of GATA3 expression values on either
-side along the x axis but we added 10% (0.1) of the range of ESR1 expression on
+side along the x axis but we added 25% (0.25) of the range of ESR1 expression on
 either side along the y axis.
 
-We can move draw the axis on the other side of the plot –- not sure why you’d
-want to do this but with ggplot2 just about anything is possible.
+We can move the axis to the other side of the plot –- not sure why you’d want to
+do this but with ggplot2 just about anything is possible.
 
 ```{r scatter_plot_9}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
@@ -760,11 +762,11 @@ ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) 
   scale_colour_manual(values = c("dodgerblue2", "firebrick2"))
 ```
 
-Setting colours manually when we only have a two or three categories but when we
-have a larger number it would be handy to be able to choose from a selection of
-carefully-constructed colour palettes. Helpfully, ggplot2 provides access to the
-[ColorBrewer](http://colorbrewer2.org) palettes through the functions
-`scale_colour_brewer()` and `scale_fill_brewer()`.
+Setting colours manually is ok when we only have two or three categories but
+when we have a larger number it would be handy to be able to choose from a
+selection of carefully-constructed colour palettes. Helpfully, ggplot2 provides
+access to the [ColorBrewer](http://colorbrewer2.org) palettes through the
+functions `scale_colour_brewer()` and `scale_fill_brewer()`.
 
 ```{r scatter_plot_11}
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = `3-gene_classifier`)) +
@@ -776,7 +778,7 @@ Look at the help page for `scale_colour_brewer` to see what other colour
 palettes are available and visit the [ColorBrewer](http://colorbrewer2.org)
 website to see what these look like.
 
-Interestingly you can set other attributes other than just the colours at the
+Interestingly, you can set other attributes other than just the colours at the
 same time.
 
 ```{r scatter_plot_12}
@@ -787,8 +789,8 @@ ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) 
   labs(colour = NULL)  # remove legend title for colour now that the labels are self-explanatory
 ```
 
-What we have done here is to set our own set of mappings from levels in the data
-to aesthetic values.
+We have applied our own set of mappings from levels in the data to aesthetic
+values.
 
 For continuous variables we may wish to be able to change the colours used in the
 colour gradient. To demonstrate this we'll correct the Nottingham prognostic index
@@ -848,12 +850,12 @@ metabric %>%
 
 # Summary
 
-In this session we have covered the following concepts:
+In this session we have covered the following:
 
 * Computing summary values for groups of observations
 * Counting the numbers of observations within categories
 * Combining data from two tables through join operations
-* Customizing plots created using ggplot2 by changing labels, scales and colours
+* Customizing plots created with ggplot2 by changing labels, scales and colours
 
 ---
 
