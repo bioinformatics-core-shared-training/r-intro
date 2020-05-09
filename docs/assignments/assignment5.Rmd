@@ -3,15 +3,20 @@
 title: "Assignment 5"
 ---
 
-This week's assignment will give you a chance to summarize values for groups of
-observations in the METABRIC data set. We'll also introduce a second data set
-from the METABRIC study that contains mutations detected from targeted
-sequencing of a panel of 173 genes for 2433 breast cancer samples.
+This week's assignment will involve summarizing values for groups of
+observations in the METABRIC data set and combining clinical and mutation data
+to perform exploratory analysis involving both.
+
+The mutation data come from targeted sequencing of 2433 primary tumours from the
+METABRIC study using a panel of 173 of the most frequently mutated breast cancer
+genes.
 
 [Pereira *et al.*, Nature Communications 7:11479, 2016](https://www.ncbi.nlm.nih.gov/pubmed/27161491)
 
 We'll start by loading the two tables we're going to need. The first is the
-clinical data that you should by now be quite familiar with.
+clinical data that you should by now be quite familiar with. This table does not
+contain the additional mRNA expression columns we've used in previous
+assignments.
 
 ```{r message = FALSE, warning = FALSE}
 library(tidyverse)
@@ -21,8 +26,8 @@ metabric <- read_csv("../data/metabric_clinical_data.csv")
 metabric <- mutate(metabric, Integrative_cluster = factor(Integrative_cluster, levels = c("1", "2", "3", "4ER-", "4ER+", "5", "6", "7", "8", "9", "10")))
 ```
 
-The second contains the mutations that were detected in each patient tumour
-sample.
+The second table contains the mutations that were detected in each patient
+tumour sample.
 
 ```{r}
 mutations <- read_csv("../data/metabric_mutations.csv")
@@ -32,8 +37,8 @@ mutations
 The METABRIC cohort contains 2509 patients but not all patient tumour samples
 were sequenced and for some patient samples that were sequenced, no mutations
 were detected. For one of the exercises we need to know which patients were
-sequenced, so we've also read the case list of samples that were sequenced and
-add a column indicating which were sequenced in the clinical data table.
+sequenced, so we'll also read the case list of samples that were sequenced and
+add a column indicating this in the clinical data table.
 
 ```{r}
 cases_sequenced <- read_tsv("../data/cases_nat_comm_2016.txt", col_names = "Patient_ID")
@@ -41,12 +46,12 @@ metabric <- mutate(metabric, Sequenced = Patient_ID %in% cases_sequenced$Patient
 count(metabric, Sequenced)
 ```
 
-The clinical data, gene expression values and mutation data were downloaded from
-[cBioPortal](https://www.cbioportal.org/study/summary?id=brca_metabric).
+The clinical data, gene expression values and mutation data were all downloaded
+from [cBioPortal](https://www.cbioportal.org/study/summary?id=brca_metabric).
 
 ---
 
-**1. Compare the average survival time and other characteristics between ER-negative and ER-positive patients**
+**1. Compare the average survival time and other attributes between ER-negative and ER-positive patients**
 
 Compute the average survival time for the ER-negative and ER-positive groups.
 Note that such a comparison only makes sense for those patients that are
@@ -82,9 +87,10 @@ frequently mutated genes.
 
 ```
 
-Some genes contain multiple mutations within a single tumour sample so we could
+Some genes contain multiple mutations within a single tumour sample so we will
 be over-counting the numbers of samples containing a mutated gene. Modify your
-calculation to prevent this double-counting.
+calculation to prevent this. The count should be the number of patient samples
+in which the gene is mutated.
 
 ```{r}
 
@@ -111,7 +117,7 @@ gene list and percentages with those given in the METABRIC 2016 publication
 **3. Find mutation hotspots in PIK3CA**
 
 PIK3CA and TP53 are the most frequently mutated genes in breast cancers. But do
-the mutations occur randomly across these genes or are they usually found in
+the mutations occur randomly within these genes or are they usually found in
 specific locations?
 
 Find the most frequently mutated codons in PIK3CA.
@@ -129,7 +135,7 @@ What type of mutations are found at the most prevalent hotspot in PIK3CA, codon
 
 ```
 
-_Hint: take a look at what data are available in the `mutations` table_
+_Hint: take a look at what columns are available in the `mutations` table and count the values_
 
 ---
 
@@ -181,34 +187,27 @@ in this case.
 
 ```
 
-Customize your plot with a title and axis labels that look a bit more
-professional (and don't contain underscores).
+Customize your plot in the following ways:
 
-Set the breaks on the y-axis to be at 20% intervals. Change the default
-behaviour to add 5% space on each side of the plot for continuous variables so
-that the Integrative Cluster labels are closer to the bars.
-
-Choose a colour scheme for the bars (try `scale_fill_viridis_d`).
+* add a title
+* change the axis labels so they don't contain underscores
+* set the limits on the y axis so that the entire 0 - 100% range is displayed
+* set breaks on the y axis to be at 20% intervals
+* reduce the amount of space between the bottom of the bars and the tick marks for each integrative cluster
+* apply the Viridis colour scheme for the bars (`scale_colour_viridis_d`)
+* choose the black and white theme by appending `+ theme_bw()` to the plot
+* remove the vertical grid lines by appending `+ theme(panel.grid.major.x = element_blank())`
 
 The final two touches make stylistic changes to the theme using customizations
-that we'll cover next week. Remove the grey background by changing to the
-minimal theme and remove the grid lines on the x-axis that appear as vertical
-lines behind each of the bars by adding the following lines to your ggplot.
-
-```
-# don't add code here - these are the two lines of code to add to your
-# plot to remove the grey background and grid lines
-plot +
-  theme_minimal() +
-  theme(panel.grid.major.x = element_blank())
-```
+that we'll cover next week.
 
 ```{r}
 
 ```
 
-Check how well the plot resembles that in figure 5a of the METABRIC mutation
-paper (note that only 9 of the Integrative Clusters are shown).
+Compare the plot with the equivalent plot in figure 5a from the METABRIC
+mutation paper. Do the bars look in roughly the correct proportions? Note that
+only 9 of the integrative clusters are shown in figure 5a.
 
 ---
 
@@ -224,13 +223,16 @@ Compute the TSG score for each gene and find the top 10 tumour suppressor genes,
 i.e. those with the highest TSG scores.
 
 ```{r}
+inactivating_mutation_types <- c("Nonsense_Mutation", "Frame_Shift_Del", "Frame_Shift_Ins", "Splice_Region", "Splice_Site")
 
 ```
+
+_Hint: use `%in%` to determine if a mutation is an inactivating mutation_
 
 **Extension**
 
 Download supplementary table S3 and create a scatter plot comparing the TSG
-scores the `allSamples_TSGScore` column with those you've calculated.
+scores in the `allSamples_TSGScore` column with those you've calculated.
 
 ```{r}
 
