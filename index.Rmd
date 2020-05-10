@@ -60,7 +60,7 @@ chats and calls within Teams.
 
 4. [Data manipulation using dplyr](week4.html) (4 May) - Filtering and modifying tabular data, computing summary values, faceting with ggplot2
 
-5. Advanced grouping and summarization operations, joining data from different tables, customizing ggplot2 plots (11 May)
+5. [Grouping and combining data](week5.html) (11 May) - Advanced grouping and summarization operations, joining data from different tables, customizing ggplot2 plots
 
 6. The concept of "tidy data", cleaning and reformating data, ggplot2 extras (18 May)
 

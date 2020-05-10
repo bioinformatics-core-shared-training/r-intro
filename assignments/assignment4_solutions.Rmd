@@ -129,7 +129,7 @@ Modify your plot to facet by the PAM50 classification.
 metabric_z_scores <- mutate(metabric_z_scores, GATA3_z_score = (GATA3 - mean(GATA3)) / sd(GATA3))
 ggplot(data = metabric_z_scores) +
   geom_point(mapping = aes(x = GATA3_z_score, y = ESR1_z_score)) +
-  facet_wrap(~ PAM50)
+  facet_wrap(vars(PAM50))
 ```
 
 **Extension 1**
