@@ -279,7 +279,7 @@ Once again the syntax follows the standard `tidyverse` patterns: data first,
 column names can be used directly
 
 ```{r}
-mutate(metabric, Deceased = Survival_status == "DECEASED")
+mutate(metabric, Tumour_size_cm = Tumour_size / 10)
 ```
 
 and we can fit it in with the pipe:
@@ -287,8 +287,8 @@ and we can fit it in with the pipe:
 ```{r}
 metabric %>%
   filter(Survival_time > 240) %>% 
-  mutate(Deceased = Survival_status == "DECEASED") %>% 
-  select(Patient_ID, Survival_status, Deceased, Survival_time)
+  mutate(Tumour_size_cm = Tumour_size / 10) %>% 
+  select(Patient_ID, Survival_status, Tumour_size, Tumour_size_cm)
 ```
 
 NOTE THE DIFFERENCE BETWEEN TEH `=` and the `==`
@@ -299,7 +299,7 @@ You *can* also alter existing columns
 metabric %>%
   filter(Survival_time > 240) %>% 
   mutate(Deceased = Survival_status == "DECEASED") %>% 
-  mutate(Survival_time = round(Survival_time)) %>% 
+  mutate(Tumour_size_cm = Tumour_size / 10) %>% 
   select(Patient_ID, Survival_status, Deceased, Survival_time)
 ```
 

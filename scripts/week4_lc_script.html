@@ -544,18 +544,18 @@ patient_details</code></pre>
 <p>but it would be great if we had a function to this which would fit with the pipe</p>
 <p><code>dplyr</code> provides a simple function that allows us to <strong>create</strong> a new column in a table and it’s called…<strong><code>mutate</code></strong> ?!?!? Basically, the concept is that we will be taking the contents of existing column(s) and <em>mutating</em> it to create the contents of new column</p>
 <p>Once again the syntax follows the standard <code>tidyverse</code> patterns: data first, column names can be used directly</p>
-<pre class="r"><code>mutate(metabric, Deceased = Survival_status == &quot;DECEASED&quot;)</code></pre>
+<pre class="r"><code>mutate(metabric, Tumour_size_cm = Tumour_size / 10)</code></pre>
 <p>and we can fit it in with the pipe:</p>
 <pre class="r"><code>metabric %&gt;%
   filter(Survival_time &gt; 240) %&gt;% 
-  mutate(Deceased = Survival_status == &quot;DECEASED&quot;) %&gt;% 
-  select(Patient_ID, Survival_status, Deceased, Survival_time)</code></pre>
+  mutate(Tumour_size_cm = Tumour_size / 10) %&gt;% 
+  select(Patient_ID, Survival_status, Tumour_size, Tumour_size_cm)</code></pre>
 <p>NOTE THE DIFFERENCE BETWEEN TEH <code>=</code> and the <code>==</code></p>
 <p>You <em>can</em> also alter existing columns</p>
 <pre class="r"><code>metabric %&gt;%
   filter(Survival_time &gt; 240) %&gt;% 
   mutate(Deceased = Survival_status == &quot;DECEASED&quot;) %&gt;% 
-  mutate(Survival_time = round(Survival_time)) %&gt;% 
+  mutate(Tumour_size_cm = Tumour_size / 10) %&gt;% 
   select(Patient_ID, Survival_status, Deceased, Survival_time)</code></pre>
 <div id="you-can-mutate-multiple-columns-at-once" class="section level5">
 <h5>You can mutate multiple columns at once</h5>
