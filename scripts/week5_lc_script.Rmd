@@ -1,0 +1,380 @@
+---
+title: "Week 4 -- Live Coding script"
+---
+
+```{r setup}
+options(tibble.print_max = 1, tibble.print_min = 1, max.print=10, 
+        tibble.max_extra_cols=1)
+knitr::opts_chunk$set(eval=FALSE)
+```
+
+
+## Intro 
+
+* So far:
+    - introduced basic R for working with data
+    - introduced `ggplot2` - easier for plotting than base R
+* `ggplot2` is part of tidyverse.
+* Last week:
+    - dplyr - mutate etc.
+    - The pipe
+* Today:
+    - grouping to make summarise more powerful
+    - joining tables
+    - some ggplot customisations
+    
+Let's start by loading the the tidyverse package and the metabric data
+
+```{r, message=FALSE}
+library(tidyverse)
+metabric <- read_csv("data/metabric_clinical_and_expression_data.csv")
+```
+
+## Grouping
+
+##### Last week we looked at summarise:
+
+```{r}
+metabric %>% 
+  summarise(Mean_ESR1 = mean(ESR1))
+```
+
+##### What is we want to look at the mean experession of ESR1 in ER+ and ER- patients
+
+We could use a filter...
+
+```{r}
+metabric %>% 
+  filter(ER_status == "Positive") %>% 
+  summarise(Mean_ESR1_positive = mean(ESR1))
+metabric %>% 
+  filter(ER_status == "Negative") %>% 
+  summarise(Mean_ESR1_negative = mean(ESR1))
+```
+
+But dplyr provides a better way - grouping with `group_by`
+
+```{r}
+metabric %>% 
+  group_by(ER_status) %>% 
+  summarise(Mean_ESR1 = mean(ESR1))
+```
+
+##### How is it doing this? show the figure
+
+##### We could even group by multiple categories
+
+```{r}
+metabric %>% 
+  group_by(ER_status, HER2_status) %>% 
+  summarise(Mean_ESR1 = mean(ESR1))
+```
+
+###### As before we can get multiple summary stats in one table
+
+```{r}
+metabric %>% 
+  group_by(ER_status, HER2_status) %>% 
+  summarise(Mean_ESR1 = mean(ESR1), Mean_GATA3 = mean(GATA3))
+```
+
+##### It's often useful to have a count of the number of rows in each group
+
+**`n()`**
+
+```{r}
+metabric %>% 
+  group_by(ER_status, HER2_status) %>% 
+  summarise(Mean_ESR1 = mean(ESR1), Mean_GATA3 = mean(GATA3), N_Patients = n())
+```
+
+###### In fact quite often this is all we want to know
+###### e.g how many in each PAM50 class??
+
+```{r}
+metabric %>% 
+  group_by(PAM50) %>% 
+  summarise(N_Samples=n())
+```
+
+##### Dplyr provides a handy wrapper function for this - **`count`**
+
+```{r}
+count(metabric, PAM50)
+```
+
+##### Ungroup
+
+
+XXXXXXXX
+
+## Unique rows
+
+##### Sometimes we want to know how many unique values there are
+
+A new data set:
+
+```{r}
+mutations <- read_csv("data/metabric_mutations.csv")
+```
+
+Let's just use a couple of columns for this exercise
+
+```{r}
+mutations <- mutations %>% 
+  select(Patient_ID, Gene, Position = Start_Position)  ### LOOK WE CAN RENAME IN SELECT!!!!
+mutations
+```
+
+##### Let's say we just want a table that shows all mutated genes in each patient
+
+##### i.e. one row for each patient/gene combo
+
+```{r}
+mutations %>% 
+  distinct(Patient_ID, Gene)
+```
+
+## Joining
+
+##### Often we want to join two (or more) tables together based on a common column e.g. ...
+
+##### A few different commands depending on the rules we want to use to do the join
+
+##### The simplest join - **`left_join`**
+
+##### Lets work with some simpler tables
+
+```{r}
+band_members
+```
+
+```{r}
+band_instruments
+```
+
+###### Let's join them together
+
+```{r}
+left_join(band_members, band_instruments, by = "name")
+```
+
+##### Keeps the rows of the lefthand table and adds mathching from the right - Point out the `NA`
+
+##### You don't actually have to give it the `by`
+
+```{r}
+left_join(band_members, band_instruments)
+```
+
+###### There is an opposite - `right_join` - that keeps the right hand table
+
+#### `inner_join` - returns the intersection, i.e. rows in both
+
+```{r}
+inner_join(band_members, band_instruments)
+```
+
+#### `full_join` - returns the union, i.e. all rows
+
+```{r}
+full_join(band_members, band_instruments)
+```
+
+### Sometimes the column headers don't match
+
+###### This table has `artist` instead of `name`
+
+```{r}
+band_instruments2
+```
+
+```{r}
+left_join(band_members, band_instruments2, by = c("name" = "artist"))
+```
+
+###### What happens if there are multiple matches??? 
+
+Paul was in two bands...
+
+```{r}
+band_members2 <- tibble(
+    name = c("Mick",   "John",    "Paul",    "Paul"),
+    band = c("Stones", "Beatles", "Beatles", "Wings")
+)
+```
+
+###### Now there are two rows in the left with the same match on the right...
+
+```{r}
+left_join(band_members2, band_instruments)
+```
+
+###### Think about e.g. the table of mutations, we migth want to add gene annotations....
+
+###### What if there are two matches on the right? e.g. signalling pathways
+
+And Paul played two instruments ...
+
+```{r}
+band_instruments3 <- tibble(
+    name =  c("John",   "Paul", "Paul",   "Keith"),
+    plays = c("guitar", "bass", "guitar", "guitar")
+)
+band_instruments3
+```
+
+```{r}
+left_join(band_members2, band_instruments3)
+```
+
+##### Sometimes we want to join on multiple columns - e.g. Name and Surname
+
+```{r}
+band_members4 <- tibble(
+    forename = c("Mick",   "John",    "Paul",      "John"),
+    surname =  c("Jagger", "Lennon",  "McCartney", "Squire"),
+    band =     c("Stones", "Beatles", "Beatles",   "Roses")
+)
+
+band_instruments4 <- tibble(
+    forename = c("John",   "Paul",      "Keith",    "John"),
+    surname =  c("Lennon", "McCartney", "Richards", "Squire"),
+    plays =    c("guitar & vocals", "bass",      "guitar",   "guitar")
+)
+```
+
+Just add both column names to the `by` as a vector
+
+```{r}
+full_join(band_members4, band_instruments4, by = c("forename", "surname"))
+```
+##### In fact `_join`s will use all matching columns if not given `by`
+
+```{r}
+full_join(band_members4, band_instruments4)
+```
+
+###### More in the docs about what happens if column names clash and filtering joins
+
+###### and a more practical example using the metabric data
+
+## Customising plots
+
+### Titles and labels
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=ER_status))
+```
+
+###### The axis labels are okay, but maybe we want them to be clearer
+###### and it would be nice if the legend lost the `_`
+
+The expression values are log2
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=ER_status)) +
+  labs(x = "log2(GATA3 expression)", 
+       y = "log2(ESR1 expression)",
+       colour = "ER Status")
+```
+
+##### and how about a plot title....
+
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=ER_status)) +
+  labs(x = "log2(GATA3 expression)", 
+       y = "log2(ESR1 expression)",
+       colour = "ER Status",
+       title = "mRNA expression in METABRIC data set")
+```
+
+can also add subtitles
+
+### Changing the axes - SCALES
+
+##### all the aesthetics are "scales" - either continuous or discrete
+
+ggplot is adding the scale legends/axes for us, but we can add them manually
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=ER_status)) +
+  scale_x_continuous() +
+  scale_y_continuous() +
+  scale_colour_discrete()
+```
+
+##### we only need to do this if we are going to modify aspects of their display
+
+##### let's change the x-axis a bit - LOOK AT THE HELP 
+
+##### So, modify the breaks to be 5 - 15 at intervals of 2.5
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=ER_status)) +
+  scale_x_continuous(breaks = seq(5, 15, by = 2.5))
+```
+
+##### Note the limits - they have not changed
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=ER_status)) +
+  scale_x_continuous(breaks = seq(5, 15, by = 2.5), limits = c(5, 14))
+```
+
+###### More mods in the documention
+
+### Colour - a discrete scale (note that can be continuous)
+
+##### scale_colour_discrete automatically sets the colours.
+##### To manually alter them - `scale_colour_manual` - LOOK AT HELP
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=ER_status)) +
+  scale_colour_manual(values = c("dodgerblue2", "firebrick2"))
+```
+
+##### When we have lots of colours it becomes tiresome to choose them all ourselves
+
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=PAM50))
+```
+
+##### Introduce colour brewer
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=PAM50)) +
+  scale_colour_brewer(palette = "Set3")
+```
+
+### A continuous colour scale
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=Nottingham_prognostic_index))
+```
+
+```{r}
+ggplot(metabric, mapping = aes(x=GATA3, y=ESR1)) +
+  geom_point(mapping = aes(colour=Nottingham_prognostic_index)) +
+  scale_colour_gradient(low="pink", high="green")
+```
+
+
+
+
+
+
+
+
