@@ -20,7 +20,7 @@ assignments.
 
 ```{r message = FALSE, warning = FALSE}
 library(tidyverse)
-metabric <- read_csv("../data/metabric_clinical_data.csv")
+metabric <- read_csv("metabric_clinical_data.csv")
 # convert the Integrative_cluster variable into a categorical variable with
 # levels in the correct order
 metabric <- mutate(metabric, Integrative_cluster = factor(Integrative_cluster, levels = c("1", "2", "3", "4ER-", "4ER+", "5", "6", "7", "8", "9", "10")))
@@ -30,7 +30,7 @@ The second table contains the mutations that were detected in each patient
 tumour sample.
 
 ```{r}
-mutations <- read_csv("../data/metabric_mutations.csv")
+mutations <- read_csv("metabric_mutations.csv")
 mutations
 ```
 
@@ -41,7 +41,7 @@ sequenced, so we'll also read the case list of samples that were sequenced and
 add a column indicating this in the clinical data table.
 
 ```{r}
-cases_sequenced <- read_tsv("../data/cases_nat_comm_2016.txt", col_names = "Patient_ID")
+cases_sequenced <- read_tsv("cases_nat_comm_2016.txt", col_names = "Patient_ID")
 metabric <- mutate(metabric, Sequenced = Patient_ID %in% cases_sequenced$Patient_ID)
 count(metabric, Sequenced)
 ```
