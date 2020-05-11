@@ -95,9 +95,14 @@ metabric %>%
   summarise(ESR1 = mean(ESR1))
 ```
 
-As before we can summarize multiple observations, e.g. the mean expression for
-other genes of interest, this time using the PAM50 classification to define the
-groups.
+The following schematic contains another example using a simplified subset of
+the METABRIC tumour samples to show what's going on.
+
+![](images/group_and_summarise.png)
+
+As we saw last week, we can summarize multiple observations, e.g. the mean
+expression for other genes of interest, with `summarise_at()`, this time using
+the PAM50 classification to define the groups.
 
 ```{r}
 metabric %>%
@@ -470,14 +475,14 @@ to be used in the join operation.
 
 ```{r}
 band_members4 <- tibble(
-  forename = c("Mick",   "John",    "Paul",      "John"),
-  surname =  c("Jagger", "Lennon",  "McCartney", "Squire"),
-  band =     c("Stones", "Beatles", "Beatles",   "Roses")
+  forename = c("Mick",   "John",    "Paul",      "Mick",  "John"),
+  surname =  c("Jagger", "Lennon",  "McCartney", "Avory", "Squire"),
+  band =     c("Stones", "Beatles", "Beatles",   "Kinks", "Roses")
 )
 band_instruments4 <- tibble(
-  forename = c("John",   "Paul",      "Keith",    "John"),
-  surname =  c("Lennon", "McCartney", "Richards", "Squire"),
-  plays =    c("guitar", "bass",      "guitar",   "guitar")
+  forename = c("John",   "Paul",      "Keith",    "Mick",  "John"),
+  surname =  c("Lennon", "McCartney", "Richards", "Avory", "Squire"),
+  plays =    c("guitar", "bass",      "guitar",   "drums", "guitar")
 )
 full_join(band_members4, band_instruments4, by = c("forename", "surname"))
 ```
@@ -675,8 +680,12 @@ We can also adjust the extents of the x or y axis.
 ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = "lm") +
-  scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 15))
+  scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 12))
 ```
+
+Here, just for demonstration purposes, we set the upper limit to be less than
+the largest values of ESR1 expression and ggplot2 warned us that some rows have
+been removed from the plot.
 
 We can change the minor breaks, e.g. to add more lines that act as guides. These
 are shown as thin white lines when using the default theme (we'll take a look at 

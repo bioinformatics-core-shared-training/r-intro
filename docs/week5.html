@@ -484,7 +484,12 @@ metabric</code></pre>
 ##  9 7                   10.9 
 ## 10 8                   11.1 
 ## 11 9                    9.96</code></pre>
-<p>As before we can summarize multiple observations, e.g. the mean expression for other genes of interest, this time using the PAM50 classification to define the groups.</p>
+<p>The following schematic contains another example using a simplified subset of the METABRIC tumour samples to show what’s going on.</p>
+<div class="figure">
+<img src="images/group_and_summarise.png" />
+
+</div>
+<p>As we saw last week, we can summarize multiple observations, e.g. the mean expression for other genes of interest, with <code>summarise_at()</code>, this time using the PAM50 classification to define the groups.</p>
 <pre class="r"><code>metabric %&gt;%
   group_by(PAM50) %&gt;%
   summarise_at(vars(ESR1, PGR, ERBB2), mean)</code></pre>
@@ -902,24 +907,25 @@ band_members3</code></pre>
 <h2>Joining by matching on multiple columns</h2>
 <p>Sometimes the observations being combined are identified by multiple columns, for example, a forename and a surname. We can specify a vector of column names to be used in the join operation.</p>
 <pre class="r"><code>band_members4 &lt;- tibble(
-  forename = c(&quot;Mick&quot;,   &quot;John&quot;,    &quot;Paul&quot;,      &quot;John&quot;),
-  surname =  c(&quot;Jagger&quot;, &quot;Lennon&quot;,  &quot;McCartney&quot;, &quot;Squire&quot;),
-  band =     c(&quot;Stones&quot;, &quot;Beatles&quot;, &quot;Beatles&quot;,   &quot;Roses&quot;)
+  forename = c(&quot;Mick&quot;,   &quot;John&quot;,    &quot;Paul&quot;,      &quot;Mick&quot;,  &quot;John&quot;),
+  surname =  c(&quot;Jagger&quot;, &quot;Lennon&quot;,  &quot;McCartney&quot;, &quot;Avory&quot;, &quot;Squire&quot;),
+  band =     c(&quot;Stones&quot;, &quot;Beatles&quot;, &quot;Beatles&quot;,   &quot;Kinks&quot;, &quot;Roses&quot;)
 )
 band_instruments4 &lt;- tibble(
-  forename = c(&quot;John&quot;,   &quot;Paul&quot;,      &quot;Keith&quot;,    &quot;John&quot;),
-  surname =  c(&quot;Lennon&quot;, &quot;McCartney&quot;, &quot;Richards&quot;, &quot;Squire&quot;),
-  plays =    c(&quot;guitar&quot;, &quot;bass&quot;,      &quot;guitar&quot;,   &quot;guitar&quot;)
+  forename = c(&quot;John&quot;,   &quot;Paul&quot;,      &quot;Keith&quot;,    &quot;Mick&quot;,  &quot;John&quot;),
+  surname =  c(&quot;Lennon&quot;, &quot;McCartney&quot;, &quot;Richards&quot;, &quot;Avory&quot;, &quot;Squire&quot;),
+  plays =    c(&quot;guitar&quot;, &quot;bass&quot;,      &quot;guitar&quot;,   &quot;drums&quot;, &quot;guitar&quot;)
 )
 full_join(band_members4, band_instruments4, by = c(&quot;forename&quot;, &quot;surname&quot;))</code></pre>
-<pre><code>## # A tibble: 5 x 4
+<pre><code>## # A tibble: 6 x 4
 ##   forename surname   band    plays 
 ##   &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt; 
 ## 1 Mick     Jagger    Stones  &lt;NA&gt;  
 ## 2 John     Lennon    Beatles guitar
 ## 3 Paul     McCartney Beatles bass  
-## 4 John     Squire    Roses   guitar
-## 5 Keith    Richards  &lt;NA&gt;    guitar</code></pre>
+## 4 Mick     Avory     Kinks   drums 
+## 5 John     Squire    Roses   guitar
+## 6 Keith    Richards  &lt;NA&gt;    guitar</code></pre>
 </div>
 <div id="clashing-column-names" class="section level2">
 <h2>Clashing column names</h2>
@@ -1085,8 +1091,11 @@ plot</code></pre>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
   geom_smooth(method = &quot;lm&quot;) +
-  scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 15))</code></pre>
+  scale_y_continuous(breaks = seq(5, 15, by = 2.5), limits = c(4, 12))</code></pre>
+<pre><code>## Warning: Removed 160 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 160 rows containing missing values (geom_point).</code></pre>
 <p><img src="week5_files/figure-html/scatter_plot_3-1.png" width="672" /></p>
+<p>Here, just for demonstration purposes, we set the upper limit to be less than the largest values of ESR1 expression and ggplot2 warned us that some rows have been removed from the plot.</p>
 <p>We can change the minor breaks, e.g. to add more lines that act as guides. These are shown as thin white lines when using the default theme (we’ll take a look at alternative themes next week).</p>
 <pre class="r"><code>ggplot(data = metabric, mapping = aes(x = GATA3, y = ESR1, colour = ER_status)) +
   geom_point(size = 0.6, alpha = 0.5) +
