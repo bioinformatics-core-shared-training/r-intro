@@ -231,7 +231,7 @@ _Hint: use `%in%` to determine if a mutation is an inactivating mutation_
 
 **Extension**
 
-Download supplementary table S3 and create a scatter plot comparing the TSG
+Download Supplementary Data 3 and create a scatter plot comparing the TSG
 scores in the `allSamples_TSGScore` column with those you've calculated.
 
 ```{r}
