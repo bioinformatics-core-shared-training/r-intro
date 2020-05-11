@@ -401,19 +401,22 @@ metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quo
 <pre class="r"><code>metabric %&gt;% 
   summarise(Mean_ESR1 = mean(ESR1))</code></pre>
 </div>
-<div id="what-is-we-want-to-look-at-the-mean-experession-of-esr1-in-er-and-er--patients" class="section level5">
-<h5>What is we want to look at the mean experession of ESR1 in ER+ and ER- patients</h5>
+<div id="what-if-we-want-to-look-at-the-mean-experession-of-esr1-in-patients-with-different-tumour-stages" class="section level5">
+<h5>What if we want to look at the mean experession of ESR1 in patients with different Tumour stages</h5>
 <p>We could use a filter…</p>
 <pre class="r"><code>metabric %&gt;% 
-  filter(ER_status == &quot;Positive&quot;) %&gt;% 
+  filter(Tumour_stage==1) %&gt;% 
   summarise(Mean_ESR1_positive = mean(ESR1))
 metabric %&gt;% 
-  filter(ER_status == &quot;Negative&quot;) %&gt;% 
+  filter(Tumour_stage==2) %&gt;% 
   summarise(Mean_ESR1_negative = mean(ESR1))</code></pre>
+<div id="etc.." class="section level6">
+<h6>etc…..</h6>
 <p>But dplyr provides a better way - grouping with <code>group_by</code></p>
 <pre class="r"><code>metabric %&gt;% 
-  group_by(ER_status) %&gt;% 
+  group_by(Tumour_stage) %&gt;% 
   summarise(Mean_ESR1 = mean(ESR1))</code></pre>
+</div>
 </div>
 <div id="how-is-it-doing-this-show-the-figure" class="section level5">
 <h5>How is it doing this? show the figure</h5>
@@ -451,8 +454,16 @@ metabric %&gt;%
 <pre class="r"><code>count(metabric, PAM50)</code></pre>
 </div>
 <div id="ungroup" class="section level5">
-<h5>Ungroup</h5>
-<p>XXXXXXXX</p>
+<h5><strong><code>ungroup</code></strong></h5>
+<pre class="r"><code>metabric %&gt;% 
+  group_by(ER_status, HER2_status) %&gt;% 
+  summarise(Mean_ESR1 = mean(ESR1), Mean_GATA3 = mean(GATA3)) %&gt;% 
+  mutate(ER_status = str_replace_all(ER_status,c(&quot;Negative&quot; = &quot;ER-&quot;, &quot;Positive&quot; = &quot;ER+&quot;)))</code></pre>
+<pre class="r"><code>metabric %&gt;% 
+  group_by(ER_status, HER2_status) %&gt;% 
+  summarise(Mean_ESR1 = mean(ESR1), Mean_GATA3 = mean(GATA3)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(ER_status = str_replace_all(ER_status, c(&quot;Negative&quot; = &quot;ER-&quot;, &quot;Positive&quot; = &quot;ER+&quot;)))</code></pre>
 </div>
 </div>
 <div id="unique-rows" class="section level2">
@@ -548,15 +559,15 @@ band_instruments3</code></pre>
 <div id="sometimes-we-want-to-join-on-multiple-columns---e.g.name-and-surname" class="section level5">
 <h5>Sometimes we want to join on multiple columns - e.g. Name and Surname</h5>
 <pre class="r"><code>band_members4 &lt;- tibble(
-    forename = c(&quot;Mick&quot;,   &quot;John&quot;,    &quot;Paul&quot;,      &quot;John&quot;),
-    surname =  c(&quot;Jagger&quot;, &quot;Lennon&quot;,  &quot;McCartney&quot;, &quot;Squire&quot;),
-    band =     c(&quot;Stones&quot;, &quot;Beatles&quot;, &quot;Beatles&quot;,   &quot;Roses&quot;)
+    forename = c(&quot;Mick&quot;,   &quot;John&quot;,    &quot;Paul&quot;,      &quot;Mick&quot;, &quot;John&quot;),
+    surname =  c(&quot;Jagger&quot;, &quot;Lennon&quot;,  &quot;McCartney&quot;, &quot;Avory&quot;, &quot;Squire&quot;),
+    band =     c(&quot;Stones&quot;, &quot;Beatles&quot;, &quot;Beatles&quot;,   &quot;Kinks&quot;, &quot;Roses&quot;)
 )
 
 band_instruments4 &lt;- tibble(
-    forename = c(&quot;John&quot;,   &quot;Paul&quot;,      &quot;Keith&quot;,    &quot;John&quot;),
-    surname =  c(&quot;Lennon&quot;, &quot;McCartney&quot;, &quot;Richards&quot;, &quot;Squire&quot;),
-    plays =    c(&quot;guitar &amp; vocals&quot;, &quot;bass&quot;,      &quot;guitar&quot;,   &quot;guitar&quot;)
+    forename = c(&quot;John&quot;,   &quot;Paul&quot;,      &quot;Keith&quot;,    &quot;John&quot;, &quot;Mick&quot;),
+    surname =  c(&quot;Lennon&quot;, &quot;McCartney&quot;, &quot;Richards&quot;, &quot;Squire&quot;, &quot;Avory&quot;),
+    plays =    c(&quot;guitar&quot;, &quot;bass&quot;,      &quot;guitar&quot;,   &quot;guitar&quot;, &quot;drums&quot;)
 )</code></pre>
 <p>Just add both column names to the <code>by</code> as a vector</p>
 <pre class="r"><code>full_join(band_members4, band_instruments4, by = c(&quot;forename&quot;, &quot;surname&quot;))</code></pre>

@@ -9,13 +9,13 @@ band_members2 <- tibble(
 )
 
 band_members4 <- tibble(
-    forename = c("Mick",   "John",    "Paul",      "John"),
-    surname =  c("Jagger", "Lennon",  "McCartney", "Squire"),
-    band =     c("Stones", "Beatles", "Beatles",   "Roses")
+    forename = c("Mick",   "John",    "Paul",      "Mick", "John"),
+    surname =  c("Jagger", "Lennon",  "McCartney", "Avory", "Squire"),
+    band =     c("Stones", "Beatles", "Beatles",   "Kinks", "Roses")
 )
 
 band_instruments4 <- tibble(
-    forename = c("John",   "Paul",      "Keith",    "John"),
-    surname =  c("Lennon", "McCartney", "Richards", "Squire"),
-    plays =    c("guitar", "bass",      "guitar",   "guitar")
+    forename = c("John",   "Paul",      "Keith",    "John", "Mick"),
+    surname =  c("Lennon", "McCartney", "Richards", "Squire", "Avory"),
+    plays =    c("guitar", "bass",      "guitar",   "guitar", "drums")
 )

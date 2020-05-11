@@ -39,24 +39,26 @@ metabric %>%
   summarise(Mean_ESR1 = mean(ESR1))
 ```
 
-##### What is we want to look at the mean experession of ESR1 in ER+ and ER- patients
+##### What if we want to look at the mean experession of ESR1 in patients with different Tumour stages
 
 We could use a filter...
 
 ```{r}
 metabric %>% 
-  filter(ER_status == "Positive") %>% 
+  filter(Tumour_stage==1) %>% 
   summarise(Mean_ESR1_positive = mean(ESR1))
 metabric %>% 
-  filter(ER_status == "Negative") %>% 
+  filter(Tumour_stage==2) %>% 
   summarise(Mean_ESR1_negative = mean(ESR1))
 ```
+
+###### etc.....
 
 But dplyr provides a better way - grouping with `group_by`
 
 ```{r}
 metabric %>% 
-  group_by(ER_status) %>% 
+  group_by(Tumour_stage) %>% 
   summarise(Mean_ESR1 = mean(ESR1))
 ```
 
@@ -103,10 +105,22 @@ metabric %>%
 count(metabric, PAM50)
 ```
 
-##### Ungroup
+##### **`ungroup`**
 
+```{r}
+metabric %>% 
+  group_by(ER_status, HER2_status) %>% 
+  summarise(Mean_ESR1 = mean(ESR1), Mean_GATA3 = mean(GATA3)) %>% 
+  mutate(ER_status = str_replace_all(ER_status,c("Negative" = "ER-", "Positive" = "ER+")))
+```
 
-XXXXXXXX
+```{r}
+metabric %>% 
+  group_by(ER_status, HER2_status) %>% 
+  summarise(Mean_ESR1 = mean(ESR1), Mean_GATA3 = mean(GATA3)) %>% 
+  ungroup() %>% 
+  mutate(ER_status = str_replace_all(ER_status, c("Negative" = "ER-", "Positive" = "ER+")))
+```
 
 ## Unique rows
 
@@ -232,15 +246,15 @@ left_join(band_members2, band_instruments3)
 
 ```{r}
 band_members4 <- tibble(
-    forename = c("Mick",   "John",    "Paul",      "John"),
-    surname =  c("Jagger", "Lennon",  "McCartney", "Squire"),
-    band =     c("Stones", "Beatles", "Beatles",   "Roses")
+    forename = c("Mick",   "John",    "Paul",      "Mick", "John"),
+    surname =  c("Jagger", "Lennon",  "McCartney", "Avory", "Squire"),
+    band =     c("Stones", "Beatles", "Beatles",   "Kinks", "Roses")
 )
 
 band_instruments4 <- tibble(
-    forename = c("John",   "Paul",      "Keith",    "John"),
-    surname =  c("Lennon", "McCartney", "Richards", "Squire"),
-    plays =    c("guitar & vocals", "bass",      "guitar",   "guitar")
+    forename = c("John",   "Paul",      "Keith",    "John", "Mick"),
+    surname =  c("Lennon", "McCartney", "Richards", "Squire", "Avory"),
+    plays =    c("guitar", "bass",      "guitar",   "guitar", "drums")
 )
 ```
 
