@@ -927,7 +927,7 @@ full_join(band_members4, band_instruments4, by = c(&quot;forename&quot;, &quot;s
 <pre class="r"><code>band_members5 &lt;- tibble(
   name = c(&quot;John&quot;, &quot;Paul&quot;, &quot;Ringo&quot;, &quot;George&quot;, &quot;Mick&quot;),
   birth_year = c(1940, 1942, 1940, 1943, 1943),
-  band = c(&quot;Beetles&quot;, &quot;Beetles&quot;, &quot;Beetles&quot;, &quot;Beetles&quot;, &quot;Stones&quot;)
+  band = c(&quot;Beatles&quot;, &quot;Beatles&quot;, &quot;Beatles&quot;, &quot;Beatles&quot;, &quot;Stones&quot;)
 )
 band_instruments5 &lt;- tibble(
   name = c(&quot;John&quot;, &quot;Paul&quot;, &quot;Ringo&quot;, &quot;George&quot;),
@@ -938,10 +938,10 @@ left_join(band_members5, band_instruments5, by = &quot;name&quot;)</code></pre>
 <pre><code>## # A tibble: 5 x 5
 ##   name   birth_year.x band    birth_year.y instrument
 ##   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;     
-## 1 John           1940 Beetles         1940 guitar    
-## 2 Paul           1942 Beetles         1942 bass      
-## 3 Ringo          1940 Beetles         1940 drums     
-## 4 George         1943 Beetles         1943 guitar    
+## 1 John           1940 Beatles         1940 guitar    
+## 2 Paul           1942 Beatles         1942 bass      
+## 3 Ringo          1940 Beatles         1940 drums     
+## 4 George         1943 Beatles         1943 guitar    
 ## 5 Mick           1943 Stones            NA &lt;NA&gt;</code></pre>
 <p>It is advisable to rename or remove the duplicated columns that aren’t used for joining.</p>
 </div>

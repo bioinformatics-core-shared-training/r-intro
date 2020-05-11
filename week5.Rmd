@@ -493,7 +493,7 @@ dplyr joins add a suffix to each column in the combined table.
 band_members5 <- tibble(
   name = c("John", "Paul", "Ringo", "George", "Mick"),
   birth_year = c(1940, 1942, 1940, 1943, 1943),
-  band = c("Beetles", "Beetles", "Beetles", "Beetles", "Stones")
+  band = c("Beatles", "Beatles", "Beatles", "Beatles", "Stones")
 )
 band_instruments5 <- tibble(
   name = c("John", "Paul", "Ringo", "George"),
