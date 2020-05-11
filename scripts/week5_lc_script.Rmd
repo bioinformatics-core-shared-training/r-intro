@@ -39,7 +39,7 @@ metabric %>%
   summarise(Mean_ESR1 = mean(ESR1))
 ```
 
-##### What if we want to look at the mean experession of ESR1 in patients with different Tumour stages
+##### What if we want to look at the mean expression of ESR1 in patients with different Tumour stages
 
 We could use a filter...
 
@@ -54,7 +54,7 @@ metabric %>%
 
 ###### etc.....
 
-But dplyr provides a better way - grouping with `group_by`
+#### But dplyr provides a better way - grouping with `group_by`. It's a bit like facetting...
 
 ```{r}
 metabric %>% 
@@ -62,9 +62,9 @@ metabric %>%
   summarise(Mean_ESR1 = mean(ESR1))
 ```
 
-##### How is it doing this? show the figure
+##### How is it doing this? **show the figure**
 
-##### We could even group by multiple categories
+##### We could even group by multiple categories - say we want to split by ER and HER2 status...
 
 ```{r}
 metabric %>% 
@@ -80,7 +80,7 @@ metabric %>%
   summarise(Mean_ESR1 = mean(ESR1), Mean_GATA3 = mean(GATA3))
 ```
 
-##### It's often useful to have a count of the number of rows in each group
+##### It's often useful to have a count of the number of patients in each group
 
 **`n()`**
 
@@ -105,7 +105,11 @@ metabric %>%
 count(metabric, PAM50)
 ```
 
-##### **`ungroup`**
+##### `count` also does **`ungroup`**
+
+##### Lets say we want to plot mean ER v mean GAT3 for different groups
+
+##### and we want to fix the labels Positive and Negative in the plot
 
 ```{r}
 metabric %>% 
@@ -175,10 +179,12 @@ left_join(band_members, band_instruments, by = "name")
 
 ##### Keeps the rows of the lefthand table and adds mathching from the right - Point out the `NA`
 
+##### We can do this in the pipe
 ##### You don't actually have to give it the `by`
 
 ```{r}
-left_join(band_members, band_instruments)
+band_members %>% 
+  left_join(band_instruments)
 ```
 
 ###### There is an opposite - `right_join` - that keeps the right hand table
@@ -224,7 +230,7 @@ band_members2 <- tibble(
 left_join(band_members2, band_instruments)
 ```
 
-###### Think about e.g. the table of mutations, we migth want to add gene annotations....
+###### Think about e.g. the table of mutations, we might want to add gene annotations....
 
 ###### What if there are two matches on the right? e.g. signalling pathways
 
