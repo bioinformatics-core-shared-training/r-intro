@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Week 6 – Restructuring data for analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><img style="width: 120px; float: left; margin-top: 0px; margin-right: 20px;" src="images/CRUK_CI_logo.png"/>Introduction to R&nbsp;&nbsp;&nbsp;</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Contents
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="week0.html">Week 0 - Getting ready</a>
+    </li>
+    <li>
+      <a href="week1.html">Week 1 - Introduction to R and RStudio</a>
+    </li>
+    <li>
+      <a href="week2.html">Week 2 - Working with data in R</a>
+    </li>
+    <li>
+      <a href="week3.html">Week 3 - Data visualization with ggplot2</a>
+    </li>
+    <li>
+      <a href="week4.html">Week 4 - Data manipulation using dplyr</a>
+    </li>
+    <li>
+      <a href="week5.html">Week 5 - Grouping and combining data</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/bioinformatics-core-shared-training/r-intro">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Week 6 – Restructuring data for analysis</h1>
+
+</div>
+
+
+<blockquote>
+<h4 id="learning-objectives">Learning objectives</h4>
+<ul>
+<li>Understand what makes a data set “tidy” and why you’d want your data to be structured this way</li>
+<li>Use <code>pivot_longer()</code> and <code>pivot_wider()</code> operations to restructure data frames</li>
+<li>Tease apart columns containing multiple variables using <code>separate()</code></li>
+<li>Modify character variables using string manipulation functions from the <code>stringr</code> package</li>
+<li>Customize non-data components of plots created using ggplot2 by changing the theme</li>
+</ul>
+</blockquote>
+<hr />
+<div id="restructuring-data" class="section level1">
+<h1>Restructuring data</h1>
+<p>The data you collect or obtain from a third party is not always in a form that is suitable for exploratory analysis and visualization and may need to be restructured before you can fully make use of it.</p>
+<p>This is particularly true of the plotting and summarizing tools we’ve been looking at in this course which are designed specifically to work on data in a format referred to as ‘tidy’ data. This is why the tidyverse is so named.</p>
+<p>In this session, we will look at what it means for data to be ‘tidy’ and how you can transform your data, if necessary, into this form. We’ll also look at useful functions for handling compound variables, that is columns that contain more than one type of measurement or attribute (you’d be surprised how common this is) and some of the string manipulation functions from the <code>stringr</code> package that can help with cleaning up values within a data frame.</p>
+<p>Finally, we’ll take another look at customizing plots created with ggplot2 by changing various non-data components that are largely cosmetic.</p>
+<p>The functions we’re mostly focusing on in this session are from the <strong>tidyr</strong> and <strong>stringr</strong> packages both of which get loaded as part of the tidyverse.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<hr />
+</div>
+<div id="tidy-data" class="section level1">
+<h1>Tidy data</h1>
+<p>So what is ‘tidy data’ and why should we care about it?</p>
+<p>To answer these questions, we’ll look at different ways in which a simple data set can be represented and consider the challenges associated with each. The data set in question is a subset of data from the World Health Organization <a href="https://www.who.int/health-topics/tuberculosis">Global Tuberculosis Report</a>.</p>
+<p>The <code>tidyr</code> package contains a series of tibbles that contain the same set of information on the number of new cases of tuberculosis (TB) recorded in each of 3 countries in the years 1999 and 2000 as well as the populations of those countries. Here is the first table.</p>
+<pre class="r"><code>table1</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<p>Two alternative ways of representing the same information are given in tables <code>table2</code> and <code>table3</code>.</p>
+<pre class="r"><code>table2</code></pre>
+<pre><code>## # A tibble: 12 x 4
+##    country      year type            count
+##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
+##  1 Afghanistan  1999 cases             745
+##  2 Afghanistan  1999 population   19987071
+##  3 Afghanistan  2000 cases            2666
+##  4 Afghanistan  2000 population   20595360
+##  5 Brazil       1999 cases           37737
+##  6 Brazil       1999 population  172006362
+##  7 Brazil       2000 cases           80488
+##  8 Brazil       2000 population  174504898
+##  9 China        1999 cases          212258
+## 10 China        1999 population 1272915272
+## 11 China        2000 cases          213766
+## 12 China        2000 population 1280428583</code></pre>
+<pre class="r"><code>table3</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   country      year rate             
+## * &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
+## 1 Afghanistan  1999 745/19987071     
+## 2 Afghanistan  2000 2666/20595360    
+## 3 Brazil       1999 37737/172006362  
+## 4 Brazil       2000 80488/174504898  
+## 5 China        1999 212258/1272915272
+## 6 China        2000 213766/1280428583</code></pre>
+<p>The final representation has the data split across two tables, a scenario that is actually quite likely given that population data will almost certainly have been collected separately from the recording of TB cases.</p>
+<pre class="r"><code>table4a</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   country     `1999` `2000`
+## * &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258 213766</code></pre>
+<pre class="r"><code>table4b</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   country         `1999`     `2000`
+## * &lt;chr&gt;            &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan   19987071   20595360
+## 2 Brazil       172006362  174504898
+## 3 China       1272915272 1280428583</code></pre>
+<p>Time series data like this are very commonly represented in this way with a series of dates or years as columns extending across a spreadsheet. You will find numerous examples of this if you peruse the various data sets made available by the UK Office for National Statistics and various other national and international organizations.</p>
+<p>Tables 1 to 4a and 4b are all different representations of the same underlying data but one of these tables is structured in such a way as to be most readily used in the tidyverse.</p>
+<div id="data-semantics" class="section level2">
+<h2>Data semantics</h2>
+<p>We’ve used and discussed the terms ‘observation’ and ‘variable’ a number of times in this course but this would be a good time to consider this once more. When we talk about an observation, we’re talking about a set of values measured for the same unit or thing, e.g. a person or a date, and when we talk about a variable we are really talking about the attribute that we are measuring or recording, e.g. height, temperature or expression value.</p>
+<p><strong>Observations are represented as rows</strong> in our data frames or tibbles, while the <strong>columns correspond to variables</strong>.</p>
+<div class="rmdblock">
+<p>
+From <strong>“Tidy Data”</strong> by <strong>Hadley Wickham</strong>, <a href="https://www.jstatsoft.org/index.php/jss/article/view/v059i10/v59i10.pdf"><em>The Journal of Statistical Software</em>, vol. 59, 2014</a>.
+</p>
+<p>
+A data set is a collection of <strong>values</strong>, usually either numbers (if quantitative) or character strings (if qualitative). Values are organised in two ways. Every value belongs to a variable and an observation.
+</p>
+<p>
+A <strong>variable</strong> contains all values that measure the same underlying attribute (like height, temperature, duration) across units.
+</p>
+<p>
+An <strong>observation</strong> contains all values measured on the same unit (like a person or a day) across attributes.
+</p>
+</div>
+</div>
+<div id="tidy-data-rules" class="section level2">
+<h2>Tidy data rules</h2>
+<p>A tidy data set is a data frame (or table) for which the following are true:</p>
+<ol style="list-style-type: decimal">
+<li>Each <strong>variable</strong> has its own column</li>
+<li>Each <strong>observation</strong> has its own row</li>
+<li>Each <strong>value</strong> has its own cell</li>
+</ol>
+<p><strong>Question:</strong> <em>which of the representations we’ve just been looking at is tidy?</em></p>
+<p>Another way of framing the question is to consider what are the variables in the TB data set, i.e. what are the things that vary and for which we can attach a value for each observation?</p>
+<p>Take another look at tables 4a and 4b. Do each of the columns correspond to a variable? The country is certainly a variable. In this data set it takes one of three values: Afghanistan, Brazil or China.</p>
+<p>But what about the other two columns, ‘1999’ and ‘2000’? These are values, not variables. The variable in this case would be ‘year’ and could take a value of 1999 or 2000. Tables 4a and 4b are not tidy.</p>
+<p>There is also another rather obvious problem with tables 4a and 4b – the data are contained in two separate tables. The data would almost certainly have been collected separately so it’s hardly surprising but whenever numbers of people affected by a disease or engaging in an activity are compared between countries we almost always want to be comparing the rate (the percentage within the population) and not the absolute number so that the comparison is fair. We need to combine the data from these two tables in order to calculate the rate.</p>
+<p>The only table that is truly tidy is <code>table1</code>. It contains one column for each of the variables in this data set, namely country, year, the number of new TB cases and the population. We’ll look at tables 2 and 3 shortly and why these aren’t tidy and what we can do about it, but first we’ll see how we can convert tables 4a and 4b into the tidy format.</p>
+<hr />
+</div>
+</div>
+<div id="pivoting-operations" class="section level1">
+<h1>Pivoting operations</h1>
+<div id="pivot_longer" class="section level2">
+<h2><code>pivot_longer()</code></h2>
+<p>The format of tables 4a and 4b is often referred to as ‘wide format’. While neither table looks especially wide, you can imagine that the more WHO data set contains data for very many years and that if each had its own column the table would be very much wider.</p>
+<p>What we need is a column for ‘year’ so that we have a count, whether it is the number of TB cases or the population, for each unique combination of country and year. Transforming the table in this way is known as ‘pivoting’ and the <code>tidyr</code> package provides the <code>pivot_longer()</code> function for just such an operation.</p>
+<pre class="r"><code>table4a_long &lt;- pivot_longer(table4a, c(`1999`, `2000`), names_to = &quot;year&quot;, values_to = &quot;cases&quot;)
+table4a_long</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   country     year   cases
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
+## 1 Afghanistan 1999     745
+## 2 Afghanistan 2000    2666
+## 3 Brazil      1999   37737
+## 4 Brazil      2000   80488
+## 5 China       1999  212258
+## 6 China       2000  213766</code></pre>
+<p>As with almost all tidyverse operations the first argument is the data frame we’re working on. The second specifies which columns we are operating on. Here we’ve used a vector with <code>c()</code> but it is also quite common and normally more convenient to use a range of columns, e.g. <code>`1999`:`2000`</code>. Remember we had to use backticks because variable names aren’t suppose to start with numbers.</p>
+<p>The <code>names_to</code> and <code>values_to</code> arguments are so called because we are taking the names of the columns we specified (1999 and 2000) and putting these in a new column given by <code>names_to</code> and we are taking the values in each of those columns and putting these in a a new column given by <code>values_to</code>.</p>
+<p>We can do the same with <code>table4b</code> and join the two resulting tables together to recreate <code>table1</code>.</p>
+<pre class="r"><code>table4b_long &lt;- pivot_longer(table4b, c(`1999`, `2000`), names_to = &quot;year&quot;, values_to = &quot;population&quot;)
+left_join(table4a_long, table4b_long, by = c(&quot;country&quot;, &quot;year&quot;))</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   country     year   cases population
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan 1999     745   19987071
+## 2 Afghanistan 2000    2666   20595360
+## 3 Brazil      1999   37737  172006362
+## 4 Brazil      2000   80488  174504898
+## 5 China       1999  212258 1272915272
+## 6 China       2000  213766 1280428583</code></pre>
+</div>
+<div id="pivot_wider" class="section level2">
+<h2><code>pivot_wider()</code></h2>
+<p><code>pivot_wider()</code> has the opposite effect of <code>pivot_longer()</code> and can be used to reverse the pivoting operation we just performed on <code>table4a</code>.</p>
+<pre class="r"><code>pivot_wider(table4a_long, names_from = &quot;year&quot;, values_from = &quot;cases&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   country     `1999` `2000`
+##   &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258 213766</code></pre>
+<p>In some cases the wide format is the more human-readable form and usually it is a more compact way of representing the data. There is no duplication of the year value in the wide format of <code>table4a</code> and <code>table4b</code> for example. We will see later that this is much more evident with large data matrices, e.g. gene expression matrices with tens of thousands of genes and tens to thousands of samples.</p>
+<p>Let’s look again at <code>table2</code>.</p>
+<pre class="r"><code>table2</code></pre>
+<pre><code>## # A tibble: 12 x 4
+##    country      year type            count
+##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
+##  1 Afghanistan  1999 cases             745
+##  2 Afghanistan  1999 population   19987071
+##  3 Afghanistan  2000 cases            2666
+##  4 Afghanistan  2000 population   20595360
+##  5 Brazil       1999 cases           37737
+##  6 Brazil       1999 population  172006362
+##  7 Brazil       2000 cases           80488
+##  8 Brazil       2000 population  174504898
+##  9 China        1999 cases          212258
+## 10 China        1999 population 1272915272
+## 11 China        2000 cases          213766
+## 12 China        2000 population 1280428583</code></pre>
+<p>Are the <code>type</code> and <code>count</code> columns true variables? What is the observational unit in this case?</p>
+<p>If we consider the observational unit to be a country in a specific year then <code>table2</code> is not tidy because observations are split across two rows. Also the count variable contains counts of what are essentially different things, the number of cases of TB and the total population.</p>
+<p>In tricky situations like this, a tell-tale sign that your data is not in a tidy format is when you want to visualize your data and you have to perform some kind of filtering to do so. In this case if we wanted to create a bar plot of for the population of each country we would have to first remove the rows corresponding to the number of TB cases.</p>
+<p>Similarly, the rate of new TB cases, i.e. the proportion of the population infected with TB, is something we should be easily able to calculate in a simple operation but this is actually quite difficult to do so with the data structured as they are.</p>
+<p>We can use <code>pivot_wider()</code> to sort this out. The <code>type</code> column contains the variable names so we’d need to set <code>names_from = &quot;type&quot;</code>, while the values will be taken from the <code>count</code> column.</p>
+<pre class="r"><code>table2_fixed &lt;- pivot_wider(table2, names_from = &quot;type&quot;, values_from = &quot;count&quot;)
+table2_fixed</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<p>The resulting table is exactly the same as <code>table1</code> and now the rate of infection can be calculated rather easily.</p>
+<pre class="r"><code>mutate(table2_fixed, rate = cases / population)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   country      year  cases population      rate
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;     &lt;dbl&gt;
+## 1 Afghanistan  1999    745   19987071 0.0000373
+## 2 Afghanistan  2000   2666   20595360 0.000129 
+## 3 Brazil       1999  37737  172006362 0.000219 
+## 4 Brazil       2000  80488  174504898 0.000461 
+## 5 China        1999 212258 1272915272 0.000167 
+## 6 China        2000 213766 1280428583 0.000167</code></pre>
+<hr />
+</div>
+</div>
+<div id="splitting-columns" class="section level1">
+<h1>Splitting columns</h1>
+<p>Table 3 contains an example of a column that contains multiple values. It is a somewhat convoluted example but occasionally you may come across data like this.</p>
+<pre class="r"><code>table3</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   country      year rate             
+## * &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
+## 1 Afghanistan  1999 745/19987071     
+## 2 Afghanistan  2000 2666/20595360    
+## 3 Brazil       1999 37737/172006362  
+## 4 Brazil       2000 80488/174504898  
+## 5 China        1999 212258/1272915272
+## 6 China        2000 213766/1280428583</code></pre>
+<p>The <code>rate</code> column contains both the number of TB cases and the population separated by a ‘/’ character. It is itself a character type and so not terribly useful for doing anything mathematical with.</p>
+<div id="separate" class="section level2">
+<h2><code>separate()</code></h2>
+<p>The <code>separate()</code> function allows us to split a character column into multiple columns based on a delimiter or separator.</p>
+<pre class="r"><code>table3_separated &lt;- separate(table3, rate, into = c(&quot;cases&quot;, &quot;population&quot;), sep = &quot;/&quot;)
+table3_separated</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   country      year cases  population
+##   &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;     
+## 1 Afghanistan  1999 745    19987071  
+## 2 Afghanistan  2000 2666   20595360  
+## 3 Brazil       1999 37737  172006362 
+## 4 Brazil       2000 80488  174504898 
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<p>The <code>sep</code> argument takes a regular expression that defines how to split the values. We’ve mentioned regular expressions before – they are a language for search patterns in text used frequently in computer programming and really worth getting to grips with but sadly these are beyond the scope of this course. In this case our separator is just the “/” character.</p>
+<p>The resulting data frame is still not quite what we want though. This becomes apparent as soon as we try to do anything with the new <code>cases</code> and <code>population</code> columns.</p>
+<pre class="r"><code>mutate(table3_separated, rate = cases / population)</code></pre>
+<pre><code>## Error in cases/population: non-numeric argument to binary operator</code></pre>
+<p>By default the separated values are character types. We could convert these using <code>mutate_at()</code>.</p>
+<pre class="r"><code>mutate_at(table3_separated, vars(cases, population), as.integer)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583</code></pre>
+<p>But another option is to specify <code>convert = TRUE</code> when running <code>separate()</code>.</p>
+<pre class="r"><code>table3_separated &lt;- separate(table3, rate, into = c(&quot;cases&quot;, &quot;population&quot;), sep = &quot;/&quot;, convert = TRUE)
+mutate(table3_separated, rate = cases / population)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   country      year  cases population      rate
+##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;     &lt;dbl&gt;
+## 1 Afghanistan  1999    745   19987071 0.0000373
+## 2 Afghanistan  2000   2666   20595360 0.000129 
+## 3 Brazil       1999  37737  172006362 0.000219 
+## 4 Brazil       2000  80488  174504898 0.000461 
+## 5 China        1999 212258 1272915272 0.000167 
+## 6 China        2000 213766 1280428583 0.000167</code></pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
