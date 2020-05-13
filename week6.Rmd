@@ -47,8 +47,8 @@ So what is 'tidy data' and why should we care about it?
 
 To answer these questions, we'll look at different ways in which a simple data
 set can be represented and consider the challenges associated with each. The
-data set in question is a subset of data from the World Health Organization
-[Global Tuberculosis Report](https://www.who.int/health-topics/tuberculosis).
+data set in question is a subset of data from the
+[World Health Organization Global Tuberculosis Report](https://www.who.int/health-topics/tuberculosis).
 
 The `tidyr` package contains a series of tibbles that contain the same set of
 information on the number of new cases of tuberculosis (TB) recorded in each of
@@ -79,8 +79,8 @@ table4b
 Time series data like this are very commonly represented in this way with a
 series of dates or years as columns extending across a spreadsheet. You will
 find numerous examples of this if you peruse the various data sets made
-available by the UK Office for National Statistics and various other national
-and international organizations.
+available by the United Kingdowm Office for National Statistics and various
+other national and international organizations.
 
 Tables 1 to 4a and 4b are all different representations of the same underlying
 data but one of these tables is structured in such a way as to be most readily
@@ -201,9 +201,8 @@ pivot_wider(table4a_long, names_from = "year", values_from = "cases")
 In some cases the wide format is the more human-readable form and usually it is
 a more compact way of representing the data. There is no duplication of the year
 value in the wide format of `table4a` and `table4b` for example. We will see
-later that this is much more evident with large data matrices, e.g. gene
-expression matrices with tens of thousands of genes and tens to thousands of
-samples.
+later that this is much more evident with large data tables, e.g. gene
+expression matrices.
 
 Let's look again at `table2`.
 
@@ -299,6 +298,89 @@ table3_separated <- separate(table3, rate, into = c("cases", "population"), sep 
 mutate(table3_separated, rate = cases / population)
 ```
 
+---
+
+# Real world example 1: METABRIC gene expression data
+
+Although tables 1 to 4a and b contain real data they are of course 'toy' data
+sets created to be used for demonstration and teaching purposes. We'll now turn
+our attention to the METABRIC expression data and see how this needs to be
+transformed into a tidier format to open up some exploratory paths.
+
+We'll first load the table and then select just the columns we're going to need.
+
+```{r message = FALSE}
+metabric <- read_csv("data/metabric_clinical_and_expression_data.csv") %>%
+  select(Patient_ID, ER_status, ESR1:MLPH)
+metabric
+```
+
+When we first looked at visualization using ggplot2 we created the following
+box plot.
+
+```{r box_plot_1}
+ggplot(metabric) +
+  geom_boxplot(mapping = aes(x = ER_status, y = GATA3))
+```
+
+But what if we would like to create a series of plots using the faceting
+functions in ggplot2 with one plot for each gene?
+
+Faceting requires a categorical variable which it uses to divide the data to be
+used in each plot. In this case, we'd need a gene column, but our data is in the
+wrong format.
+
+We have gene names for column headings. Are these variables? Not really, they're
+actually values for a variable that could be called gene or gene symbol. What we
+have is a "wide format" table.
+
+Most gene expression matrices are in a similar form, although commonly there are
+rows for each gene and columns for each sample. It should be said that the gene
+expression matrix format is a very compact way of representing the data which
+could be a consideration when dealing with tens of thousands of genes and
+anywhere between a few tens of samples to a few thousand as in METABRIC.
+
+Furthermore, there are lots of tools for working with gene expression matrices
+in their matrix format, including many packages in the Bioconductor project.
+Fortunately, as we've seen, `pivot_longer()` and `pivot_wider()` provide a
+convenient means of converting between tidy and matrix-like formats.
+
+We'll convert our table of ER status and gene expression data to the tidy
+format.
+
+```{r}
+metabric <- pivot_longer(metabric, ESR1:MLPH, names_to = "Gene", values_to = "Expression")
+metabric
+```
+
+Note how we specified a range of columns between `ESR1` and `MLPH`. This is
+clearly a lot easier than naming each column individually.
+
+We're now in a position to create our faceted box plot chart.
+
+```{r box_plot_2}
+ggplot(data = metabric) +
+  geom_boxplot(mapping = aes(x = ER_status, y = Expression)) +
+  facet_wrap(vars(Gene))
+```
+
+The observational unit has changed: the tidy format has
+_one-row-per-gene-per-sample_, while wide format was _one-row-per-sample_.
+The tidy format is much less compact and involves considerable duplication of
+values in the first three columns (`Patient_ID`, `ER_status` and `Gene`).
+
+
+One of the other plot types we've used in exploring these data was to compare
+expression of two genes in each sample. For this, the _one-row-per-sample_
+representation is more appropriate so being able to convert back to wide format
+is exactly what we need.
+
+```{r scatter_plot_1}
+metabric %>%
+  pivot_wider(names_from = "Gene", values_from = "Expression") %>%
+  ggplot() +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = ER_status))
+```
 
 
 

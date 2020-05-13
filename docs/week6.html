@@ -375,6 +375,9 @@ div.tocify {
     <li>
       <a href="week5.html">Week 5 - Grouping and combining data</a>
     </li>
+    <li>
+      <a href="week6.html">Week 6 - Restructuring data for analysis</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -423,7 +426,7 @@ div.tocify {
 <div id="tidy-data" class="section level1">
 <h1>Tidy data</h1>
 <p>So what is ‘tidy data’ and why should we care about it?</p>
-<p>To answer these questions, we’ll look at different ways in which a simple data set can be represented and consider the challenges associated with each. The data set in question is a subset of data from the World Health Organization <a href="https://www.who.int/health-topics/tuberculosis">Global Tuberculosis Report</a>.</p>
+<p>To answer these questions, we’ll look at different ways in which a simple data set can be represented and consider the challenges associated with each. The data set in question is a subset of data from the <a href="https://www.who.int/health-topics/tuberculosis">World Health Organization Global Tuberculosis Report</a>.</p>
 <p>The <code>tidyr</code> package contains a series of tibbles that contain the same set of information on the number of new cases of tuberculosis (TB) recorded in each of 3 countries in the years 1999 and 2000 as well as the populations of those countries. Here is the first table.</p>
 <pre class="r"><code>table1</code></pre>
 <pre><code>## # A tibble: 6 x 4
@@ -477,7 +480,7 @@ div.tocify {
 ## 1 Afghanistan   19987071   20595360
 ## 2 Brazil       172006362  174504898
 ## 3 China       1272915272 1280428583</code></pre>
-<p>Time series data like this are very commonly represented in this way with a series of dates or years as columns extending across a spreadsheet. You will find numerous examples of this if you peruse the various data sets made available by the UK Office for National Statistics and various other national and international organizations.</p>
+<p>Time series data like this are very commonly represented in this way with a series of dates or years as columns extending across a spreadsheet. You will find numerous examples of this if you peruse the various data sets made available by the United Kingdowm Office for National Statistics and various other national and international organizations.</p>
 <p>Tables 1 to 4a and 4b are all different representations of the same underlying data but one of these tables is structured in such a way as to be most readily used in the tidyverse.</p>
 <div id="data-semantics" class="section level2">
 <h2>Data semantics</h2>
@@ -557,7 +560,7 @@ left_join(table4a_long, table4b_long, by = c(&quot;country&quot;, &quot;year&quo
 ## 1 Afghanistan    745   2666
 ## 2 Brazil       37737  80488
 ## 3 China       212258 213766</code></pre>
-<p>In some cases the wide format is the more human-readable form and usually it is a more compact way of representing the data. There is no duplication of the year value in the wide format of <code>table4a</code> and <code>table4b</code> for example. We will see later that this is much more evident with large data matrices, e.g. gene expression matrices with tens of thousands of genes and tens to thousands of samples.</p>
+<p>In some cases the wide format is the more human-readable form and usually it is a more compact way of representing the data. There is no duplication of the year value in the wide format of <code>table4a</code> and <code>table4b</code> for example. We will see later that this is much more evident with large data tables, e.g. gene expression matrices.</p>
 <p>Let’s look again at <code>table2</code>.</p>
 <pre class="r"><code>table2</code></pre>
 <pre><code>## # A tibble: 12 x 4
@@ -660,7 +663,69 @@ mutate(table3_separated, rate = cases / population)</code></pre>
 ## 4 Brazil       2000  80488  174504898 0.000461 
 ## 5 China        1999 212258 1272915272 0.000167 
 ## 6 China        2000 213766 1280428583 0.000167</code></pre>
+<hr />
 </div>
+</div>
+<div id="real-world-example-1-metabric-gene-expression-data" class="section level1">
+<h1>Real world example 1: METABRIC gene expression data</h1>
+<p>Although tables 1 to 4a and b contain real data they are of course ‘toy’ data sets created to be used for demonstration and teaching purposes. We’ll now turn our attention to the METABRIC expression data and see how this needs to be transformed into a tidier format to open up some exploratory paths.</p>
+<p>We’ll first load the table and then select just the columns we’re going to need.</p>
+<pre class="r"><code>metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;) %&gt;%
+  select(Patient_ID, ER_status, ESR1:MLPH)
+metabric</code></pre>
+<pre><code>## # A tibble: 1,904 x 10
+##    Patient_ID ER_status  ESR1 ERBB2   PGR  TP53 PIK3CA GATA3 FOXA1  MLPH
+##    &lt;chr&gt;      &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 MB-0000    Positive   8.93  9.33  5.68  6.34   5.70  6.93  7.95  9.73
+##  2 MB-0002    Positive  10.0   9.73  7.51  6.19   5.76 11.3  11.8  12.5 
+##  3 MB-0005    Positive  10.0   9.73  7.38  6.40   6.75  9.29 11.7  10.3 
+##  4 MB-0006    Positive  10.4  10.3   6.82  6.87   7.22  8.67 11.9  10.5 
+##  5 MB-0008    Positive  11.3   9.96  7.33  6.34   5.82  9.72 11.6  12.2 
+##  6 MB-0010    Positive  11.2   9.74  5.95  5.42   6.12  9.79 12.1  11.4 
+##  7 MB-0014    Positive  10.8   9.28  7.72  5.99   7.48  8.37 11.5  10.8 
+##  8 MB-0022    Positive  10.4   8.61  5.59  6.17   7.59  7.87 10.7   9.95
+##  9 MB-0028    Positive  12.5  10.7   5.33  6.22   6.25 10.3  12.1  10.9 
+## 10 MB-0035    Positive   7.54 11.5   5.59  6.41   5.99 10.2  12.8  13.5 
+## # … with 1,894 more rows</code></pre>
+<p>When we first looked at visualization using ggplot2 we created the following box plot.</p>
+<pre class="r"><code>ggplot(metabric) +
+  geom_boxplot(mapping = aes(x = ER_status, y = GATA3))</code></pre>
+<p><img src="week6_files/figure-html/box_plot_1-1.png" width="672" /></p>
+<p>But what if we would like to create a series of plots using the faceting functions in ggplot2 with one plot for each gene?</p>
+<p>Faceting requires a categorical variable which it uses to divide the data to be used in each plot. In this case, we’d need a gene column, but our data is in the wrong format.</p>
+<p>We have gene names for column headings. Are these variables? Not really, they’re actually values for a variable that could be called gene or gene symbol. What we have is a “wide format” table.</p>
+<p>Most gene expression matrices are in a similar form, although commonly there are rows for each gene and columns for each sample. It should be said that the gene expression matrix format is a very compact way of representing the data which could be a consideration when dealing with tens of thousands of genes and anywhere between a few tens of samples to a few thousand as in METABRIC.</p>
+<p>Furthermore, there are lots of tools for working with gene expression matrices in their matrix format, including many packages in the Bioconductor project. Fortunately, as we’ve seen, <code>pivot_longer()</code> and <code>pivot_wider()</code> provide a convenient means of converting between tidy and matrix-like formats.</p>
+<p>We’ll convert our table of ER status and gene expression data to the tidy format.</p>
+<pre class="r"><code>metabric &lt;- pivot_longer(metabric, ESR1:MLPH, names_to = &quot;Gene&quot;, values_to = &quot;Expression&quot;)
+metabric</code></pre>
+<pre><code>## # A tibble: 15,232 x 4
+##    Patient_ID ER_status Gene   Expression
+##    &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;       &lt;dbl&gt;
+##  1 MB-0000    Positive  ESR1         8.93
+##  2 MB-0000    Positive  ERBB2        9.33
+##  3 MB-0000    Positive  PGR          5.68
+##  4 MB-0000    Positive  TP53         6.34
+##  5 MB-0000    Positive  PIK3CA       5.70
+##  6 MB-0000    Positive  GATA3        6.93
+##  7 MB-0000    Positive  FOXA1        7.95
+##  8 MB-0000    Positive  MLPH         9.73
+##  9 MB-0002    Positive  ESR1        10.0 
+## 10 MB-0002    Positive  ERBB2        9.73
+## # … with 15,222 more rows</code></pre>
+<p>Note how we specified a range of columns between <code>ESR1</code> and <code>MLPH</code>. This is clearly a lot easier than naming each column individually.</p>
+<p>We’re now in a position to create our faceted box plot chart.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_boxplot(mapping = aes(x = ER_status, y = Expression)) +
+  facet_wrap(vars(Gene))</code></pre>
+<p><img src="week6_files/figure-html/box_plot_2-1.png" width="672" /></p>
+<p>The observational unit has changed: the tidy format has <em>one-row-per-gene-per-sample</em>, while wide format was <em>one-row-per-sample</em>. The tidy format is much less compact and involves considerable duplication of values in the first three columns (<code>Patient_ID</code>, <code>ER_status</code> and <code>Gene</code>).</p>
+<p>One of the other plot types we’ve used in exploring these data was to compare expression of two genes in each sample. For this, the <em>one-row-per-sample</em> representation is more appropriate so being able to convert back to wide format is exactly what we need.</p>
+<pre class="r"><code>metabric %&gt;%
+  pivot_wider(names_from = &quot;Gene&quot;, values_from = &quot;Expression&quot;) %&gt;%
+  ggplot() +
+  geom_point(mapping = aes(x = GATA3, y = ESR1, colour = ER_status))</code></pre>
+<p><img src="week6_files/figure-html/scatter_plot_1-1.png" width="672" /></p>
 </div>
 
 
