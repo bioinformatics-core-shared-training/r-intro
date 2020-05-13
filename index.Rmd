@@ -62,7 +62,7 @@ chats and calls within Teams.
 
 5. [Grouping and combining data](week5.html) (11 May) - Advanced grouping and summarization operations, joining data from different tables, customizing ggplot2 plots
 
-6. The concept of "tidy data", cleaning and reformating data, ggplot2 extras (18 May)
+6. [Restructuring data for analysis](week6.html) (18 May) - The concept of 'tidy data', pivoting and separating operations, ggplot2 extras
 
 7. **Capstone project** – putting it all together in a typical data analysis including:
 

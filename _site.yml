@@ -17,6 +17,8 @@ navbar:
           href: week4.html
         - text: "Week 5 - Grouping and combining data"
           href: week5.html
+        - text: "Week 6 - Restructuring data for analysis"
+          href: week6.html
   right:
     - icon: fa-github fa-lg
       href: https://github.com/bioinformatics-core-shared-training/r-intro
