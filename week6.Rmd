@@ -53,14 +53,18 @@ data set in question is a subset of data from the
 The `tidyr` package contains a series of tibbles that contain the same set of
 information on the number of new cases of tuberculosis (TB) recorded in each of
 3 countries in the years 1999 and 2000 as well as the populations of those
-countries. Here is the first table.
+countries.
+
+Here is the first table, `table1`, that contains a row for every combination of
+country and year and separate columns containing the numbers of TB cases and the
+population.
 
 ```{r}
 table1
 ```
 
 Two alternative ways of representing the same information are given in tables
-`table2` and `table3`.
+`table2` and `table3`. We'll consider each of these in turn, shortly.
 
 ```{r}
 table2
@@ -86,34 +90,10 @@ Tables 1 to 4a and 4b are all different representations of the same underlying
 data but one of these tables is structured in such a way as to be most readily
 used in the tidyverse.
 
-## Data semantics
-
-We've used and discussed the terms 'observation' and 'variable' a number of
-times in this course but this would be a good time to consider this once more.
-When we talk about an observation, we're talking about a set of values measured
-for the same unit or thing, e.g. a person or a date, and when we talk about a
-variable we are really talking about the attribute that we are measuring or
-recording, e.g. height, temperature or expression value.
-
-**Observations are represented as rows** in our data frames or tibbles, while
-the **columns correspond to variables**.
+## Rules for tidy data
 
 ```{block type = "rmdblock"}
-From **"Tidy Data"** by **Hadley Wickham**, [*The Journal of Statistical
-Software*, vol. 59, 2014](https://www.jstatsoft.org/index.php/jss/article/view/v059i10/v59i10.pdf).
-
-A data set is a collection of **values**, usually either numbers (if
-quantitative) or character strings (if qualitative). Values are organised in
-two ways. Every value belongs to a variable and an observation.
-
-A **variable** contains all values that measure the same underlying attribute
-(like height, temperature, duration) across units.
-
-An **observation** contains all values measured on the same unit (like a person
-or a day) across attributes.
-```
-
-## Tidy data rules
+**Tidy data**
 
 A tidy data set is a data frame (or table) for which the following are true:
 
@@ -121,7 +101,11 @@ A tidy data set is a data frame (or table) for which the following are true:
 2. Each **observation** has its own row
 3. Each **value** has its own cell
 
-**Question:** _which of the representations we've just been looking at is tidy?_
+See the section on [data semantics](week4.html#data_semantics) for a short recap
+on what we mean by observations and variables.
+```
+
+**Question:** _which of the above representations of TB cases is tidy?_
 
 Another way of framing the question is to consider what are the variables in the
 TB data set, i.e. what are the things that vary and for which we can attach a
@@ -140,11 +124,11 @@ are contained in two separate tables. The data would almost certainly have been
 collected separately so it's hardly surprising but whenever numbers of people
 affected by a disease or engaging in an activity are compared between countries
 we almost always want to be comparing the rate (the percentage within the
-population) and not the absolute number so that the comparison is fair. We need
+population) and not the absolute number, so that the comparison is fair. We need
 to combine the data from these two tables in order to calculate the rate.
 
 The only table that is truly tidy is `table1`. It contains one column for each
-of the variables in this data set, namely country, year, the number of new TB
+of the variables in the data set, namely country, year, the number of new TB
 cases and the population. We'll look at tables 2 and 3 shortly and why these
 aren't tidy and what we can do about it, but first we'll see how we can convert
 tables 4a and 4b into the tidy format.
@@ -155,10 +139,10 @@ tables 4a and 4b into the tidy format.
 
 ## `pivot_longer()`
 
-The format of tables 4a and 4b is often referred to as 'wide format'. While
-neither table looks especially wide, you can imagine that the more WHO data set
-contains data for very many years and that if each had its own column the table
-would be very much wider.
+Tables 4a and 4b are examples of what is often referred to as 'wide format'.
+While neither table looks especially wide, you can imagine that the more complete
+WHO data set contains data for very many years and that if each had its own
+column the table would be very much wider.
 
 What we need is a column for 'year' so that we have a count, whether it is the
 number of TB cases or the population, for each unique combination of country and
@@ -166,20 +150,23 @@ year. Transforming the table in this way is known as 'pivoting' and the `tidyr`
 package provides the `pivot_longer()` function for just such an operation.
 
 ```{r}
+table4a
 table4a_long <- pivot_longer(table4a, c(`1999`, `2000`), names_to = "year", values_to = "cases")
 table4a_long
 ```
 
 As with almost all tidyverse operations the first argument is the data frame
 we're working on. The second specifies which columns we are operating on. Here
-we've used a vector with `c()` but it is also quite common and normally more
-convenient to use a range of columns, e.g. `` `1999`:`2000` ``. Remember we had
-to use backticks because variable names aren't suppose to start with numbers.
+we've used a vector with `c()` but it is also quite customary and normally more
+convenient to use a range of columns, e.g. `` `1999`:`2000` ``. Remember that we
+have to use backticks because R doesn't like variable names starting with
+numbers.
 
 The `names_to` and `values_to` arguments are so called because we are taking
 the names of the columns we specified (1999 and 2000) and putting these in a new
-column given by `names_to` and we are taking the values in each of those columns
-and putting these in a a new column given by `values_to`.
+column with a name given by `names_to`. Likewise, we are taking values in each
+of our specified columns and putting these in a new column whose name is given
+by `values_to`.
 
 We can do the same with `table4b` and join the two resulting tables together to
 recreate `table1`.
@@ -210,23 +197,23 @@ Let's look again at `table2`.
 table2
 ```
 
-Are the `type` and `count` columns true variables? What is the observational
-unit in this case?
+Are the type and count columns true variables? What is the observational unit in
+this case?
 
 If we consider the observational unit to be a country in a specific year then
 `table2` is not tidy because observations are split across two rows. Also the
 count variable contains counts of what are essentially different things, the
-number of cases of TB and the total population.
+number of cases of TB or the total population.
 
 In tricky situations like this, a tell-tale sign that your data is not in a
 tidy format is when you want to visualize your data and you have to perform some
 kind of filtering to do so. In this case if we wanted to create a bar plot of
-for the population of each country we would have to first remove the rows
+the population of each country we would have to first remove the rows
 corresponding to the number of TB cases.
 
 Similarly, the rate of new TB cases, i.e. the proportion of the population
-infected with TB, is something we should be easily able to calculate in a
-simple operation but this is actually quite difficult to do so with the data
+infected with TB, is something we should be calculate easily in a simple
+operation. However, this is actually quite difficult to do with the data
 structured as they are.
 
 We can use `pivot_wider()` to sort this out. The `type` column contains the
@@ -239,7 +226,7 @@ table2_fixed
 ```
 
 The resulting table is exactly the same as `table1` and now the rate of
-infection can be calculated rather easily.
+infection can be calculated rather straightforwardly.
 
 ```{r}
 mutate(table2_fixed, rate = cases / population)
@@ -257,8 +244,9 @@ table3
 ```
 
 The `rate` column contains both the number of TB cases and the population
-separated by a '/' character. It is itself a character type and so not
-terribly useful for doing anything mathematical with.
+separated by a '/' character. The rate column is a character type so not
+terribly useful for doing anything of a mathematical nature in its current
+guise.
 
 ## `separate()`
 
@@ -272,9 +260,8 @@ table3_separated
 
 The `sep` argument takes a regular expression that defines how to split the
 values. We've mentioned regular expressions before -- they are a language for
-search patterns in text used frequently in computer programming and really worth
-getting to grips with but sadly these are beyond the scope of this course. In
-this case our separator is just the "/" character.
+specifying search patterns used to find sequences of characters within text and
+well worth learning. In this case our separator is just the '/' character.
 
 The resulting data frame is still not quite what we want though. This becomes
 apparent as soon as we try to do anything with the new `cases` and `population`
@@ -291,7 +278,9 @@ using `mutate_at()`.
 mutate_at(table3_separated, vars(cases, population), as.integer)
 ```
 
-But another option is to specify `convert = TRUE` when running `separate()`.
+But another option is to specify `convert = TRUE` when carrying out the
+`separate()` operation, in which case it will deduce the type of the values and
+convert the column to be that type.
 
 ```{r}
 table3_separated <- separate(table3, rate, into = c("cases", "population"), sep = "/", convert = TRUE)
@@ -300,12 +289,13 @@ mutate(table3_separated, rate = cases / population)
 
 ---
 
-# Real world example 1: METABRIC gene expression data
+# Real example 1: METABRIC gene expression
 
-Although tables 1 to 4a and b contain real data they are of course 'toy' data
-sets created to be used for demonstration and teaching purposes. We'll now turn
-our attention to the METABRIC expression data and see how this needs to be
-transformed into a tidier format to open up some exploratory paths.
+Although tables 1 to 4a and b contain real data they are, of course, 'toy' data
+frames created for demonstration and teaching purposes. We'll now turn our
+attention to the METABRIC expression data and see how this needs to be
+transformed into a tidier format to open up different avenues for exploring the
+data.
 
 We'll first load the table and then select just the columns we're going to need.
 
@@ -326,24 +316,29 @@ ggplot(metabric) +
 But what if we would like to create a series of plots using the faceting
 functions in ggplot2 with one plot for each gene?
 
-Faceting requires a categorical variable which it uses to divide the data to be
-used in each plot. In this case, we'd need a gene column, but our data is in the
-wrong format.
+Faceting requires a categorical variable, which is used to divide the data for
+each plot. In this case we'd need a gene column, but clearly our data are not
+structured in this way.
 
-We have gene names for column headings. Are these variables? Not really, they're
-actually values for a variable that could be called gene or gene symbol. What we
-have is a "wide format" table.
+We have gene names for column headings. Are these variables? Well, maybe,
+although a more correct name for each of these variables or column headings
+would be 'Expression of ESR1', 'Expression of ERBB2', etc.
 
-Most gene expression matrices are in a similar form, although commonly there are
+But we could consider that these gene column headings are actually values of a
+variable called 'gene' or 'gene symbol'. In this regard, what we have is a 'wide
+format' table.
+
+Most gene expression matrices have a similar form, although usually there have
 rows for each gene and columns for each sample. It should be said that the gene
 expression matrix format is a very compact way of representing the data which
 could be a consideration when dealing with tens of thousands of genes and
-anywhere between a few tens of samples to a few thousand as in METABRIC.
+anywhere between a few tens of samples to a few thousand, such is the case for
+METABRIC.
 
-Furthermore, there are lots of tools for working with gene expression matrices
-in their matrix format, including many packages in the Bioconductor project.
-Fortunately, as we've seen, `pivot_longer()` and `pivot_wider()` provide a
-convenient means of converting between tidy and matrix-like formats.
+Furthermore, there are lots of tools for working with gene expression data in a
+matrix format, including many packages in the Bioconductor project. Fortunately,
+as we've seen, `pivot_longer()` and `pivot_wider()` provide a convenient means
+of converting between tidy and matrix-like formats.
 
 We'll convert our table of ER status and gene expression data to the tidy
 format.
@@ -370,10 +365,10 @@ The tidy format is much less compact and involves considerable duplication of
 values in the first three columns (`Patient_ID`, `ER_status` and `Gene`).
 
 
-One of the other plot types we've used in exploring these data was to compare
-expression of two genes in each sample. For this, the _one-row-per-sample_
-representation is more appropriate so being able to convert back to wide format
-is exactly what we need.
+One of the other plot types we've used in exploring these data was a scatter
+plot comparing the expression of two genes across all the samples. For this,
+the _one-row-per-sample_ representation is more appropriate and being able to
+convert back to this format allows us to create the plot.
 
 ```{r scatter_plot_1}
 metabric %>%
@@ -381,7 +376,5 @@ metabric %>%
   ggplot() +
   geom_point(mapping = aes(x = GATA3, y = ESR1, colour = ER_status))
 ```
-
-
 
 
