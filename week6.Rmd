@@ -759,4 +759,25 @@ metabric %>%
   )
 ```
 
+## Saving plot images
+
+Use `ggsave()` to save the last plot you displayed.
+
+```{r eval = FALSE}
+ggsave("esr1_expression.png")
+```
+
+You can alter the width and height of the plot and can change the image file
+type.
+
+```{r eval = FALSE}
+ggsave("esr1_expression.pdf", width = 20, height = 12, units = "cm")
+```
+
+You can also pass in a plot object you have created instead of using the last
+plot displayed. See the help page (`?ggsave`) for more details.
+
+
+
+
 

@@ -421,6 +421,14 @@ div.tocify {
 <p>Finally, we’ll take another look at customizing plots created with ggplot2 by changing various non-data components that are largely cosmetic.</p>
 <p>The functions we’re mostly focusing on in this session are from the <strong>tidyr</strong> and <strong>stringr</strong> packages both of which get loaded as part of the tidyverse.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.2.1     ✔ purrr   0.3.3
+## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
+## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
+## ✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <hr />
 </div>
 <div id="tidy-data" class="section level1">
@@ -1109,6 +1117,14 @@ metabric %&gt;%
     axis.ticks.x = element_blank()
   )</code></pre>
 <p><img src="week6_files/figure-html/box_plot_9-1.png" width="672" /></p>
+</div>
+<div id="saving-plot-images" class="section level2">
+<h2>Saving plot images</h2>
+<p>Use <code>ggsave()</code> to save the last plot you displayed.</p>
+<pre class="r"><code>ggsave(&quot;esr1_expression.png&quot;)</code></pre>
+<p>You can alter the width and height of the plot and can change the image file type.</p>
+<pre class="r"><code>ggsave(&quot;esr1_expression.pdf&quot;, width = 20, height = 12, units = &quot;cm&quot;)</code></pre>
+<p>You can also pass in a plot object you have created instead of using the last plot displayed. See the help page (<code>?ggsave</code>) for more details.</p>
 </div>
 </div>
 
