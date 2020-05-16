@@ -777,7 +777,20 @@ ggsave("esr1_expression.pdf", width = 20, height = 12, units = "cm")
 You can also pass in a plot object you have created instead of using the last
 plot displayed. See the help page (`?ggsave`) for more details.
 
+---
 
+# Summary
 
+In this session we have covered the following:
 
+* Restructuring data frames using pivoting operations
+* Splitting compound variables into separate columns
+* Modifying character columns using various string manipulation functions
+* Customizing plots created with ggplot2 by changing the theme and position adjustments
+* Saving plots created with ggplot2 as image files
 
+---
+
+# Assignment
+
+Assignment: [assignment6.Rmd](assignments/assignment6.Rmd)
