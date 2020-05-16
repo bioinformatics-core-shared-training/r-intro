@@ -1,0 +1,291 @@
+
+---
+title: "Assignment 6"
+---
+
+This week's involves transforming two data sets in order to ask a specific
+question of each. The first is a more complete set of data on the number of new
+tuberculosis cases each year from 1980 to 2013 in 219 countries, taken from the
+[World Health Organization Global Tuberculosis Report](https://www.who.int/health-topics/tuberculosis).
+
+For the second "real world" example we return to the METABRIC data set and
+introduce the other set of assay data obtained as part of the original 2012
+study that concerns genomic copy number. We'll transform the copy number data
+downloaded from [cBioPortal](https://www.cbioportal.org/study/summary?id=brca_metabric)
+so that we can look at the copy number states for some of our favourite genes
+and then combine that with the expression data to see how copy number influences
+gene expression.
+
+The clinical data, gene expression values and mutation data were all downloaded
+from [cBioPortal](https://www.cbioportal.org/study/summary?id=brca_metabric).
+
+```{r message = FALSE}
+library(tidyverse)
+```
+
+---
+
+**1. Tidy the WHO tuberculosis data set**
+
+In this week's materials we demonstrated the restructuring of different
+representations of a very small subset of the WHO tuberculosis data set (tables
+1 to 4a and b). The more complete data set is also available in its original
+format in another data frame available as part of the **tidyr** package, named
+`who`.
+
+```{r}
+who
+```
+
+What are the variables in this data set?
+
+Create a bulleted list with your answer here.
+
+
+
+_Hint: see the help page for `who` to understand the meaning of the column headings._
+
+_Hint: the Markdown Quick Reference available from the Help menu in RStudio is a very useful guide to formatting text in R markdown documents._
+
+Why isn't this data set tidy and what kinds of analysis are not straightforward
+with the data in this format?
+
+Transform the data into a tidy format.
+
+Columns `new_sp_m014` to `newrel_f65` are values for a compound variable, i.e.
+multiple variables joined together - the restructured data frame should have
+columns for each of the separated values in these column headings.
+
+Remove all rows with missing values for the number of tuberculosis cases.
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+*Hint 1: the column headers from new_sp_m014 onwards contain a superfluous prefix "new" or "new_" that you will want to remove; this can be done using one of the stringr functions in a single step if you know about regular expressions but is also achievable in two steps if you don't use any regular expression magic.*
+
+_Hint 2: separating two of the variables is a bit tricky because there is no separator character; try looking at the help for the separate function to see how this can be done._
+
+---
+
+**2. Recreate `table1` from your tidy version of the WHO tuberculosis data set**
+
+Recreate the first 3 columns of `table1`, containing a small subset of the WHO
+tuberculosis data set, from your tidy version of `who`.
+
+```{r}
+select(table1, 1:3)
+```
+
+```{r}
+
+```
+
+_Hint: this will involve some filtering, grouping and summarization._
+
+---
+
+**3. Create time series plots for cases of tuberculosis**
+
+Create a time series plot showing the number of tuberculosis cases in the United
+Kingdom with separate lines for each age group. The year should be on the
+x axis and the number of cases on the y axis.
+
+```{r}
+
+```
+
+_Hint: we're not distinguishing between genders in this plot so you'll need the data to be summarized in the same way as the previous question._
+
+Use faceting in ggplot2 to create a series of plots showing the same information
+for France, Brazil, Japan and Uganda.
+
+The numbers of cases in these countries are on quite different scales. Look at
+help page for `facet_wrap()` and try changing the `scales` argument so we can
+more easily compare the overall patterns between countries.
+
+```{r}
+
+```
+
+---
+
+**4. Relate METABRIC copy number and expression data**
+
+For this exercise we'll read in the METABRIC mRNA expression data and copy
+number states into separate data frames. The aim is to see how the gene
+expression is affected by the copy number state of various genes through a
+series of box plot.
+
+```{r message = FALSE}
+expression <- read_tsv("metabric_mrna_expression.txt")
+```
+
+The expression data is in a matrix-like format with a row for each sample and a
+column for each gene. This is the format used when downloading data from
+[cBioPortal](https://www.cbioportal.org/study/summary?id=brca_metabric) after
+selecting a set of genes.
+
+```{r}
+expression
+```
+
+Convert this data frame into a tidy format with a row-per-sample-per-gene.
+Remove the rather uninteresting `STUDY_ID` column and filter out missing
+expression values (for those samples that weren't assayed).
+
+```{r}
+
+```
+
+The copy number data are also in a matrix-like format but this time we have a
+row for each gene and a column for each sample. It is a very wide table
+containing 2175 columns (only the first 10 displayed below). This is the format
+of the copy number table you obtain if you download the complete METABRIC
+dataset from cBioPortal. The table read in is a subset containing rows for
+the 8 genes we've been using up till now.
+
+```{r message = FALSE}
+copy_number_states <- read_tsv("metabric_cna.txt")
+select(copy_number_states, 1:10)
+```
+
+Convert this data frame into a tidy format with a row-per-sample-per-gene where
+the values are the copy number states:
+
+* -2 deletion
+* -1 loss
+*  0 neutral
+*  1 gain
+*  2 amplification
+
+Remove the `Entrez_Gene_id` column and convert the copy number state variable
+into a factor.
+
+```{r}
+
+```
+
+Count the total number of occurrences of each copy number state.
+
+```{r}
+
+```
+
+Create a combined data set containing the ER status, expression value and copy
+number state for each patient and gene pairing. The data frame should contain
+the columns Sample, ER_status, Gene, Expression and Copy_number_state.
+
+```{r}
+
+```
+
+Create a series of box plots for each of the genes with a box-and-whiskers
+showing the range of expression values for each copy number state.
+
+```{r}
+
+```
+
+Customize this plot by changing the labels, scales, colours and theme as you
+like -- be creative!
+
+```{r}
+
+```
+
+There will be chocolate-based prizes awarded to any assignment handed in with a
+plot that is prettier than mine -- Matt (bear in mind that I'm also the judge
+and jury).
+
+---
+
+**5. Extension: Mutual exclusivity of ERBB2 amplifications and AKT1 mutations**
+
+_Seriously, stop here if you haven't got the time or inclination to attempt this final, bonus extension exercise  (but please still hand in your assignment)._
+
+In the METABRIC 2016 paper, Pereira _et al._
+([Nature Communications 7:11479, 2016](https://www.ncbi.nlm.nih.gov/pubmed/27161491))
+considered the association between somatic mutations, exploring patterns of
+co-mutation and mutual exclusivity. One of their findings was the mutual
+exclusivity between AKT1 mutations and amplification of ERBB2. For the final
+exercise we will reproduce this observation.
+
+We'll first need to read the mutation data into R and we're only interested
+in those cases where the patient tumour sample was sequenced so we'll read those
+in as well.
+
+```{r message = FALSE}
+mutations <- read_csv("metabric_mutations.csv")
+cases_sequenced <- read_tsv("cases_nat_comm_2016.txt", col_names = "Patient_ID")
+```
+
+Filter the mutations table to only contain the non-silent mutations in AKT1.
+
+```{r}
+
+```
+
+Add a logical column to the `cases_sequenced` data frame called
+`AKT1_mutated` that indicates whether there was a non-silent AKT1 mutation
+detected in each patient tumour sample.
+
+Count the number of patients with and without a non-silent AKT1 mutation.
+
+```{r}
+
+```
+
+_Hint: use a `mutate()` with `%in%`._
+
+Filter the copy number states table to only include entries for ERBB2.
+
+Count the number of samples for each ERBB2 copy number state.
+
+```{r}
+
+```
+
+Join the ERBB2 copy number state table to the table we created before
+identifying which patient has an AKT1 mutation. The combined data frame should
+only contain entries for patients that have been sequenced and for which copy
+number data are available.
+
+```{r}
+
+```
+
+Count the numbers of patients with different combinations of ERBB2 copy number
+state and mutated AKT1.
+
+```{r}
+
+```
+
+Does this reflect the observation of mutual exclusivity of ERBB2 amplification
+and AKT1 mutations?
+
+Create a logical column called `ERBB2_amplified` indicated which patient samples
+have amplifications (copy number state 2) in ERBB2.
+
+```{r}
+
+```
+
+Create a 2-by-2 contingency table using `table()` and the `AKT1_mutated` and
+`ERBB2_amplified` columns.
+
+```{r}
+
+```
+
+Perform a Fisher exact test on this contingency table.
+
+```{r}
+
+```
+
