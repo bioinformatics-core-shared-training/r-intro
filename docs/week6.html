@@ -985,6 +985,85 @@ protein_levels</code></pre>
   geom_jitter(width = 0.15) +
   facet_wrap(vars(gene), scales = &quot;free_y&quot;, ncol = 3)</code></pre>
 <p><img src="week6_files/figure-html/box_plot_3-1.png" width="672" /></p>
+<hr />
+</div>
+<div id="further-customization-of-plots-with-ggplot2" class="section level1">
+<h1>Further customization of plots with ggplot2</h1>
+<p>Finally, we’ll turn our attention back to visualization using ggplot2 and how we can customize our plots by changing the theme and consider various other odds and ends.</p>
+<div id="themes" class="section level2">
+<h2>Themes</h2>
+<p>Themes can be used to customize non-data components of a plot. Let’s create a plot showing the expression of estrogen receptor alpha (ESR1) for each of the Integrative cluster breast cancer subtypes.</p>
+<pre class="r"><code># read in the METABRIC data, convert the Integrative_cluster variable into a
+# categorical variable with the levels in the correct order, and select just
+# the columns and rows we&#39;re going to use
+metabric &lt;- read_csv(&quot;data/metabric_clinical_and_expression_data.csv&quot;) %&gt;%
+  mutate(Integrative_cluster = factor(Integrative_cluster, levels = c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4ER-&quot;, &quot;4ER+&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, &quot;10&quot;))) %&gt;%
+  mutate(`3-gene_classifier` = replace_na(`3-gene_classifier`, &quot;Unclassified&quot;)) %&gt;%
+  select(Patient_ID, ER_status, PR_status, `3-gene_classifier`, Integrative_cluster, ESR1) %&gt;%
+  filter(!is.na(Integrative_cluster), !is.na(ESR1))
+metabric</code></pre>
+<pre><code>## # A tibble: 1,904 x 6
+##    Patient_ID ER_status PR_status `3-gene_classifie… Integrative_clu…  ESR1
+##    &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;              &lt;fct&gt;            &lt;dbl&gt;
+##  1 MB-0000    Positive  Negative  ER-/HER2-          4ER+              8.93
+##  2 MB-0002    Positive  Positive  ER+/HER2- High Pr… 4ER+             10.0 
+##  3 MB-0005    Positive  Positive  Unclassified       3                10.0 
+##  4 MB-0006    Positive  Positive  Unclassified       9                10.4 
+##  5 MB-0008    Positive  Positive  ER+/HER2- High Pr… 9                11.3 
+##  6 MB-0010    Positive  Positive  ER+/HER2- High Pr… 7                11.2 
+##  7 MB-0014    Positive  Positive  Unclassified       3                10.8 
+##  8 MB-0022    Positive  Negative  Unclassified       3                10.4 
+##  9 MB-0028    Positive  Negative  ER+/HER2- High Pr… 9                12.5 
+## 10 MB-0035    Positive  Negative  ER+/HER2- High Pr… 3                 7.54
+## # … with 1,894 more rows</code></pre>
+<pre class="r"><code># plot the ESR1 expression for each integrative cluster
+plot &lt;- ggplot(data = metabric) +
+  geom_boxplot(mapping = aes(x = Integrative_cluster, y = ESR1, fill = Integrative_cluster)) +
+  labs(x = &quot;Integrative cluster&quot;, y = &quot;ESR1 expression&quot;)
+plot</code></pre>
+<p><img src="week6_files/figure-html/box_plot_4-1.png" width="672" /></p>
+<p>The default theme has the characteristic grey background which isn’t particularly suitable for printing on paper. We can change to one of a number of alternative themes available in the ggplot2 package, e.g. the black and white theme.</p>
+<pre class="r"><code>plot + theme_bw()</code></pre>
+<p><img src="week6_files/figure-html/box_plot_5-1.png" width="672" /></p>
+<p>The help page for the available themes, which can be accessed using <code>?theme_bw</code>, lists each and when you might want to use them. It states that <code>black_bw</code> may work better for presentations displayed on a projector.</p>
+<p>Each of these themes is really just a collection of attributes relating to how various non-data elements of the plot will be displayed. We can override any of these individual settings using the <code>theme()</code> function. A look at the help page (<code>?theme</code>) shows that there are a very large number of settings that you can change. The following example demonstrates a few of these.</p>
+<pre class="r"><code>plot +
+  theme_bw() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    legend.position = &quot;none&quot;
+  )</code></pre>
+<p><img src="week6_files/figure-html/box_plot_6-1.png" width="672" /></p>
+<p>Here’s another example that also involves customizing the labels, scales and colours.</p>
+<pre class="r"><code>ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = `3-gene_classifier`, fill = ER_status)) +
+  scale_y_continuous(limits = c(0, 700), breaks = seq(0, 700, 100), expand = expand_scale(mult = 0)) +
+  scale_fill_manual(values = c(&quot;firebrick2&quot;, &quot;dodgerblue2&quot;)) +
+  labs(x = NULL, y = &quot;samples&quot;, fill = &quot;ER status&quot;) +
+  theme_bw() +
+  theme(
+    panel.border = element_blank(),
+    panel.grid = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+    axis.line.y = element_line(),
+    axis.ticks.length.y = unit(0.2, &quot;cm&quot;),
+    legend.position = &quot;bottom&quot;
+  )</code></pre>
+<p><img src="week6_files/figure-html/bar_plot_1-1.png" width="480" /></p>
+<p>The ggthemes package contains some extra themes and might be fun to check out. Here’s an example of a plot that uses the <code>theme_gdocs</code> theme that resembles the default look of charts in Google Docs.</p>
+<pre class="r"><code>library(ggthemes)
+metabric %&gt;%
+  filter(`3-gene_classifier` == &quot;HER2+&quot;) %&gt;%
+  ggplot(mapping = aes(x = PR_status, y = ESR1)) +
+  geom_boxplot() +
+  geom_jitter(mapping = aes(colour = PR_status), width = 0.25, alpha = 0.4, show.legend = FALSE) +
+  scale_colour_brewer(palette = &quot;Set1&quot;) +
+  labs(x = &quot;PR status&quot;, y = &quot;ESR1 expression&quot;) +
+  theme_gdocs()</code></pre>
+<p><img src="week6_files/figure-html/box_plot_7-1.png" width="480" /></p>
+</div>
 </div>
 
 
