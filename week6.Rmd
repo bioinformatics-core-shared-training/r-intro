@@ -732,6 +732,7 @@ metabric %>%
   geom_boxplot() +
   geom_point(position = "jitter", size = 0.5, alpha = 0.3) +
   labs(x = "3-gene classification", y = "ESR1 expression", colour = "PR status") +
+  scale_color_brewer(palette = "Set1") +
   theme_minimal() +
   theme(
     panel.grid.major.x = element_blank(),
@@ -751,6 +752,7 @@ metabric %>%
   geom_boxplot() +
   geom_point(position = position_jitterdodge(), size = 0.5, alpha = 0.3) +
   labs(x = "3-gene classification", y = "ESR1 expression", colour = "PR status") +
+  scale_color_brewer(palette = "Set1") +
   theme_minimal() +
   theme(
     panel.grid.major.x = element_blank(),
