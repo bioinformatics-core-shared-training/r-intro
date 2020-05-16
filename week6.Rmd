@@ -690,5 +690,73 @@ metabric %>%
   theme_gdocs()
 ```
 
+## Position adjustments
+
+All geoms in ggplot2 have a position adjustment that can be set using the
+`position` argument. This has different effects for different types of plot but
+essentially this resolves how overlapping geoms are displayed.
+
+For example, let's consider the stacked bar plot we created earlier showing the
+numbers of patients in each of the 3-gene classifications subdivided by ER
+status. The default position value for `geom_bar()` is "stack" which is why the
+plot is shown as a stacked bar chart. An alternative way of representing these
+data would be to show separate bars for each ER status side-by-side by setting
+`position = "dodge"`.
+
+```{r bar_plot_2}
+ggplot(data = metabric) +
+  geom_bar(mapping = aes(x = `3-gene_classifier`, fill = ER_status), position = "dodge") +
+  scale_y_continuous(limits = c(0, 700), breaks = seq(0, 700, 100), expand = expand_scale(mult = 0)) +
+  scale_fill_manual(values = c("firebrick2", "dodgerblue2")) +
+  labs(x = NULL, y = "samples", fill = "ER status") +
+  theme_bw() +
+  theme(
+    panel.border = element_blank(),
+    panel.grid = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+    axis.line.y = element_line(),
+    axis.ticks.length.y = unit(0.2, "cm")
+  )
+```
+
+Another position adjustment we've come across is `geom_jitter()`, which is just
+a convenient shortcut for `geom_point(position = "jitter")`. A variation on this,
+`position_jitterdodge()`, comes in handy when we are overlaying points on top of
+a box plot. We show an example of just such a plot in which first use
+`postion = "jitter"`.
+
+```{r box_plot_8}
+metabric %>%
+  ggplot(mapping = aes(x = `3-gene_classifier`, y = ESR1, colour = PR_status)) +
+  geom_boxplot() +
+  geom_point(position = "jitter", size = 0.5, alpha = 0.3) +
+  labs(x = "3-gene classification", y = "ESR1 expression", colour = "PR status") +
+  theme_minimal() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+    axis.ticks.x = element_blank()
+  )
+```
+
+The PR-negative and PR-positive points have distinct colours but are overlapping
+in a way that is aesthetically displeasing. What we want is for the points to
+have both jitter and to be dodged in the same way as the boxes. With
+`position_jitterdodge()` we get a better looking plot.
+
+```{r box_plot_9}
+metabric %>%
+  ggplot(mapping = aes(x = `3-gene_classifier`, y = ESR1, colour = PR_status)) +
+  geom_boxplot() +
+  geom_point(position = position_jitterdodge(), size = 0.5, alpha = 0.3) +
+  labs(x = "3-gene classification", y = "ESR1 expression", colour = "PR status") +
+  theme_minimal() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+    axis.ticks.x = element_blank()
+  )
+```
 
 
