@@ -503,8 +503,17 @@ Each <strong>observation</strong> has its own row
 Each <strong>value</strong> has its own cell
 </li>
 </ol>
+<div class="figure">
+<p><img src="images/tidy_data.png" /></p>
+</div>
 <p>
-See the section on <a href="week4.html#data_semantics">data semantics</a> for a short recap on what we mean by observations and variables.
+A <strong>variable</strong> contains all values that measure the same underlying attribute (like height, temperature, duration) across units.
+</p>
+<p>
+An <strong>observation</strong> contains all values measured on the same unit (like a person or a day) across attributes.
+</p>
+<p>
+<em>From <a href="https://www.jstatsoft.org/index.php/jss/article/view/v059i10/v59i10.pdf">‘Tidy Data’</a> by Hadley Wickham.</em>
 </p>
 </div>
 <p><strong>Question:</strong> <em>Which of the above representations of TB cases is tidy?</em></p>
@@ -541,6 +550,32 @@ table4a_long</code></pre>
 ## 5 China       1999  212258
 ## 6 China       2000  213766</code></pre>
 <p>As with almost all tidyverse operations the first argument is the data frame we’re working on. The second specifies which columns we are operating on. Here we’ve used a vector with <code>c()</code> but it is also quite customary and normally more convenient to use a range of columns, e.g. <code>`1999`:`2000`</code>. Remember that we have to use backticks because R doesn’t like variable names starting with numbers.</p>
+<div class="rmdblock">
+<p>
+<strong>Pivoting operations</strong>
+</p>
+<p>
+<strong><code>pivot_longer(data, cols, names_to = “name”, values_to = “value”)</code></strong>
+</p>
+<p>
+Pivot data from wide to long, increasing the number of rows and decreasing the number of columns.
+</p>
+<p>
+<code>table4a_long &lt;- pivot_longer(table4a, <code>1999</code>:<code>2000</code>, names_to = “year”, values_to = “cases”)</code>
+</p>
+<div class="figure">
+<p><img src="images/pivot_longer.png" /></p>
+</div>
+<p>
+<strong><code>pivot_wider(data, names_from = name, values_from = value)</code></strong>
+</p>
+<p>
+Pivot data from long to wide, increasing the number of columns and decreasing the number of rows.
+</p>
+<p>
+<code>table4a_wide &lt;- pivot_wider(table4a_long, names_from = “year”, values_from = “cases”)</code>
+</p>
+</div>
 <p>The <code>names_to</code> and <code>values_to</code> arguments are so called because we are taking the names of the columns we specified (1999 and 2000) and putting these in a new column with a name given by <code>names_to</code>. Likewise, we are taking values in each of our specified columns and putting these in a new column whose name is given by <code>values_to</code>.</p>
 <p>We can do the same with <code>table4b</code> and join the two resulting tables together to recreate <code>table1</code>.</p>
 <pre class="r"><code>table4b_long &lt;- pivot_longer(table4b, c(`1999`, `2000`), names_to = &quot;year&quot;, values_to = &quot;population&quot;)

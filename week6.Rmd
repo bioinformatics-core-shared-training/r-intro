@@ -101,8 +101,15 @@ A tidy data set is a data frame (or table) for which the following are true:
 2. Each **observation** has its own row
 3. Each **value** has its own cell
 
-See the section on [data semantics](week4.html#data_semantics) for a short recap
-on what we mean by observations and variables.
+![](images/tidy_data.png)
+
+A **variable** contains all values that measure the same underlying attribute
+(like height, temperature, duration) across units.
+
+An **observation** contains all values measured on the same unit (like a person
+or a day) across attributes.
+
+_From ['Tidy Data'](https://www.jstatsoft.org/index.php/jss/article/view/v059i10/v59i10.pdf) by Hadley Wickham._
 ```
 
 **Question:** _Which of the above representations of TB cases is tidy?_
@@ -161,6 +168,26 @@ we've used a vector with `c()` but it is also quite customary and normally more
 convenient to use a range of columns, e.g. `` `1999`:`2000` ``. Remember that we
 have to use backticks because R doesn't like variable names starting with
 numbers.
+
+```{block type = "rmdblock"}
+**Pivoting operations**
+
+**`pivot_longer(data, cols, names_to = "name", values_to = "value")`**
+
+Pivot data from wide to long, increasing the number of rows and decreasing the
+number of columns.
+
+```table4a_long <- pivot_longer(table4a, `1999`:`2000`, names_to = "year", values_to = "cases")```
+
+![](images/pivot_longer.png)
+
+**`pivot_wider(data, names_from = name, values_from = value)`**
+
+Pivot data from long to wide, increasing the number of columns and decreasing
+the number of rows.
+
+`table4a_wide <- pivot_wider(table4a_long, names_from = "year", values_from = "cases")`
+```
 
 The `names_to` and `values_to` arguments are so called because we are taking
 the names of the columns we specified (1999 and 2000) and putting these in a new
