@@ -56,11 +56,7 @@ Columns `new_sp_m014` to `newrel_f65` are values for a compound variable, i.e.
 multiple variables joined together - the restructured data frame should have
 columns for each of the separated values in these column headings.
 
-Remove all rows with missing values for the number of tuberculosis cases.
-
-```{r}
-
-```
+Also remove all rows with missing values for the number of tuberculosis cases.
 
 ```{r}
 
@@ -92,8 +88,8 @@ _Hint: this will involve some filtering, grouping and summarization._
 **3. Create time series plots for cases of tuberculosis**
 
 Create a time series plot showing the number of tuberculosis cases in the United
-Kingdom with separate lines for each age group. The year should be on the
-x axis and the number of cases on the y axis.
+Kingdom with separate lines for each age group. The year should be on the x axis
+and the number of cases on the y axis.
 
 ```{r}
 
@@ -194,13 +190,14 @@ showing the range of expression values for each copy number state.
 Customize this plot by changing the labels, scales, colours and theme as you
 like -- be creative!
 
+Save the plot as a PDF using `ggsave()` and attach with the assignment when
+handing in.
+
+_There will be chocolate-based prizes awarded to any assignment handed in with a plot that is prettier than mine (bear in mind that I'm also the judge and jury -- Matt :-)_
+
 ```{r}
 
 ```
-
-There will be chocolate-based prizes awarded to any assignment handed in with a
-plot that is prettier than mine -- Matt (bear in mind that I'm also the judge
-and jury).
 
 ---
 
