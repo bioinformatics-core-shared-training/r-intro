@@ -177,7 +177,7 @@ numbers.
 Pivot data from wide to long, increasing the number of rows and decreasing the
 number of columns.
 
-```table4a_long <- pivot_longer(table4a, `1999`:`2000`, names_to = "year", values_to = "cases")```
+`table4a_long <- pivot_longer(table4a, c("1999", "2000"), names_to = "year", values_to = "cases")`
 
 ![](images/pivot_longer.png)
 
@@ -186,7 +186,7 @@ number of columns.
 Pivot data from long to wide, increasing the number of columns and decreasing
 the number of rows.
 
-`table4a_wide <- pivot_wider(table4a_long, names_from = "year", values_from = "cases")`
+`table4a_wide <- pivot_wider(table4a_long, names_from = year, values_from = cases)`
 ```
 
 The `names_to` and `values_to` arguments are so called because we are taking
@@ -201,6 +201,7 @@ recreate `table1`.
 ```{r}
 table4b_long <- pivot_longer(table4b, c(`1999`, `2000`), names_to = "year", values_to = "population")
 table4b_long
+# join the two pivoted tables to recreate table1
 left_join(table4a_long, table4b_long, by = c("country", "year"))
 ```
 
@@ -210,6 +211,19 @@ left_join(table4a_long, table4b_long, by = c("country", "year"))
 to reverse the pivoting operation we just performed on `table4a`.
 
 ```{r}
+table4a_long
+pivot_wider(table4a_long, names_from = "year", values_from = "cases")
+```
+
+`pivot_wider()` has looked for all distinct values in the `year` column and
+created a new column for each. The values are taken from the `cases` column.
+An `NA` would be inserted into the new columns for any instances where there
+is no observation for a given year. That isn't the case in this example but we
+can show this by removing the last row from `table4a_long`.
+
+```{r}
+table4a_long <- head(table4a_long, 5)
+table4a_long
 pivot_wider(table4a_long, names_from = "year", values_from = "cases")
 ```
 

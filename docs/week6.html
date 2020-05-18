@@ -561,7 +561,7 @@ table4a_long</code></pre>
 Pivot data from wide to long, increasing the number of rows and decreasing the number of columns.
 </p>
 <p>
-<code>table4a_long &lt;- pivot_longer(table4a, <code>1999</code>:<code>2000</code>, names_to = “year”, values_to = “cases”)</code>
+<code>table4a_long &lt;- pivot_longer(table4a, c(“1999”, “2000”), names_to = “year”, values_to = “cases”)</code>
 </p>
 <div class="figure">
 <p><img src="images/pivot_longer.png" /></p>
@@ -573,7 +573,7 @@ Pivot data from wide to long, increasing the number of rows and decreasing the n
 Pivot data from long to wide, increasing the number of columns and decreasing the number of rows.
 </p>
 <p>
-<code>table4a_wide &lt;- pivot_wider(table4a_long, names_from = “year”, values_from = “cases”)</code>
+<code>table4a_wide &lt;- pivot_wider(table4a_long, names_from = year, values_from = cases)</code>
 </p>
 </div>
 <p>The <code>names_to</code> and <code>values_to</code> arguments are so called because we are taking the names of the columns we specified (1999 and 2000) and putting these in a new column with a name given by <code>names_to</code>. Likewise, we are taking values in each of our specified columns and putting these in a new column whose name is given by <code>values_to</code>.</p>
@@ -589,7 +589,8 @@ table4b_long</code></pre>
 ## 4 Brazil      2000   174504898
 ## 5 China       1999  1272915272
 ## 6 China       2000  1280428583</code></pre>
-<pre class="r"><code>left_join(table4a_long, table4b_long, by = c(&quot;country&quot;, &quot;year&quot;))</code></pre>
+<pre class="r"><code># join the two pivoted tables to recreate table1
+left_join(table4a_long, table4b_long, by = c(&quot;country&quot;, &quot;year&quot;))</code></pre>
 <pre><code>## # A tibble: 6 x 4
 ##   country     year   cases population
 ##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;      &lt;int&gt;
@@ -603,6 +604,16 @@ table4b_long</code></pre>
 <div id="pivot_wider" class="section level2">
 <h2><code>pivot_wider()</code></h2>
 <p><code>pivot_wider()</code> has the opposite effect of <code>pivot_longer()</code> and can be used to reverse the pivoting operation we just performed on <code>table4a</code>.</p>
+<pre class="r"><code>table4a_long</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   country     year   cases
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
+## 1 Afghanistan 1999     745
+## 2 Afghanistan 2000    2666
+## 3 Brazil      1999   37737
+## 4 Brazil      2000   80488
+## 5 China       1999  212258
+## 6 China       2000  213766</code></pre>
 <pre class="r"><code>pivot_wider(table4a_long, names_from = &quot;year&quot;, values_from = &quot;cases&quot;)</code></pre>
 <pre><code>## # A tibble: 3 x 3
 ##   country     `1999` `2000`
@@ -610,6 +621,24 @@ table4b_long</code></pre>
 ## 1 Afghanistan    745   2666
 ## 2 Brazil       37737  80488
 ## 3 China       212258 213766</code></pre>
+<p><code>pivot_wider()</code> has looked for all distinct values in the <code>year</code> column and created a new column for each. The values are taken from the <code>cases</code> column. An <code>NA</code> would be inserted into the new columns for any instances where there is no observation for a given year. That isn’t the case in this example but we can show this by removing the last row from <code>table4a_long</code>.</p>
+<pre class="r"><code>table4a_long &lt;- head(table4a_long, 5)
+table4a_long</code></pre>
+<pre><code>## # A tibble: 5 x 3
+##   country     year   cases
+##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
+## 1 Afghanistan 1999     745
+## 2 Afghanistan 2000    2666
+## 3 Brazil      1999   37737
+## 4 Brazil      2000   80488
+## 5 China       1999  212258</code></pre>
+<pre class="r"><code>pivot_wider(table4a_long, names_from = &quot;year&quot;, values_from = &quot;cases&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   country     `1999` `2000`
+##   &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258     NA</code></pre>
 <p>In some cases the wide format is the more human-readable form and usually it is a more compact way of representing the data. In this example, there is no duplication of the year value in the wide format of <code>table4a</code> and <code>table4b</code>. We will see later that this is much more apparent with larger data tables, e.g. gene expression matrices.</p>
 <p>Let’s look again at <code>table2</code>.</p>
 <pre class="r"><code>table2</code></pre>
