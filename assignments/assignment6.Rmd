@@ -172,9 +172,9 @@ Count the total number of occurrences of each copy number state.
 
 ```
 
-Create a combined data set containing the ER status, expression value and copy
-number state for each patient and gene pairing. The data frame should contain
-the columns Sample, ER_status, Gene, Expression and Copy_number_state.
+Create a combined data set containing the expression value and copy number state
+for each patient and gene pairing. The data frame should contain the columns
+Sample, Gene, Expression and Copy_number_state.
 
 ```{r}
 
