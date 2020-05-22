@@ -1,15 +1,7 @@
 
 ---
-title: "Assignment_runthrough"
-author: "Mark Fernandes"
-date: "16/04/2020"
-output:
-  word_document: default
-  html_document: default
+title: "Assignment 1"
 ---
-
-
-
 
 Now on with this week's exercises.
 

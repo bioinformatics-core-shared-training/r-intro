@@ -8,7 +8,7 @@ of plot. It includes some extension exercises which you can consider optional.
 
 ```{r message = FALSE, warning = FALSE}
 library(tidyverse)
-metabric <- read_csv("../data/metabric_clinical_and_expression_data.csv")
+metabric <- read_csv("metabric_clinical_and_expression_data.csv")
 ```
 
 ---
@@ -186,7 +186,7 @@ materials).
 
 ```{r}
 library(readxl)
-apple_mobility <- read_excel("../data/2020-04-26_COVID-19_Press_Conference_Data.xlsx",
+apple_mobility <- read_excel("2020-04-26_COVID-19_Press_Conference_Data.xlsx",
                              sheet = "Apple Mobility",
                              col_names = c("date", "transport_type", "percentage", "rolling_average"),
                              skip = 4,

@@ -137,7 +137,6 @@ table(metabric$Cellularity)
 table(metabric$`3-Gene classifier subtype`)
 
 sum(metabric$Cellularity == "High")
-metabric$Cellularity
 sum(metabric$Cellularity == "High" & !is.na(metabric$Cellularity))
 sum(metabric$Cellularity == "High", na.rm = TRUE)
 

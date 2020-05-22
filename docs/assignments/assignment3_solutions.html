@@ -183,7 +183,7 @@ summary {
 
 <p>The week’s assignment will test your ability to create various different types of plot. It includes some extension exercises which you can consider optional.</p>
 <pre class="r"><code>library(tidyverse)
-metabric &lt;- read_csv(&quot;../data/metabric_clinical_and_expression_data.csv&quot;)</code></pre>
+metabric &lt;- read_csv(&quot;metabric_clinical_and_expression_data.csv&quot;)</code></pre>
 <hr />
 <p><strong>1. Create a bar plot showing the number of patients with tumours at each of the different neoplasm histologic grades</strong></p>
 <pre class="r"><code>ggplot(data = metabric) +
@@ -317,7 +317,7 @@ r2</code></pre>
 <p><em>Hint: use the search terms “uk government coronavirus press conference data”.</em></p>
 <p>Load the ‘Apple Mobility’ sheet into a tibble in R. You will need to specify the worksheet and a few other arguments as the data are not in the most convenient format (see how the transport use worksheet was read into R in the course materials).</p>
 <pre class="r"><code>library(readxl)
-apple_mobility &lt;- read_excel(&quot;../data/2020-04-26_COVID-19_Press_Conference_Data.xlsx&quot;,
+apple_mobility &lt;- read_excel(&quot;2020-04-26_COVID-19_Press_Conference_Data.xlsx&quot;,
                              sheet = &quot;Apple Mobility&quot;,
                              col_names = c(&quot;date&quot;, &quot;transport_type&quot;, &quot;percentage&quot;, &quot;rolling_average&quot;),
                              skip = 4,

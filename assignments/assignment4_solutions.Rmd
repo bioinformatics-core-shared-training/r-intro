@@ -14,7 +14,7 @@ the outcome requested.
 
 ```{r message = FALSE, warning = FALSE}
 library(tidyverse)
-metabric <- read_csv("../data/metabric_clinical_and_expression_data.csv")
+metabric <- read_csv("metabric_clinical_and_expression_data.csv")
 ```
 
 ---
