@@ -837,3 +837,6 @@ In this session we have covered the following:
 # Assignment
 
 Assignment: [assignment6.Rmd](assignments/assignment6.Rmd)
+
+Solutions: [assignment6_solutions.Rmd](assignments/assignment6_solutions.Rmd)
+and [assignment6_solutions.html](assignments/assignment6_solutions.html)
