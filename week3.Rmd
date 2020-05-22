@@ -796,3 +796,4 @@ In this session we have covered the following concepts:
 Assignment: [assignment3.Rmd](assignments/assignment3.Rmd)
 
 Solutions: [assignment3_solutions.Rmd](assignments/assignment3_solutions.Rmd)
+and [assignment3_solutions.html](assignments/assignment3_solutions.html)

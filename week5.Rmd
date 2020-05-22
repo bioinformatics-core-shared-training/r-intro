@@ -873,3 +873,4 @@ In this session we have covered the following:
 Assignment: [assignment5.Rmd](assignments/assignment5.Rmd)
 
 Solutions: [assignment5_solutions.Rmd](assignments/assignment5_solutions.Rmd)
+and [assignment5_solutions.html](assignments/assignment5_solutions.html)

@@ -1502,3 +1502,4 @@ In this session we have covered the following concepts:
 Assignment: [assignment2.Rmd](assignments/assignment2.Rmd)
 
 Solutions: [assignment2_solutions.Rmd](assignments/assignment2_solutions.Rmd)
+and [assignment2_solutions.html](assignments/assignment2_solutions.html)

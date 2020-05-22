@@ -379,4 +379,4 @@ week's assignment.
 Assignment: [assignment1.Rmd](assignments/assignment1.Rmd)
 
 Solutions: [assignment1_walkthrough.Rmd](assignments/assignment1_walkthrough.Rmd)
-
+and [assignment1_solutions.html](assignments/assignment1_solutions.html)
