@@ -160,11 +160,13 @@ the values are the copy number states:
 *  2 amplification
 
 Remove the `Entrez_Gene_id` column and convert the copy number state variable
-into a factor.
+into a factor using the more human-readable names for each state.
 
 ```{r}
 
 ```
+
+_Hint: look at the help page for `factor()` to see how to set the labels for each copy number state or use `fct_recode()` from the `forcats` package._
 
 Count the total number of occurrences of each copy number state.
 
