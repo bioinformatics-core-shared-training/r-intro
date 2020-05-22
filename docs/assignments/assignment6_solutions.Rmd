@@ -153,7 +153,7 @@ who_tidy %>%
   geom_line(mapping = aes(x = year, y = cases, colour = age_group))
 ```
 
-_Hint: we're not distinguishing between genders in this plot so you'll need the data to be summarized in the same way as the previous question._
+_Hint: we're not distinguishing between diagnoses and genders in this plot so you'll need to sum the numbers of cases for each country, year and age group._
 
 Use faceting in ggplot2 to create a series of plots showing the same information
 for France, Brazil, Japan and Uganda.
