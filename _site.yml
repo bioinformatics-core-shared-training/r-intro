@@ -1,6 +1,6 @@
 name: "r-intro"
 navbar:
-  title: "<img style=\"width: 120px; float: left; margin-top: 0px; margin-right: 20px;\" src=\"images/CRUK_CI_logo.png\"/>Introduction to R&nbsp;&nbsp;&nbsp;"
+  title: "<img style=\"width: 120px; float: left; margin-top: 0px; margin-right: 20px;\" src=\"images/CRUK_CI_logo.png\"/>R for Cancer Scientists&nbsp;&nbsp;&nbsp;"
   left:
     - text: "Contents"
       href: index.html

@@ -346,7 +346,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html"><img style="width: 120px; float: left; margin-top: 0px; margin-right: 20px;" src="images/CRUK_CI_logo.png"/>Introduction to R&nbsp;&nbsp;&nbsp;</a>
+      <a class="navbar-brand" href="index.html"><img style="width: 120px; float: left; margin-top: 0px; margin-right: 20px;" src="images/CRUK_CI_logo.png"/>R for Cancer Scientists&nbsp;&nbsp;&nbsp;</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -460,6 +460,7 @@ metabric</code></pre>
 <pre class="r"><code>metabric %&gt;%
   group_by(ER_status) %&gt;%
   summarise(mean(ESR1))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 2 x 2
 ##   ER_status `mean(ESR1)`
 ##   &lt;chr&gt;            &lt;dbl&gt;
@@ -473,6 +474,7 @@ metabric</code></pre>
 <pre class="r"><code>metabric %&gt;%
   group_by(Integrative_cluster) %&gt;%
   summarise(ESR1 = mean(ESR1))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 11 x 2
 ##    Integrative_cluster  ESR1
 ##    &lt;chr&gt;               &lt;dbl&gt;
@@ -510,6 +512,7 @@ metabric</code></pre>
 <pre class="r"><code>metabric %&gt;%
   group_by(PAM50, HER2_status) %&gt;%
   summarise(ESR1_mean = mean(ESR1))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;PAM50&#39; (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 13 x 3
 ## # Groups:   PAM50 [7]
 ##    PAM50       HER2_status ESR1_mean
@@ -531,6 +534,7 @@ metabric</code></pre>
 <pre class="r"><code>metabric %&gt;%
   group_by(PAM50, HER2_status) %&gt;%
   summarise(N = n(), ESR1_mean = mean(ESR1))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;PAM50&#39; (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 13 x 4
 ## # Groups:   PAM50 [7]
 ##    PAM50       HER2_status     N ESR1_mean
@@ -612,6 +616,7 @@ metabric</code></pre>
 <pre class="r"><code>metabric %&gt;%
   group_by(ER_status) %&gt;%
   summarize(N = n(), `Average tumour size` = mean(Tumour_size))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 2 x 3
 ##   ER_status     N `Average tumour size`
 ##   &lt;chr&gt;     &lt;int&gt;                 &lt;dbl&gt;
@@ -621,6 +626,7 @@ metabric</code></pre>
 <pre class="r"><code>metabric %&gt;%
   group_by(ER_status) %&gt;%
   summarize(N = n(), `Average tumour size` = mean(Tumour_size, na.rm = TRUE))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 2 x 3
 ##   ER_status     N `Average tumour size`
 ##   &lt;chr&gt;     &lt;int&gt;                 &lt;dbl&gt;
@@ -631,6 +637,7 @@ metabric</code></pre>
   filter(!is.na(Tumour_size)) %&gt;%
   group_by(ER_status) %&gt;%
   summarize(N = n(), `Average tumour size` = mean(Tumour_size))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 2 x 3
 ##   ER_status     N `Average tumour size`
 ##   &lt;chr&gt;     &lt;int&gt;                 &lt;dbl&gt;
@@ -644,6 +651,7 @@ metabric</code></pre>
 <pre class="r"><code>metabric %&gt;%
   group_by(ER_status) %&gt;%
   summarize(N = n(), Missing = sum(is.na(Tumour_size)), `Average tumour size` = mean(Tumour_size, na.rm = TRUE))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 2 x 4
 ##   ER_status     N Missing `Average tumour size`
 ##   &lt;chr&gt;     &lt;int&gt;   &lt;int&gt;                 &lt;dbl&gt;
@@ -663,6 +671,7 @@ is.na(test_vector)</code></pre>
 <pre class="r"><code>metabric %&gt;%
   group_by(ER_status) %&gt;%
   summarize(N = n(), `Missing tumour size` = sum(is.na(Tumour_size)), `Proportion missing` = mean(is.na(Tumour_size)))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 2 x 4
 ##   ER_status     N `Missing tumour size` `Proportion missing`
 ##   &lt;chr&gt;     &lt;int&gt;                 &lt;int&gt;                &lt;dbl&gt;
@@ -673,6 +682,7 @@ is.na(test_vector)</code></pre>
   filter(Survival_status == &quot;DECEASED&quot;) %&gt;%
   group_by(ER_status) %&gt;%
   summarise(N = n(), N_long_survival = sum(Survival_time &gt; 120), Proportion_long_survival = mean(Survival_time &gt; 120))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 2 x 4
 ##   ER_status     N N_long_survival Proportion_long_survival
 ##   &lt;chr&gt;     &lt;int&gt;           &lt;int&gt;                    &lt;dbl&gt;

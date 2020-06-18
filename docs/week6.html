@@ -346,7 +346,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html"><img style="width: 120px; float: left; margin-top: 0px; margin-right: 20px;" src="images/CRUK_CI_logo.png"/>Introduction to R&nbsp;&nbsp;&nbsp;</a>
+      <a class="navbar-brand" href="index.html"><img style="width: 120px; float: left; margin-top: 0px; margin-right: 20px;" src="images/CRUK_CI_logo.png"/>R for Cancer Scientists&nbsp;&nbsp;&nbsp;</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -719,7 +719,9 @@ table3_separated</code></pre>
 <p>The <code>sep</code> argument takes a regular expression that defines how to split the values. We’ve mentioned regular expressions before – they are a language for specifying search patterns used to find sequences of characters within text and well worth learning. In this case our separator is just the ‘/’ character.</p>
 <p>The resulting data frame is still not quite what we want though. This becomes apparent as soon as we try to do anything with the new <code>cases</code> and <code>population</code> columns.</p>
 <pre class="r"><code>mutate(table3_separated, rate = cases / population)</code></pre>
-<pre><code>## Error in cases/population: non-numeric argument to binary operator</code></pre>
+<pre><code>## Error: Problem with `mutate()` input `rate`.
+## ✖ non-numeric argument to binary operator
+## ℹ Input `rate` is `cases/population`.</code></pre>
 <p>By default the separated values are character types. We could convert these using <code>mutate_at()</code>.</p>
 <pre class="r"><code>mutate_at(table3_separated, vars(cases, population), as.integer)</code></pre>
 <pre><code>## # A tibble: 6 x 4
@@ -1028,6 +1030,7 @@ protein_levels</code></pre>
 <pre class="r"><code>protein_levels %&gt;%
   group_by(accession, gene, group) %&gt;%
   summarize(protein_level = mean(protein_level))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;accession&#39;, &#39;gene&#39; (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 40 x 4
 ## # Groups:   accession, gene [10]
 ##    accession gene   group  protein_level
